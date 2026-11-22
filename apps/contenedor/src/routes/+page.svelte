@@ -14,7 +14,7 @@
 
 <svelte:head>
 	<title>Juega FrenteAmplio</title>
-	<meta name="description" content="Juegos de campaña del Frente Amplio." />
+	<meta name="description" content="Muchachada Arcade apoya a Frente Amplio" />
 </svelte:head>
 
 <main>
