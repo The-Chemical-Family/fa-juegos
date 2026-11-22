@@ -1,10 +1,74 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
 	import estrella from '#lib/assets/estrella.png';
 	import ada from '#lib/assets/ada.png';
 	import emilio from '#lib/assets/emilio.png';
+	import audioEntrada from '#lib/assets/audio_entrada.mp3';
 
 	let { data }: PageProps = $props();
+
+	// El audio de entrada suena una sola vez por dispositivo. Se marca como
+	// escuchado sólo cuando empieza a sonar: si el navegador bloquea el
+	// autoplay, el siguiente intento es con el primer gesto del visitante.
+	const CLAVE_AUDIO = 'fa-entrada-escuchada';
+
+	onMount(() => {
+		const yaEscuchado = () => {
+			try {
+				return localStorage.getItem(CLAVE_AUDIO) === '1';
+			} catch {
+				// Sin almacenamiento no hay forma de recordarlo: mejor no sonar
+				// en cada visita.
+				return true;
+			}
+		};
+
+		const marcarEscuchado = () => {
+			try {
+				localStorage.setItem(CLAVE_AUDIO, '1');
+			} catch {
+				// Ignorado: el audio ya ha sonado igualmente.
+			}
+		};
+
+		if (yaEscuchado()) return;
+
+		const audio = new Audio(audioEntrada);
+		audio.preload = 'auto';
+
+		const quitarGestos = () => {
+			window.removeEventListener('pointerdown', intentarConGesto);
+			window.removeEventListener('keydown', intentarConGesto);
+		};
+
+		const intentarConGesto = () => {
+			quitarGestos();
+			audio.play().catch(() => {});
+		};
+
+		audio.addEventListener(
+			'playing',
+			() => {
+				marcarEscuchado();
+				quitarGestos();
+			},
+			{ once: true }
+		);
+
+		audio.play().catch(() => {
+			// Autoplay bloqueado (Safari, Chrome sin interacción previa…).
+			window.addEventListener('pointerdown', intentarConGesto);
+			window.addEventListener('keydown', intentarConGesto);
+		});
+
+		return () => {
+			quitarGestos();
+			audio.pause();
+			audio.removeAttribute('src');
+			audio.load();
+		};
+	});
 </script>
 
 <svelte:head>

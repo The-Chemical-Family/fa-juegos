@@ -9,6 +9,8 @@ Monorepo de los juegos web de campaña. Un único dominio sirve una lista de jue
 
 El contenedor decide qué URL existe y qué enlaces aparecen. No renderiza el HTML de los juegos: cada juego se publica como artefacto estático.
 
+La portada reproduce un audio de entrada una sola vez por dispositivo (`localStorage`). Suena en autoplay donde el navegador lo permite y, si lo bloquea, espera al primer gesto del visitante.
+
 ## Los dos tipos de juego
 
 Cada carpeta de `juegos/` es exactamente uno de estos dos tipos, y lo declara en su `juego.json`:
