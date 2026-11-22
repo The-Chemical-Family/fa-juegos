@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { join } from 'node:path';
 import { leerManifiestos } from './manifiestos.mjs';
@@ -39,29 +39,24 @@ const proxy = {};
 
 publicados.forEach((juego, indice) => {
 	const puerto = puertos[indice];
-	const paquete = JSON.parse(readFileSync(join(juego.directorio, 'package.json'), 'utf8'));
-	const scripts = paquete.scripts ?? {};
 
-	if (scripts.dev) {
-		// Servidor de desarrollo con recarga en caliente; se asume base `/<slug>/`.
-		proxy[juego.slug] = { puerto, quitarPrefijo: false };
-		lanzar(juego.slug, [
-			'run',
-			'dev',
-			'-w',
-			`juegos/${juego.slug}`,
-			'--',
-			'--port',
-			String(puerto),
-			'--strictPort'
-		]);
-	} else if (scripts.serve) {
-		// Build estático servido en la raíz del puerto: hay que quitar el prefijo.
-		proxy[juego.slug] = { puerto, quitarPrefijo: true };
-		lanzar(juego.slug, ['run', 'serve', '-w', `juegos/${juego.slug}`, '--', String(puerto)]);
-	} else {
-		console.warn(`⚠ ${juego.slug} no tiene script "dev" ni "serve": se servirá la copia construida.`);
+	if (juego.tipo === 'estatico') {
+		// Juego ya construido: se sirve su propia carpeta con el prefijo real, así
+		// que las rutas /<slug>/... del HTML resuelven y editar + recargar basta.
+		proxy[juego.slug] = { puerto, quitarPrefijo: false, tipo: juego.tipo };
+		lanzar(
+			juego.slug,
+			['tools/servir-estatico.mjs', juego.directorio, String(puerto), `/${juego.slug}`],
+			{},
+			process.execPath
+		);
+		return;
 	}
+
+	// Aplicación Svelte: servidor de desarrollo con recarga en caliente. Se asume
+	// base `/<slug>/`.
+	proxy[juego.slug] = { puerto, quitarPrefijo: false, tipo: juego.tipo };
+	lanzar(juego.slug, ['run', 'dev', '-w', `juegos/${juego.slug}`, '--', '--port', String(puerto), '--strictPort']);
 });
 
 writeFileSync(ARCHIVO_PROXY, JSON.stringify(proxy, null, 2));
@@ -72,20 +67,20 @@ lanzar('contenedor', ['run', 'dev', '-w', 'apps/contenedor', '--', '--port', Str
 
 console.log(`\n  contenedor  http://localhost:${PUERTO_CONTENEDOR}/`);
 for (const [slug, datos] of Object.entries(proxy)) {
-	const nota = datos.quitarPrefijo ? 'build estático, sin recarga' : 'recarga en caliente';
+	const nota = datos.tipo === 'estatico' ? 'carpeta del juego, sin recarga' : 'recarga en caliente';
 	console.log(`  ${slug.padEnd(13)} http://localhost:${datos.puerto}/${slug}/  (${nota})`);
 }
 console.log('\n  Ctrl-C para parar todo\n');
 
-const sinRecarga = Object.entries(proxy).filter(([, datos]) => datos.quitarPrefijo);
-if (sinRecarga.length > 0) {
-	console.log(`  Para ver cambios en ${sinRecarga.map(([slug]) => slug).join(', ')}:`);
-	for (const [slug] of sinRecarga) console.log(`    npm run build -w juegos/${slug}`);
+const estaticos = Object.entries(proxy).filter(([, datos]) => datos.tipo === 'estatico');
+
+if (estaticos.length > 0) {
+	console.log(`  ${estaticos.map(([slug]) => slug).join(', ')}: edita los archivos del juego y recarga.`);
 	console.log('');
 }
 
-function lanzar(nombre, argumentos, entorno = {}) {
-	const hijo = spawn('npm', argumentos, { stdio: 'inherit', env: { ...process.env, ...entorno } });
+function lanzar(nombre, argumentos, entorno = {}, comando = 'npm') {
+	const hijo = spawn(comando, argumentos, { stdio: 'inherit', env: { ...process.env, ...entorno } });
 
 	hijo.on('exit', (codigo) => {
 		if (cerrando || codigo === 0) return;
@@ -102,7 +97,9 @@ function puertoLibre(puerto) {
 		const sonda = createServer();
 		sonda.once('error', () => resolver(false));
 		sonda.once('listening', () => sonda.close(() => resolver(true)));
-		sonda.listen(puerto, '127.0.0.1');
+		// Sin host, igual que los servidores que se lanzan después (`::`): una
+		// sonda limitada a 127.0.0.1 no detecta un proceso escuchando solo en IPv6.
+		sonda.listen(puerto);
 	});
 }
 

@@ -3,7 +3,6 @@ apps/contenedor/static/*/
 apps/contenedor/.svelte-kit/
 apps/contenedor/.vercel/
 juegos/*/dist/
-juegos/voto-util/build/
 .vercel/
 .DS_Store
 apps/contenedor/.juegos-dev.json

@@ -16,16 +16,33 @@ const TIPOS = {
 	'.txt': 'text/plain; charset=utf-8'
 };
 
-const [directorio = 'dist', puerto = '4175'] = process.argv.slice(2);
+const [directorio = 'dist', puerto = '4175', prefijo = ''] = process.argv.slice(2);
 const raiz = resolve(directorio);
+const prefijoLimpio = prefijo.replace(/\/+$/, '');
 
 if (!existsSync(raiz)) {
-	console.error(`No existe ${raiz}. Construye el juego antes de servirlo.`);
+	console.error(`No existe ${raiz}.`);
 	process.exit(1);
 }
 
 createServer((peticion, respuesta) => {
-	const ruta = decodeURIComponent(new URL(peticion.url, 'http://localhost').pathname);
+	const url = new URL(peticion.url, 'http://localhost');
+	let ruta = decodeURIComponent(url.pathname);
+
+	if (prefijoLimpio) {
+		if (ruta === prefijoLimpio) {
+			respuesta.writeHead(308, { location: `${prefijoLimpio}/${url.search}` });
+			respuesta.end();
+			return;
+		}
+		if (!ruta.startsWith(`${prefijoLimpio}/`)) {
+			respuesta.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+			respuesta.end('404');
+			return;
+		}
+		ruta = ruta.slice(prefijoLimpio.length);
+	}
+
 	const relativa = normalize(ruta).replace(/^(\.\.[/\\])+/, '');
 	let fichero = join(raiz, relativa);
 

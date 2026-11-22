@@ -12,15 +12,28 @@ No necesita servidor, base de datos ni dependencias externas.
 - `css/estilos.css`: estilos
 - `js/juego.js`: lógica del juego, sonidos (generados en el navegador) y creador del GIF
 
+## Tipo de juego
+
+Es un juego **estático ya construido**: HTML, CSS y JS sin herramienta de compilación. No tiene
+`package.json`; el monorepo copia la carpeta tal cual.
+
 ## Publicar
 
-Este juego es un workspace de `fa-juegos` y se sirve en `https://juegoamplista.es/desenmascara/`.
-El contenedor copia su `dist/` en el ensamblado del monorepo; no se sube la carpeta a mano a ningún sitio.
+Se sirve en `https://juegoamplista.es/desenmascara/`. El ensamblado copia la carpeta a
+`apps/contenedor/static/desenmascara/`; no se sube la carpeta a mano a ningún sitio.
 
 ```bash
-npm run build -w juegos/desenmascara   # regenera dist/
-npm run build                          # ensambla el sitio completo
+npm run build   # ensambla el sitio completo y verifica el juego
 ```
+
+## Probar en local
+
+```bash
+npm install       # desde la raíz del monorepo
+npm run dev:todo  # http://localhost:5173/desenmascara/
+```
+
+No hay compilación: edita los archivos y recarga.
 
 Las rutas de `css/` y `js/` son absolutas (`/desenmascara/...`) para que el juego funcione también
 en la URL sin barra final.

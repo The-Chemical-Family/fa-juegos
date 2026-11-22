@@ -7,6 +7,7 @@ import { verificarJuego } from './verificar-juego.mjs';
 const INICIO = '<!-- analitica:start -->';
 const FIN = '<!-- analitica:end -->';
 const SNIPPET = '<script defer src="/_vercel/insights/script.js"></script>';
+const NO_SE_SIRVEN = new Set(['juego.json', 'README.md', 'dist', 'node_modules']);
 
 const raiz = process.cwd();
 const contenedor = join(raiz, 'apps', 'contenedor');
@@ -19,16 +20,25 @@ const ocultos = manifiestos.filter((juego) => !juego.publicar);
 limpiarPublicados();
 
 for (const juego of publicados) {
-	console.log(`\n▶ ${juego.slug}: construyendo`);
-	ejecutar('npm', ['run', 'build', '-w', join('juegos', juego.slug)]);
+	const destino = join(estatico, juego.slug);
 
-	const origen = join(juego.directorio, 'dist');
-	if (!existsSync(join(origen, 'index.html'))) {
-		throw new Error(`${juego.slug}: el build no ha generado dist/index.html`);
+	if (juego.tipo === 'svelte') {
+		console.log(`\n▶ ${juego.slug}: construyendo`);
+		ejecutar('npm', ['run', 'build', '-w', join('juegos', juego.slug)]);
+
+		const origen = join(juego.directorio, 'dist');
+		if (!existsSync(join(origen, 'index.html'))) {
+			throw new Error(`${juego.slug}: el build no ha generado dist/index.html`);
+		}
+
+		cpSync(origen, destino, { recursive: true });
+	} else {
+		// Juego estático ya construido: la carpeta del juego es el artefacto. Se
+		// copia tal cual y solo se deja fuera lo que no debe servirse.
+		console.log(`\n▶ ${juego.slug}: copiando (sin build)`);
+		copiarEstatico(juego.directorio, destino);
 	}
 
-	const destino = join(estatico, juego.slug);
-	cpSync(origen, destino, { recursive: true });
 	inyectarAnalitica(join(destino, 'index.html'));
 }
 
@@ -52,6 +62,16 @@ ejecutar('npm', ['run', 'build', '-w', 'apps/contenedor']);
 console.log('\n✔ Ensamblado terminado');
 for (const juego of publicados) console.log(`  publicado: /${juego.slug}/ — ${juego.nombre}`);
 for (const juego of ocultos) console.log(`  oculto:    ${juego.slug} (publicar: false)`);
+
+function copiarEstatico(origen, destino) {
+	cpSync(origen, destino, {
+		recursive: true,
+		filter: (ruta) => {
+			const partes = ruta.slice(origen.length).split(/[/\\]+/).filter(Boolean);
+			return partes.every((parte) => !NO_SE_SIRVEN.has(parte) && !parte.startsWith('.'));
+		}
+	});
+}
 
 function limpiarPublicados() {
 	if (!existsSync(estatico)) return;

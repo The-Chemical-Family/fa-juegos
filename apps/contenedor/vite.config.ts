@@ -32,7 +32,9 @@ function proxyDeJuegos() {
 			target: `http://localhost:${puerto}`,
 			changeOrigin: true,
 			ws: true,
-			// Los servidores estáticos sirven en la raíz; Vite ya sirve en /<slug>/.
+			// Los juegos Svelte se sirven con base `/<slug>/` y el servidor estático
+			// de `dev:todo` también recibe el prefijo; solo se normaliza la URL sin
+			// barra final.
 			rewrite: quitarPrefijo
 				? (ruta: string) => ruta.replace(new RegExp(`^/${slug}/?`), '/')
 				: (ruta: string) => (ruta === `/${slug}` ? `/${slug}/` : ruta)
