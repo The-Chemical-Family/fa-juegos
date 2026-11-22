@@ -31,7 +31,7 @@
 
 	h1 {
 		margin: 0 0 1rem;
-		font-family: 'Anton', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+		font-family: 'Impact Web', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 		font-size: 2.5rem;
 		font-weight: 400;
 		line-height: 1;

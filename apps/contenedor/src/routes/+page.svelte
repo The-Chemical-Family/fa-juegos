@@ -159,7 +159,7 @@
 		--naranja: #f03c01;
 		--verde: #cce876;
 		--blanco: #fff;
-		--display: 'Anton', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+		--display: 'Impact Web', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 	}
 
 	main {

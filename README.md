@@ -11,6 +11,8 @@ El contenedor decide qué URL existe y qué enlaces aparecen. No renderiza el HT
 
 La portada reproduce un audio de entrada en cada visita, salvo que el visitante lo silencie con el botón de arriba a la derecha; ese estado se recuerda entre visitas. Suena en autoplay donde el navegador lo permite y, si lo bloquea, espera al primer gesto.
 
+La tipografía del cartel es Impact: además de la del sistema, se sirve desde el propio contenedor (`src/lib/assets/impact-webfont.*`) para que Android y Linux vean lo mismo.
+
 ## Los dos tipos de juego
 
 Cada carpeta de `juegos/` es exactamente uno de estos dos tipos, y lo declara en su `juego.json`:

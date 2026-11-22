@@ -1,0 +1,11 @@
+/* Impact viene incluida en Windows y macOS, pero no en Android ni Linux: se
+   sirve desde el contenedor para que el cartel se vea igual en todas partes. */
+@font-face {
+	font-family: 'Impact Web';
+	src:
+		url('./lib/assets/impact-webfont.woff2') format('woff2'),
+		url('./lib/assets/impact-webfont.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
