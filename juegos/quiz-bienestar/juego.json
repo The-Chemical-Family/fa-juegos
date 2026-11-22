@@ -1,6 +1,6 @@
 {
   "nombre": "Quiz bienestar",
   "tipo": "svelte",
-  "publicar": true,
+  "publicar": false,
   "assets": ["video/video_meme.mp4"]
 }
