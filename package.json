@@ -12,6 +12,7 @@
   "scripts": {
     "check": "node tools/verificar-juegos.mjs && npm run check --workspaces --if-present",
     "build": "node tools/ensamblar.mjs",
+    "nuevo-juego": "node tools/nuevo-juego.mjs",
     "dev": "npm run dev -w apps/contenedor",
     "preview": "npm run preview -w apps/contenedor",
     "dev:todo": "node tools/dev-todo.mjs"

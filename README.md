@@ -27,6 +27,7 @@ apps/contenedor/     contenedor SvelteKit (adapter-vercel)
 juegos/<slug>/       un juego por carpeta, con juego.json
 tools/               ensamblado, manifiestos, verificación y servidor estático
 tools/plantillas/    esqueletos de los dos tipos
+.github/skills/      skills de IA para crear y añadir juegos
 _archivo/            código conservado que no se publica
 ```
 
@@ -37,6 +38,7 @@ npm install     # instala todos los workspaces (los juegos svelte)
 npm run check   # valida manifiestos y verifica los artefactos de todos los juegos
 npm run build   # construye los juegos svelte, copia los estáticos y construye el contenedor
 npm run dev     # servidor de desarrollo del contenedor
+npm run nuevo-juego -- --tipo svelte --slug <slug> --nombre "<Nombre>"   # crea un juego
 ```
 
 `npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos `svelte` con `publicar: true`, copia los `estatico`, inyecta la analítica y verifica cada artefacto.
@@ -89,9 +91,35 @@ Toda carpeta de `juegos/` que tenga `juego.json` es un juego; las que no lo tien
 
 Los manifiestos se validan al leerlos: un `tipo` desconocido, un juego `estatico` con `package.json`, un juego `svelte` sin `svelte`, sin `build` o sin `dev`, o una carpeta sin `index.html` detienen el build con un mensaje que nombra el fichero.
 
+## Skills de IA
+
+Las tareas de crear un juego y de añadirlo están automatizadas como skills que
+funcionan igual en Copilot y en Claude:
+
+| Skill | Para qué |
+| --- | --- |
+| `crear-juego-svelte` | Crea un juego Svelte 5 nuevo desde la plantilla, lo registra como workspace y lo deja listo para implementar y verificar. |
+| `anadir-juego-estatico` | Incorpora un juego ya construido, reescribe las rutas a `/<slug>/` y lo deja servible. |
+| `verificar-juego` | Sube la verificación (manifiesto, artefacto y sitio) y traduce cada mensaje de error. |
+
+Viven en [.github/skills/](.github/skills/) y `.claude/skills` es un enlace
+simbólico a esa misma carpeta, para que Copilot y Claude lean una sola copia: al
+añadir una skill basta con crearla en `.github/skills/<nombre>/SKILL.md`. (En
+Windows hace falta `git config core.symlinks true` para que el enlace se cree
+como tal al clonar.)
+
+Las dos primeras usan el mismo andamiaje, `npm run nuevo-juego`, que copia la
+plantilla, sustituye los marcadores, escribe `juego.json` y se niega a pisar una
+carpeta existente:
+
+```bash
+npm run nuevo-juego -- --tipo svelte   --slug <slug> --nombre "<Nombre>" [--descripcion "<texto>"] [--orden 10] [--publicar]
+npm run nuevo-juego -- --tipo estatico --slug <slug> --nombre "<Nombre>" --origen <ruta construida> [--prefijo-anterior <segmento>] [--publicar]
+```
+
 ## Añadir un juego Svelte
 
-1. Copiar `tools/plantillas/svelte/` a `juegos/<slug>/` y sustituir `__SLUG__`, `__NOMBRE__` y `__DESCRIPCION__`.
+1. Copiar `tools/plantillas/svelte/` a `juegos/<slug>/` y sustituir `__SLUG__`, `__NOMBRE__` y `__DESCRIPCION__`. Lo hace `npm run nuevo-juego -- --tipo svelte --slug <slug> --nombre "<Nombre>"`; después, `npm install` para enlazar el workspace nuevo.
 2. `vite.config.ts` fija `base: '/<slug>/'`. No lo cambies: el juego se sirve bajo esa ruta y la URL sin barra final resolvería los recursos contra la raíz del dominio.
 3. Mantener `dev`, `build` (genera `dist/`) y `check` en `package.json`.
 4. Poner `publicar: true` en `juego.json` cuando esté listo.
@@ -100,9 +128,9 @@ Si el juego carga un recurso desde JavaScript, créalo en `static/` con `publicD
 
 ## Añadir un juego estático ya construido
 
-1. Copiar dentro de `juegos/<slug>/` el resultado ya construido: `index.html`, CSS, JS y los assets que necesite.
+1. Copiar dentro de `juegos/<slug>/` el resultado ya construido: `index.html`, CSS, JS y los assets que necesite. Con `npm run nuevo-juego -- --tipo estatico --slug <slug> --nombre "<Nombre>" --origen <ruta>` la copia descarta `package.json`, `node_modules` y los archivos ocultos.
 2. **No** añadir `package.json`, ni `node_modules`, ni un paso de compilación.
-3. Usar rutas absolutas `/<slug>/...` en `index.html` para los subrecursos, y relativas solo dentro del CSS.
+3. Usar rutas absolutas `/<slug>/...` en `index.html` para los subrecursos, y relativas solo dentro del CSS. Si el juego se construyó para otro prefijo, `--prefijo-anterior <segmento>` lo reescribe.
 4. Crear `juego.json` con `"tipo": "estatico"`.
 5. El `index.html` debe tener `</head>`: ahí se inyecta la analítica.
 
