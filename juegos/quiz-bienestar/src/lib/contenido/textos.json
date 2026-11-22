@@ -1,24 +1,24 @@
 {
-  "regla": "Regla del juego: las respuestas que favorecen a la clase trabajadora quitan energía al villano; las que la perjudican te la quitan a ti.",
-  "mision": "El país está en problemas. Durante años tres poderosos personajes han aprendido a alimentarse del descontento social: cuando la gente se enfada entre sí, ellos se vuelven más fuertes; cuando la gente se informa, coopera y decide qué país quiere construir, ellos pierden poder. Tu misión es derrotarlos.",
+  "regla": "Derrotar a los villanos ayuda a la clase trabajadora",
+  "mision": "Tres villanos viven del descontento. Infórmate, coopera y derrótalos.",
   "villanos": [
     {
       "id": 0,
       "nombre": "El Rey del Ladrillo",
       "emoji": "👑",
-      "textoIntro": "Convierte viviendas en activos financieros. Cuanto más difícil es encontrar casa, más rico se hace. Posee más llaves que recuerdos."
+      "textoIntro": "Convierte casas en dinero."
     },
     {
       "id": 1,
       "nombre": "El Buitre Empresario",
       "emoji": "🦅",
-      "textoIntro": "Posee medios de comunicación, empresas, influencers y varios periódicos que siempre llegan casualmente a la misma conclusión. Cuando alguien pregunta quién acumula el dinero, él cambia de tema."
+      "textoIntro": "Solo le importa el dinero."
     },
     {
       "id": 2,
       "nombre": "La Presidenta del Miedo",
       "emoji": "🎭",
-      "textoIntro": "Tiene una explicación sencilla para todo. Siempre culpa a alguien distinto de quienes toman las decisiones. Nunca soluciona un problema, pero consigue que la gente discuta durante horas."
+      "textoIntro": "Culpa a otros y nunca resuelve nada."
     }
   ],
   "frases": {

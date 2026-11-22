@@ -1,24 +1,26 @@
 <script lang="ts">
+  import { retratoDeVillano } from '../lib/retratos'
   import type { Textos } from '../lib/tipos'
 
   let { textos, alEmpezar }: { textos: Textos; alEmpezar: () => void } = $props()
 </script>
 
-<main class="pantalla intro">
-  <h1>Juego de preguntas y bienestar</h1>
-  <p class="mision">{textos.mision}</p>
+<main class="intro">
+  <header>
+    <h1>Fight los malos</h1>
+    <p class="mision">{textos.mision}</p>
+  </header>
 
   <ul class="villanos">
     {#each textos.villanos as villano (villano.id)}
       <li>
-        <span aria-hidden="true">{villano.emoji}</span>
-        <strong> {villano.nombre}.</strong>
-        {villano.textoIntro}
+        <img class="retrato" src={retratoDeVillano(villano.id)} alt="" />
+        <strong class="nombre">{villano.nombre}</strong>
       </li>
     {/each}
   </ul>
 
   <p class="regla">{textos.regla}</p>
 
-  <button onclick={alEmpezar}>Empezar</button>
+  <button class="flecha empezar" onclick={alEmpezar}>Empezar</button>
 </main>

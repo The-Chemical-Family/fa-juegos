@@ -41,11 +41,13 @@ describe('Mapa', () => {
     expect(screen.queryByLabelText(/contra Uno/)).toBeNull()
   })
 
-  it('las etiquetas de estado aparecen en texto', () => {
+  it('el estado de cada villano aparece en texto', () => {
     render(Mapa, { props: props({ villanoActivo: 1 }) })
+    // Los villanos sin batalla posible dicen su estado en la flecha; el activo,
+    // en la etiqueta de la acción.
     expect(screen.getByText('derrotado')).toBeTruthy()
-    expect(screen.getByText('activo')).toBeTruthy()
     expect(screen.getByText('bloqueado')).toBeTruthy()
+    expect(screen.getByLabelText('Luchar contra Dos')).toBeTruthy()
   })
 
   it('el botón pasa a Reintentar cuando la última batalla no desbloqueó', () => {
@@ -114,12 +116,16 @@ describe('Mapa: dirección del desenfoque', () => {
   })
 })
 
-describe('Mapa: el oasis no es un emoji', () => {
-  it('se dibuja con elementos propios, sin ningún carácter emoji', () => {
+describe('Mapa: retratos de los villanos', () => {
+  it('cada villano lleva el retrato dibujado de su ficha', () => {
     render(Mapa, { props: props() })
-    const oasis = document.querySelector('.oasis')
-    expect(oasis).toBeTruthy()
-    expect(oasis?.textContent?.trim()).toBe('')
-    expect(oasis?.querySelector('.copa')).toBeTruthy()
+    const retratos = [...document.querySelectorAll<HTMLImageElement>('.rival .retrato')]
+    const base = import.meta.env.BASE_URL
+    expect(retratos).toHaveLength(3)
+    expect(retratos.map((img) => img.getAttribute('src'))).toEqual([
+      `${base}villanos/el_rey_del_ladrillo.png`,
+      `${base}villanos/el_empresario_buitre.png`,
+      `${base}villanos/la_presidenta_del_miedo.png`
+    ])
   })
 })

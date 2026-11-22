@@ -2,5 +2,10 @@
   "nombre": "Quiz bienestar",
   "tipo": "svelte",
   "publicar": true,
-  "assets": ["video/video_meme.mp4"]
+  "assets": [
+    "video/video_meme.mp4",
+    "villanos/el_rey_del_ladrillo.png",
+    "villanos/el_empresario_buitre.png",
+    "villanos/la_presidenta_del_miedo.png"
+  ]
 }
