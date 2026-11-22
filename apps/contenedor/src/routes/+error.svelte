@@ -13,8 +13,8 @@
 
 <style>
 	:global(html) {
-		background: #faf8f4;
-		color: #141414;
+		background: #10090c;
+		color: #fff;
 	}
 
 	:global(body) {
@@ -26,14 +26,20 @@
 		max-width: 32rem;
 		margin: 0 auto;
 		padding: 6rem 1.5rem 4rem;
+		text-align: center;
 	}
 
 	h1 {
-		font-size: 1.75rem;
 		margin: 0 0 1rem;
+		font-family: 'Anton', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+		font-size: 2.5rem;
+		font-weight: 400;
+		line-height: 1;
+		text-transform: uppercase;
 	}
 
 	a {
-		color: #141414;
+		color: #cce876;
+		text-underline-offset: 0.2em;
 	}
 </style>

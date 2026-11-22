@@ -1,77 +1,223 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
+	import estrella from '#lib/assets/estrella.png';
+	import ada from '#lib/assets/ada.png';
+	import emilio from '#lib/assets/emilio.png';
 
 	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>
-	<title>Juegos</title>
+	<title>Juega FrenteAmplio</title>
 	<meta name="description" content="Juegos de campaña del Frente Amplio." />
 </svelte:head>
 
 <main>
-	<h1>Juegos</h1>
+	<header class="cabecera">
+		<img class="logo" src={estrella} alt="Frente Amplio" width="276" height="214" />
+	</header>
+
+	<h1 class="banda">Juega FrenteAmplio</h1>
 
 	{#if data.juegos.length === 0}
-		<p>Todavía no hay juegos publicados.</p>
+		<p class="vacio">Todavía no hay juegos publicados.</p>
 	{:else}
-		<ul>
+		<nav class="juegos" aria-label="Juegos">
 			{#each data.juegos as juego (juego.slug)}
-				<li><a href="/{juego.slug}/">{juego.nombre}</a></li>
+				<a class="juego" href="/{juego.slug}/">
+					<span class="juego__estrella" aria-hidden="true"></span>
+					<span class="juego__nombre">{juego.nombre}</span>
+				</a>
 			{/each}
-		</ul>
+		</nav>
 	{/if}
+
+	<footer class="protagonistas">
+		<img class="ada" src={ada} alt="" width="188" height="153" />
+		<img class="emilio" src={emilio} alt="" width="220" height="200" />
+	</footer>
 </main>
 
 <style>
+	:global(:root) {
+		--negro: #10090c;
+		--naranja: #f03c01;
+		--verde: #cce876;
+		--blanco: #fff;
+		--display: 'Anton', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+	}
+
+	main {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-height: 100svh;
+		overflow: hidden;
+		background: var(--negro);
+		color: var(--blanco);
+	}
+
 	:global(html) {
-		background: #faf8f4;
-		color: #141414;
+		background: var(--negro);
 	}
 
 	:global(body) {
 		margin: 0;
-		font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+		background: var(--negro);
+		color: var(--blanco);
 	}
 
-	main {
-		max-width: 32rem;
-		margin: 0 auto;
-		padding: 6rem 1.5rem 4rem;
+	.cabecera {
+		display: flex;
+		justify-content: center;
+		padding: clamp(1rem, 3.5vh, 3rem) 1rem clamp(0.6rem, 2vh, 1.75rem);
 	}
 
-	h1 {
-		font-size: 2rem;
-		font-weight: 700;
-		margin: 0 0 2rem;
-		letter-spacing: -0.02em;
-	}
-
-	ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
-
-	li + li {
-		border-top: 1px solid #e3ded4;
-	}
-
-	a {
+	.logo {
 		display: block;
-		padding: 1rem 0;
-		color: #141414;
-		font-size: 1.25rem;
+		width: min(64vw, 32vh, 29rem);
+		height: auto;
+	}
+
+	.banda {
+		margin: 0;
+		padding: 0.1em 1rem 0.16em;
+		background: var(--verde);
+		color: var(--naranja);
+		font-family: var(--display);
+		font-size: min(8.8vw, 9vh, 4.5rem);
+		font-weight: 400;
+		line-height: 1;
+		letter-spacing: 0.005em;
+		text-align: center;
+		text-transform: uppercase;
+	}
+
+	.juegos {
+		flex: 1;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		align-content: center;
+		justify-content: center;
+		gap: clamp(0.5rem, 3.5vw, 2.5rem);
+		padding: clamp(1rem, 4vh, 3rem) clamp(0.75rem, 4vw, 3rem);
+	}
+
+	.juego {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: min(38vw, 24vh, 18rem);
+		aspect-ratio: 1.08;
+		container-type: inline-size;
 		text-decoration: none;
-		text-underline-offset: 0.2em;
+		transition: transform 180ms ease;
+		-webkit-tap-highlight-color: transparent;
 	}
 
-	a:hover,
-	a:focus-visible {
-		text-decoration: underline;
+	.juego__estrella {
+		position: absolute;
+		inset: 0;
+		background: var(--naranja);
+		clip-path: polygon(
+			50% 21%,
+			69.13% 3.81%,
+			70.51% 29.49%,
+			96.19% 30.87%,
+			79% 50%,
+			96.19% 69.13%,
+			70.51% 70.51%,
+			69.13% 96.19%,
+			50% 79%,
+			30.87% 96.19%,
+			29.49% 70.51%,
+			3.81% 69.13%,
+			21% 50%,
+			3.81% 30.87%,
+			29.49% 29.49%,
+			30.87% 3.81%
+		);
+		transition: background 180ms ease;
 	}
 
-	p {
-		color: #5a5449;
+	.juego__nombre {
+		position: relative;
+		width: 58%;
+		color: var(--blanco);
+		font-family: var(--display);
+		font-size: 13cqw;
+		font-weight: 400;
+		line-height: 0.94;
+		letter-spacing: 0.01em;
+		text-align: center;
+		text-transform: uppercase;
+		hyphens: auto;
+		text-wrap: balance;
+	}
+
+	.juego:hover {
+		transform: scale(1.05);
+	}
+
+	.juego:hover .juego__estrella {
+		background: #ff5416;
+	}
+
+	.juego:active {
+		transform: scale(0.98);
+	}
+
+	.juego:focus-visible {
+		outline: 3px solid var(--verde);
+		outline-offset: 6px;
+		border-radius: 1rem;
+	}
+
+	.vacio {
+		flex: 1;
+		display: grid;
+		place-items: center;
+		margin: 0;
+		padding: 3rem 1.5rem;
+		color: var(--verde);
+		font-size: 1.125rem;
+		text-align: center;
+	}
+
+	.protagonistas {
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		gap: clamp(0.75rem, 2vw, 2rem);
+		height: min(46vw, 24vh, 26rem);
+		padding: 0 clamp(0.5rem, 2vw, 2rem);
+		pointer-events: none;
+	}
+
+	.protagonistas img {
+		display: block;
+		height: 100%;
+		width: auto;
+		max-width: 52vw;
+		object-fit: contain;
+		object-position: 50% 100%;
+	}
+
+	.protagonistas .ada {
+		height: 80%;
+		max-width: 40vw;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.juego,
+		.juego__estrella {
+			transition: none;
+		}
+
+		.juego:hover,
+		.juego:active {
+			transform: none;
+		}
 	}
 </style>

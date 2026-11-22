@@ -2,7 +2,7 @@
 
 Monorepo de los juegos web de campaña. Un único dominio sirve una lista de juegos y cada juego vive en su propia ruta:
 
-- `/` — lista de enlaces de texto, generada a partir de los manifiestos.
+- `/` — portada de los juegos, generada a partir de los manifiestos.
 - `/quiz-bienestar/` — juego de preguntas y bienestar (Svelte 5 + Vite).
 - `/desenmascara/` — derriba la fachada a mazazos (HTML, CSS y JS ya construidos).
 - `/voto-util/` — voto útil (HTML, CSS y JS ya construidos).
