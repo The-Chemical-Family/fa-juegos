@@ -8,65 +8,98 @@
 
 	let { data }: PageProps = $props();
 
-	// El audio de entrada suena una sola vez por dispositivo. Se marca como
-	// escuchado sólo cuando empieza a sonar: si el navegador bloquea el
-	// autoplay, el siguiente intento es con el primer gesto del visitante.
-	const CLAVE_AUDIO = 'fa-entrada-escuchada';
+	// El audio de entrada suena en cada visita salvo que el visitante lo
+	// silencie; el botón recuerda esa decisión entre visitas.
+	const CLAVE_SILENCIO = 'fa-audio-silenciado';
+
+	let silenciado = $state(false);
+	let audio: HTMLAudioElement | null = null;
+	let quitarGestos: (() => void) | null = null;
+
+	function leerSilencio(): boolean {
+		try {
+			return localStorage.getItem(CLAVE_SILENCIO) === '1';
+		} catch {
+			return false;
+		}
+	}
+
+	function guardarSilencio(valor: boolean) {
+		try {
+			if (valor) localStorage.setItem(CLAVE_SILENCIO, '1');
+			else localStorage.removeItem(CLAVE_SILENCIO);
+		} catch {
+			// Sin almacenamiento el botón funciona igual, solo no recuerda.
+		}
+	}
+
+	function crearAudio(): HTMLAudioElement {
+		if (!audio) {
+			audio = new Audio(audioEntrada);
+			audio.preload = 'auto';
+			audio.muted = silenciado;
+		}
+		return audio;
+	}
+
+	// Si el navegador bloquea el autoplay, el audio espera al primer gesto.
+	function esperarPrimerGesto() {
+		if (quitarGestos) return;
+
+		const alGesto = () => {
+			quitarGestos?.();
+			quitarGestos = null;
+			audio?.play().catch(() => {});
+		};
+
+		quitarGestos = () => {
+			window.removeEventListener('pointerdown', alGesto);
+			window.removeEventListener('keydown', alGesto);
+		};
+
+		window.addEventListener('pointerdown', alGesto);
+		window.addEventListener('keydown', alGesto);
+	}
+
+	function reproducir() {
+		if (silenciado) return;
+		crearAudio()
+			.play()
+			.catch(() => esperarPrimerGesto());
+	}
+
+	function alternarSilencio() {
+		silenciado = !silenciado;
+		guardarSilencio(silenciado);
+
+		quitarGestos?.();
+		quitarGestos = null;
+
+		if (silenciado) {
+			audio?.pause();
+			return;
+		}
+
+		if (!audio) {
+			reproducir();
+			return;
+		}
+
+		audio.muted = false;
+		audio.play().catch(() => {});
+	}
 
 	onMount(() => {
-		const yaEscuchado = () => {
-			try {
-				return localStorage.getItem(CLAVE_AUDIO) === '1';
-			} catch {
-				// Sin almacenamiento no hay forma de recordarlo: mejor no sonar
-				// en cada visita.
-				return true;
-			}
-		};
-
-		const marcarEscuchado = () => {
-			try {
-				localStorage.setItem(CLAVE_AUDIO, '1');
-			} catch {
-				// Ignorado: el audio ya ha sonado igualmente.
-			}
-		};
-
-		if (yaEscuchado()) return;
-
-		const audio = new Audio(audioEntrada);
-		audio.preload = 'auto';
-
-		const quitarGestos = () => {
-			window.removeEventListener('pointerdown', intentarConGesto);
-			window.removeEventListener('keydown', intentarConGesto);
-		};
-
-		const intentarConGesto = () => {
-			quitarGestos();
-			audio.play().catch(() => {});
-		};
-
-		audio.addEventListener(
-			'playing',
-			() => {
-				marcarEscuchado();
-				quitarGestos();
-			},
-			{ once: true }
-		);
-
-		audio.play().catch(() => {
-			// Autoplay bloqueado (Safari, Chrome sin interacción previa…).
-			window.addEventListener('pointerdown', intentarConGesto);
-			window.addEventListener('keydown', intentarConGesto);
-		});
+		silenciado = leerSilencio();
+		if (!silenciado) reproducir();
 
 		return () => {
-			quitarGestos();
+			quitarGestos?.();
+			if (!audio) return;
 			audio.pause();
 			audio.removeAttribute('src');
 			audio.load();
+			audio = null;
 		};
 	});
 </script>
@@ -77,6 +110,28 @@
 </svelte:head>
 
 <main>
+	<button
+		class="sonido"
+		type="button"
+		data-silenciado={silenciado}
+		aria-label={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
+		title={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
+		onclick={alternarSilencio}
+	>
+		{#if silenciado}
+			<svg class="sonido__icono" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+				<path class="sonido__cuerpo" d="M3 11.5h6L18 4v24l-9-7.5H3z" />
+				<path class="sonido__onda" d="M21.5 11l8 10M29.5 11l-8 10" />
+			</svg>
+		{:else}
+			<svg class="sonido__icono" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+				<path class="sonido__cuerpo" d="M3 11.5h6L18 4v24l-9-7.5H3z" />
+				<path class="sonido__onda" d="M22 11.5a6.5 6.5 0 0 1 0 9" />
+				<path class="sonido__onda" d="M26.5 7.5a11.5 11.5 0 0 1 0 17" />
+			</svg>
+		{/if}
+	</button>
+
 	<header class="cabecera">
 		<img class="logo" src={estrella} alt="Frente Amplio" width="276" height="214" />
 	</header>
@@ -135,6 +190,71 @@
 		display: flex;
 		justify-content: center;
 		padding: clamp(1rem, 3.5vh, 3rem) 1rem clamp(0.6rem, 2vh, 1.75rem);
+	}
+
+	.sonido {
+		position: absolute;
+		top: clamp(0.35rem, 1.5vh, 1rem);
+		right: clamp(0.35rem, 1.5vw, 1.25rem);
+		z-index: 2;
+		display: grid;
+		place-items: center;
+		width: clamp(3.5rem, 4.5vw, 4.5rem);
+		height: clamp(3.5rem, 4.5vw, 4.5rem);
+		padding: 0;
+		background: none;
+		border: 0;
+		color: var(--verde);
+		cursor: pointer;
+		transform: rotate(-9deg);
+		-webkit-tap-highlight-color: transparent;
+		/* Recorte mal impreso: sombra dura desplazada, sin fondo. */
+		filter: drop-shadow(0.18em 0.18em 0 var(--naranja));
+		transition:
+			transform 120ms ease,
+			color 120ms ease,
+			filter 120ms ease;
+	}
+
+	.sonido__icono {
+		width: 66%;
+		height: 66%;
+	}
+
+	.sonido__cuerpo {
+		fill: currentColor;
+	}
+
+	.sonido__onda {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 3;
+		stroke-linecap: butt;
+		stroke-linejoin: miter;
+	}
+
+	.sonido[data-silenciado='true'] {
+		color: var(--naranja);
+		transform: rotate(9deg);
+		filter: drop-shadow(0.18em 0.18em 0 var(--verde));
+	}
+
+	.sonido:hover {
+		transform: rotate(3deg) scale(1.15);
+	}
+
+	.sonido[data-silenciado='true']:hover {
+		transform: rotate(-3deg) scale(1.15);
+	}
+
+	.sonido:active {
+		transform: scale(0.9);
+	}
+
+	.sonido:focus-visible {
+		outline: 3px solid var(--blanco);
+		outline-offset: 2px;
+		border-radius: 0.5rem;
 	}
 
 	.logo {
