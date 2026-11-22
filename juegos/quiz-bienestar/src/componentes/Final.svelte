@@ -1,5 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte'
+  import { EVENTOS, registrarEvento } from '../lib/analitica'
   import { sitioUrl, videoFinal } from '../lib/config'
   import type { Textos } from '../lib/tipos'
 
@@ -98,6 +99,7 @@
     if (typeof navegador.share === 'function') {
       try {
         await navegador.share({ title: 'Juego de preguntas y bienestar', url })
+        registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'nativo' })
         return
       } catch {
         // El usuario canceló o el navegador rechazó: se prueba el portapapeles.
@@ -105,9 +107,11 @@
     }
     try {
       await navigator.clipboard.writeText(url)
+      registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'portapapeles' })
       return
     } catch {
       urlVisible = url
+      registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'manual' })
     }
   }
 </script>

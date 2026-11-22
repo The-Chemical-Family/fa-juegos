@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store'
-import { energiaInicial, escalaInicial } from './config'
+import { duracionBatallaMs, energiaInicial, escalaInicial } from './config'
+import { EVENTOS, registrarEvento } from './analitica'
 import { mezclar, type Generador } from './azar'
 import {
   aplicarRespuesta,
@@ -101,6 +102,10 @@ export function iniciar(opciones: OpcionesInicio): void {
       batalla: null,
       almacenamientoDisponible: almacenActual !== null
     })
+    registrarEvento(EVENTOS.partidaRetomada, {
+      villano_activo: guardado.villanoActivo,
+      respuestas: guardado.historial.length
+    })
     return
   }
 
@@ -115,6 +120,13 @@ export function iniciar(opciones: OpcionesInicio): void {
 
 export function textosDeLaPartida(): Textos | null {
   return textosActuales
+}
+
+// `limiteMs` es el instante en que la batalla se cierra por tiempo: el inicio
+// se deduce restando la duración configurada.
+function duracionEnSegundos(batalla: EstadoBatalla): number {
+  const inicio = batalla.limiteMs - duracionBatallaMs
+  return Math.max(0, Math.round((ahoraActual() - inicio) / 1000))
 }
 
 function persistirProgreso(): void {
@@ -156,13 +168,21 @@ export function empezarPartida(): void {
     batalla: null,
     almacenamientoDisponible: almacenActual !== null
   })
+  registrarEvento(EVENTOS.partidaIniciada, { origen: 'intro' })
 }
 
 export function entrarBatalla(): void {
   const estado = get(partida)
   if (estado.batalla) return
   comodinesEnBatalla = 0
-  partida.set({ ...estado, pantalla: 'batalla', batalla: sacarDeLaBolsa() })
+  const batalla = sacarDeLaBolsa()
+  partida.set({ ...estado, pantalla: 'batalla', batalla })
+  registrarEvento(EVENTOS.batallaIniciada, {
+    villano_id: estado.villanoActivo,
+    villano: textosActuales?.villanos[estado.villanoActivo]?.nombre ?? '',
+    pregunta_id: batalla.pregunta.id,
+    comodin: batalla.pregunta.comodin
+  })
 }
 
 export function responder(indiceVisible: number): void {
@@ -190,6 +210,18 @@ export function responder(indiceVisible: number): void {
 
   partida.set({ ...estado, batalla: { ...batalla, ...energias, respuestas } })
   persistirProgreso()
+
+  registrarEvento(EVENTOS.respuestaEnviada, {
+    villano_id: estado.villanoActivo,
+    pregunta_id: batalla.pregunta.id,
+    temas: batalla.pregunta.temas.join('+'),
+    comodin: batalla.pregunta.comodin,
+    efecto: opcion.efecto,
+    valoracion: opcion.efecto > 0 ? 'acierto' : opcion.efecto < 0 ? 'fallo' : 'neutro',
+    numero: respuestas.length,
+    energia_jugador: energias.energiaJugador,
+    energia_villano: energias.energiaVillano
+  })
 
   if (energias.energiaJugador === 0 || energias.energiaVillano === 0) {
     cerrarBatalla('energia')
@@ -219,6 +251,7 @@ export function cerrarBatalla(motivo: MotivoCierre): void {
   const res = calcularResultado(batalla, motivo)
   const gano = res === 'victoria' || res === 'perfect'
   const villanoActivo = gano ? Math.min(3, estado.villanoActivo + 1) : estado.villanoActivo
+  const completada = villanoActivo >= 3
 
   partida.set({
     ...estado,
@@ -226,20 +259,41 @@ export function cerrarBatalla(motivo: MotivoCierre): void {
     batalla: { ...batalla, resultado: res },
     simbolos: repartirCambio(estado.simbolos, batalla.respuestas, res),
     villanoActivo,
-    completada: villanoActivo >= 3,
+    completada,
     ultimaBatalla: res
   })
   persistirProgreso()
+
+  registrarEvento(EVENTOS.batallaTerminada, {
+    villano_id: estado.villanoActivo,
+    resultado: res,
+    ganada: gano,
+    motivo,
+    respuestas: batalla.respuestas.length,
+    duracion_s: duracionEnSegundos(batalla),
+    completada,
+    energia_jugador: batalla.energiaJugador,
+    energia_villano: batalla.energiaVillano
+  })
+
+  if (completada) {
+    registrarEvento(EVENTOS.partidaCompletada, {
+      villano_id: estado.villanoActivo,
+      resultado: res
+    })
+  }
 }
 
 export function volverAlMapa(): void {
   const estado = get(partida)
   partida.set({ ...estado, pantalla: 'mapa', batalla: null })
+  registrarEvento(EVENTOS.mapaAbierto, { villano_activo: estado.villanoActivo })
 }
 
 export function verFinal(): void {
   const estado = get(partida)
   partida.set({ ...estado, pantalla: 'final', batalla: null })
+  registrarEvento(EVENTOS.finalVisto, { villano_activo: estado.villanoActivo })
 }
 
 export function reiniciar(): void {
@@ -252,6 +306,7 @@ export function reiniciar(): void {
     batalla: null,
     almacenamientoDisponible: almacenActual !== null
   })
+  registrarEvento(EVENTOS.partidaReiniciada)
 }
 
 export function mensajeDePartida(estado: EstadoPartida): Mensaje | null {

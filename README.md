@@ -180,6 +180,77 @@ Las visitas se miden con Google Analytics 4, flujo web con ID **`G-TP80CWS52D`**
 - **Consultas:** en GA4, *Informes → Compromiso → Páginas y pantallas*, con la dimensión *Ruta de la página*. El flujo web debe apuntar a `https://muchachadarcade.es`.
 - GA4 instala sus cookies propias (`_ga` y `_ga_<ID>`) en el navegador del visitante; el aviso de cookies del sitio debe mencionarlo. La analítica de Vercel que ya existía sigue funcionando en paralelo y no usa cookies.
 
+### Eventos del quiz-bienestar
+
+El quiz emite eventos propios (definidos en `juegos/quiz-bienestar/src/lib/analitica.ts`) además del `page_view` inicial. Los nombres son estables: los embudos de GA4 se construyen con ellos, así que no deben renombrarse sin actualizar esta tabla. En desarrollo y en las pruebas no se emite nada, porque `gtag` no existe.
+
+| Evento | Cuándo se emite | Parámetros |
+| --- | --- | --- |
+| `partida_iniciada` | Al pulsar «Empezar» en la intro | `origen` (`intro`) |
+| `partida_retomada` | Al abrir el juego con progreso guardado y caer en el mapa | `villano_activo` (0–2), `respuestas` |
+| `batalla_iniciada` | Al entrar en una batalla desde el mapa | `villano_id` (0–2), `villano`, `pregunta_id`, `comodin` |
+| `respuesta_enviada` | Con cada respuesta del jugador | `villano_id`, `pregunta_id`, `temas` (por ejemplo `casa+moneda`), `comodin`, `efecto` (−2…2), `valoracion` (`acierto`/`neutro`/`fallo`), `numero` (1…n dentro de la batalla), `energia_jugador`, `energia_villano` |
+| `batalla_terminada` | Al resolverse la batalla (energía a cero o tiempo agotado) | `villano_id`, `resultado` (`victoria`/`perfect`/`derrota`/`empate`), `ganada` (`true`/`false`), `motivo` (`energia`/`tiempo`), `respuestas`, `duracion_s`, `completada`, `energia_jugador`, `energia_villano` |
+| `partida_completada` | Solo al ganar la batalla del tercer villano | `villano_id` (2), `resultado` |
+| `mapa_abierto` | Al volver del resultado al mapa | `villano_activo` |
+| `final_visto` | Al pulsar «Ver el final» | `villano_activo` (3) |
+| `partida_reiniciada` | Al pulsar «Volver a jugar» en el final | — |
+| `enlace_compartido` | Al compartir desde el final | `metodo` (`nativo`/`portapapeles`/`manual`) |
+
+`villano_id` es el villano con el que se pelea: 0 es el primero, 1 el segundo y 2 el tercero.
+
+**Antes de desplegar** hay que registrar como dimensiones personalizadas de ámbito *Evento* (GA4 → Admin → Definiciones personalizadas) los parámetros que se vayan a usar en informes o embudos: `villano_id`, `villano`, `resultado`, `valoracion`, `ganada`, `motivo`, `numero`, `efecto`, `temas`, `completada` y `metodo`. GA4 no aplica las definiciones personalizadas a los datos ya recogidos.
+
+### Embudos (tunnels) propuestos
+
+Se crean en GA4 → *Explorar* → *Exploración de embudo*. En todos los casos el primer paso es la vista de página del juego: condición *Ruta de la página* **contiene** `/quiz-bienestar` (no uses igualdad: la ruta puede llegar con y sin barra final).
+
+**A. Llegada y arranque — ¿la intro convence?**
+
+1. Vista de página `/quiz-bienestar`
+2. `partida_iniciada`
+3. `batalla_iniciada`
+4. `respuesta_enviada`
+5. `batalla_terminada` con `ganada` = `true`
+6. `partida_completada`
+7. `final_visto`
+
+**B. Progresión por villano — ¿dónde se atasca la gente?**
+
+1. `batalla_iniciada` con `villano_id` = `0`
+2. `batalla_terminada` con `villano_id` = `0` y `ganada` = `true`
+3. `batalla_iniciada` con `villano_id` = `1`
+4. `batalla_terminada` con `villano_id` = `1` y `ganada` = `true`
+5. `batalla_iniciada` con `villano_id` = `2`
+6. `batalla_terminada` con `villano_id` = `2` y `ganada` = `true`
+
+**C. Aguante dentro de una batalla — ¿cuánta gente llega a la quinta respuesta?**
+
+1. `respuesta_enviada` con `numero` = `1` y `villano_id` = `0`
+2. `respuesta_enviada` con `numero` = `2` y `villano_id` = `0`
+3. `respuesta_enviada` con `numero` = `3` y `villano_id` = `0`
+4. `respuesta_enviada` con `numero` = `4` y `villano_id` = `0`
+5. `respuesta_enviada` con `numero` = `5` y `villano_id` = `0`
+
+**D. Retorno — jugadores que vuelven con partida guardada**
+
+1. `partida_retomada`
+2. `batalla_iniciada`
+3. `batalla_terminada` con `ganada` = `true`
+
+**E. Después del final — ¿se comparte y se reengancha?**
+
+1. `final_visto`
+2. `enlace_compartido`
+3. `partida_reiniciada`
+
+Notas para montarlos:
+
+- Quien retoma una partida guardada no pasa por `partida_iniciada`: en el embudo A cuenta como abandono en el paso 2. O se analiza aparte con el embudo D, o se excluye ese tráfico con un segmento que no contenga `partida_retomada`.
+- Los embudos de GA4 no admiten «o» entre valores: para aceptar `victoria` y `perfect` en un mismo paso, filtra por `ganada` en lugar de por `resultado`.
+- `duracion_s` se pega a 120 (`duracionBatallaMs`) cuando `motivo` es `tiempo`: si ese porcentaje crece, la gente se queda sin reloj antes de terminar.
+- Si un paso del embudo cae mucho respecto al anterior, el evento siguiente es el sitio donde mirar: por ejemplo, mucha `batalla_iniciada` y poca `respuesta_enviada` apunta a una pantalla de batalla que no se entiende.
+
 ### Dominio y DNS
 
 El sitio se publica en **muchachadarcade.es** (apex) desde el proyecto de Vercel. Configuración verificada:
