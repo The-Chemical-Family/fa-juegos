@@ -5,6 +5,8 @@
 	import ada from '#lib/assets/ada.png';
 	import emilio from '#lib/assets/emilio.png';
 	import audioEntrada from '#lib/assets/audio_entrada.mp3';
+	import sonidoActivado from '#lib/assets/sonido-activado.png';
+	import sonidoSilenciado from '#lib/assets/sonido-silenciado.png';
 
 	let { data }: PageProps = $props();
 
@@ -113,23 +115,17 @@
 	<button
 		class="sonido"
 		type="button"
-		data-silenciado={silenciado}
 		aria-label={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
 		title={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
 		onclick={alternarSilencio}
 	>
-		{#if silenciado}
-			<svg class="sonido__icono" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-				<path class="sonido__cuerpo" d="M3 11.5h6L18 4v24l-9-7.5H3z" />
-				<path class="sonido__onda" d="M21.5 11l8 10M29.5 11l-8 10" />
-			</svg>
-		{:else}
-			<svg class="sonido__icono" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-				<path class="sonido__cuerpo" d="M3 11.5h6L18 4v24l-9-7.5H3z" />
-				<path class="sonido__onda" d="M22 11.5a6.5 6.5 0 0 1 0 9" />
-				<path class="sonido__onda" d="M26.5 7.5a11.5 11.5 0 0 1 0 17" />
-			</svg>
-		{/if}
+		<img
+			class="sonido__icono"
+			src={silenciado ? sonidoSilenciado : sonidoActivado}
+			alt=""
+			width={silenciado ? 364 : 411}
+			height="351"
+		/>
 	</button>
 
 	<header class="cabecera">
@@ -194,61 +190,31 @@
 
 	.sonido {
 		position: absolute;
-		top: clamp(0.35rem, 1.5vh, 1rem);
-		right: clamp(0.35rem, 1.5vw, 1.25rem);
+		top: clamp(0.5rem, 2vh, 1.25rem);
+		right: clamp(0.5rem, 2vw, 1.5rem);
 		z-index: 2;
 		display: grid;
 		place-items: center;
-		width: clamp(3.5rem, 4.5vw, 4.5rem);
-		height: clamp(3.5rem, 4.5vw, 4.5rem);
+		width: 3rem;
+		height: 3rem;
 		padding: 0;
 		background: none;
 		border: 0;
-		color: var(--verde);
 		cursor: pointer;
-		transform: rotate(-9deg);
 		-webkit-tap-highlight-color: transparent;
-		/* Recorte mal impreso: sombra dura desplazada, sin fondo. */
-		filter: drop-shadow(0.18em 0.18em 0 var(--naranja));
-		transition:
-			transform 120ms ease,
-			color 120ms ease,
-			filter 120ms ease;
 	}
 
 	.sonido__icono {
-		width: 66%;
-		height: 66%;
+		display: block;
+		height: clamp(1.9rem, 2.4vw, 2.4rem);
+		width: auto;
+		/* Los originales son negros; en la portada oscura se ven en blanco. */
+		filter: invert(1);
+		transition: opacity 120ms ease;
 	}
 
-	.sonido__cuerpo {
-		fill: currentColor;
-	}
-
-	.sonido__onda {
-		fill: none;
-		stroke: currentColor;
-		stroke-width: 3;
-		stroke-linecap: butt;
-		stroke-linejoin: miter;
-	}
-
-	.sonido[data-silenciado='true'] {
-		color: var(--naranja);
-		transform: rotate(9deg);
-		filter: drop-shadow(0.18em 0.18em 0 var(--verde));
-	}
-
-	.sonido:hover {
-		transform: rotate(3deg) scale(1.15);
-	}
-
-	.sonido[data-silenciado='true']:hover {
-		transform: rotate(-3deg) scale(1.15);
-	}
-
-	.sonido:active {
-		transform: scale(0.9);
+	.sonido:hover .sonido__icono {
+		opacity: 0.7;
 	}
 
 	.sonido:focus-visible {
