@@ -71,7 +71,7 @@ npm run build
 npm run preview   # http://localhost:4173/
 ```
 
-`preview` sirve exactamente el HTML y los ficheros que genera el ensamblado, incluido el 404 y las rutas con y sin barra final.
+`preview` permite revisar el HTML y los ficheros que genera el ensamblado. No emula las reglas de Vercel: después de desplegar, comprobar también las rutas con y sin barra final.
 
 ## El manifiesto `juego.json`
 
@@ -142,7 +142,25 @@ La plantilla mínima está en `tools/plantillas/estatico/`. La carpeta del juego
 
 ## Despliegue
 
-- Proyecto de Vercel con la raíz del repositorio como Root Directory y `npm run build` como build command.
+El proyecto de Vercel debe usar **la raíz del repositorio**, no `apps/contenedor`, como Root Directory. Configuración en Settings → Build and Deployment:
+
+| Ajuste | Valor |
+| --- | --- |
+| Root Directory | Raíz del repositorio (dejar vacío) |
+| Framework Preset | Other |
+| Install Command | `npm ci` (definido en `vercel.json`) |
+| Build Command | `npm run build` (definido en `vercel.json`) |
+| Output Directory | Sin override; se usa la Build Output API de `.vercel/output` |
+| Node.js Version | 22.x o una versión compatible con las dependencias |
+
+El `vercel.json` de la raíz evita que se construya únicamente el contenedor. El ensamblado construye/copia los juegos, construye el contenedor, verifica los juegos en el artefacto final y copia la salida completa del adapter desde `apps/contenedor/.vercel/output` a `.vercel/output`. Se conservan los assets, las funciones y las reglas del adapter.
+
+Para cada juego publicado se añade una regla que sirve `/<slug>/index.html` tanto desde `/<slug>` como desde `/<slug>/`, antes de la función de reserva de SvelteKit. Los enlaces de la portada cargan un documento completo porque los juegos son aplicaciones independientes.
+
+Si el despliegue actual solo muestra el contenedor, corregir estos ajustes y crear un nuevo despliegue. Construir solo `apps/contenedor` omite el ensamblado: las carpetas de juegos en `static/` son generadas y no están en git.
+
+Comprobar en la URL desplegada `/`, `/desenmascara/`, `/quiz-bienestar/` y `/voto-util/`, también sin barra final y recargando cada juego directamente. Una ruta inexistente debe seguir devolviendo 404.
+
 - La analítica sin cookies se inyecta en el paso de ensamblado y usa `/_vercel/insights/script.js`, que sólo existe si Vercel Web Analytics está activado en el proyecto.
 - La lista y el 404 se prerenderizan; las rutas no encontradas las atiende la función de reserva del adapter.
 

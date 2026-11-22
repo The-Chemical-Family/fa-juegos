@@ -3,6 +3,7 @@ import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } 
 import { join } from 'node:path';
 import { leerManifiestos } from './manifiestos.mjs';
 import { verificarJuego } from './verificar-juego.mjs';
+import { prepararVercel } from './preparar-vercel.mjs';
 
 const INICIO = '<!-- analitica:start -->';
 const FIN = '<!-- analitica:end -->';
@@ -58,6 +59,9 @@ if (problemas.length > 0) {
 
 console.log('\n▶ contenedor: construyendo');
 ejecutar('npm', ['run', 'build', '-w', 'apps/contenedor']);
+
+console.log('\n▶ Vercel: preparando .vercel/output en la raíz');
+prepararVercel(raiz, publicados);
 
 console.log('\n✔ Ensamblado terminado');
 for (const juego of publicados) console.log(`  publicado: /${juego.slug}/ — ${juego.nombre}`);

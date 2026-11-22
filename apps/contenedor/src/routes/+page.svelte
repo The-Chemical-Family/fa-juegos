@@ -45,7 +45,7 @@
 	{:else}
 		<nav class="juegos" aria-label="Juegos">
 			{#each data.juegos as juego (juego.slug)}
-				<a class="juego" href="/{juego.slug}/">
+				<a class="juego" href="/{juego.slug}/" data-sveltekit-reload>
 					<span class="juego__estrella" aria-hidden="true"></span>
 					<span class="juego__nombre">{juego.nombre}</span>
 				</a>
