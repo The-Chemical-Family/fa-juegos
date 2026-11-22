@@ -1,109 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { PageProps } from './$types';
+	import { alternarSilencio, estaSilenciado } from '../lib/audio-entrada';
 	import estrella from '#lib/assets/estrella.png';
 	import ada from '#lib/assets/ada.png';
 	import emilio from '#lib/assets/emilio.png';
-	import audioEntrada from '#lib/assets/audio_entrada.mp3';
 	import sonidoActivado from '#lib/assets/sonido-activado.png';
 	import sonidoSilenciado from '#lib/assets/sonido-silenciado.png';
 
 	let { data }: PageProps = $props();
 
-	// El audio de entrada suena en cada visita salvo que el visitante lo
-	// silencie; el botón recuerda esa decisión entre visitas.
-	const CLAVE_SILENCIO = 'fa-audio-silenciado';
-
-	let silenciado = $state(false);
-	let audio: HTMLAudioElement | null = null;
-	let quitarGestos: (() => void) | null = null;
-
-	function leerSilencio(): boolean {
-		try {
-			return localStorage.getItem(CLAVE_SILENCIO) === '1';
-		} catch {
-			return false;
-		}
-	}
-
-	function guardarSilencio(valor: boolean) {
-		try {
-			if (valor) localStorage.setItem(CLAVE_SILENCIO, '1');
-			else localStorage.removeItem(CLAVE_SILENCIO);
-		} catch {
-			// Sin almacenamiento el botón funciona igual, solo no recuerda.
-		}
-	}
-
-	function crearAudio(): HTMLAudioElement {
-		if (!audio) {
-			audio = new Audio(audioEntrada);
-			audio.preload = 'auto';
-			audio.muted = silenciado;
-		}
-		return audio;
-	}
-
-	// Si el navegador bloquea el autoplay, el audio espera al primer gesto.
-	function esperarPrimerGesto() {
-		if (quitarGestos) return;
-
-		const alGesto = () => {
-			quitarGestos?.();
-			quitarGestos = null;
-			audio?.play().catch(() => {});
-		};
-
-		quitarGestos = () => {
-			window.removeEventListener('pointerdown', alGesto);
-			window.removeEventListener('keydown', alGesto);
-		};
-
-		window.addEventListener('pointerdown', alGesto);
-		window.addEventListener('keydown', alGesto);
-	}
-
-	function reproducir() {
-		if (silenciado) return;
-		crearAudio()
-			.play()
-			.catch(() => esperarPrimerGesto());
-	}
-
-	function alternarSilencio() {
-		silenciado = !silenciado;
-		guardarSilencio(silenciado);
-
-		quitarGestos?.();
-		quitarGestos = null;
-
-		if (silenciado) {
-			audio?.pause();
-			return;
-		}
-
-		if (!audio) {
-			reproducir();
-			return;
-		}
-
-		audio.muted = false;
-		audio.play().catch(() => {});
-	}
-
-	onMount(() => {
-		silenciado = leerSilencio();
-		if (!silenciado) reproducir();
-
-		return () => {
-			quitarGestos?.();
-			if (!audio) return;
-			audio.pause();
-			audio.removeAttribute('src');
-			audio.load();
-			audio = null;
-		};
-	});
+	let silenciado = $state(estaSilenciado());
 </script>
 
 <svelte:head>
@@ -117,7 +23,7 @@
 		type="button"
 		aria-label={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
 		title={silenciado ? 'Activar el sonido' : 'Silenciar el sonido'}
-		onclick={alternarSilencio}
+		onclick={() => (silenciado = alternarSilencio())}
 	>
 		<img
 			class="sonido__icono"
