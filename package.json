@@ -1,0 +1,23 @@
+{
+  "name": "fa-juegos",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "juegos/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "npm run check --workspaces --if-present",
+    "build": "node tools/ensamblar.mjs",
+    "dev": "npm run dev -w apps/contenedor",
+    "preview": "npm run preview -w apps/contenedor"
+  },
+  "overrides": {
+    "vitest": {
+      "vite": "6.4.6"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "regla": "Regla del juego: las respuestas que favorecen a la clase trabajadora quitan energía al villano; las que la perjudican te la quitan a ti.",
+  "mision": "El país está en problemas. Durante años tres poderosos personajes han aprendido a alimentarse del descontento social: cuando la gente se enfada entre sí, ellos se vuelven más fuertes; cuando la gente se informa, coopera y decide qué país quiere construir, ellos pierden poder. Tu misión es derrotarlos.",
+  "villanos": [
+    {
+      "id": 0,
+      "nombre": "El Rey del Ladrillo",
+      "emoji": "👑",
+      "textoIntro": "Convierte viviendas en activos financieros. Cuanto más difícil es encontrar casa, más rico se hace. Posee más llaves que recuerdos."
+    },
+    {
+      "id": 1,
+      "nombre": "El Buitre Empresario",
+      "emoji": "🦅",
+      "textoIntro": "Posee medios de comunicación, empresas, influencers y varios periódicos que siempre llegan casualmente a la misma conclusión. Cuando alguien pregunta quién acumula el dinero, él cambia de tema."
+    },
+    {
+      "id": 2,
+      "nombre": "La Presidenta del Miedo",
+      "emoji": "🎭",
+      "textoIntro": "Tiene una explicación sencilla para todo. Siempre culpa a alguien distinto de quienes toman las decisiones. Nunca soluciona un problema, pero consigue que la gente discuta durante horas."
+    }
+  ],
+  "frases": {
+    "victoria": "¡Has ganado!",
+    "perfect": "PERFECT!",
+    "derrota": "Esta vez has perdido.",
+    "empateConRespuestas": "¡Empate!",
+    "empateSinRespuestas": "Aquí no ha pasado nada, y eso también juega a favor de los villanos. Si nadie toma partido, ellos campan a sus anchas."
+  },
+  "credito": "Vídeo realizado por vecinas y vecinos del barrio. Es un meme no oficial: no es material de ningún partido.",
+  "fuente": "https://docs.google.com/document/d/1qzb-Gj18pDtTYQtpWNGcxoXz5H21mrCe9C_2sfuObCQ/edit",
+  "fuentePreguntas": "https://docs.google.com/document/d/1EYEYCDXQZD7GliQW8ku1Og2eAB-JLrcq/edit"
+}

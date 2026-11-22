@@ -1,0 +1,1158 @@
+[
+  {
+    "id": "vivienda-01",
+    "temas": [
+      "casa"
+    ],
+    "comodin": false,
+    "situacion": "Un joven con trabajo estable quiere independizarse. A pesar de tener empleo, le cuesta encontrar una vivienda que pueda pagar.",
+    "enunciado": "¿Qué medida ayudaría más a este joven a pagar un alquiler sin dedicar la mayor parte de su salario?",
+    "opciones": [
+      {
+        "texto": "Crear y ampliar el parque de viviendas públicas accesibles para cualquier persona.",
+        "efecto": 2
+      },
+      {
+        "texto": "Ampliar la vivienda pública y social especialmente donde los precios son más altos.",
+        "efecto": 1
+      },
+      {
+        "texto": "Incrementar la vivienda protegida mediante acuerdos entre administraciones y promotores.",
+        "efecto": 0
+      },
+      {
+        "texto": "Construir más viviendas para aumentar la oferta disponible.",
+        "efecto": -1
+      },
+      {
+        "texto": "Reducir trabas para que propietarios e inversores creen más vivienda.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye crear 1,5 millones de viviendas públicas en doce años, con una inversión del 1% del PIB anual.",
+      "pregunta": "¿Con qué dinero y en qué plazos crees que se podría hacer?"
+    }
+  },
+  {
+    "id": "trabajo-06",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "Dos personas realizan el mismo trabajo. Una tiene contrato estable y otra encadena contratos temporales.",
+    "enunciado": "¿Qué futuro laboral prefieres?",
+    "opciones": [
+      {
+        "texto": "Limitar al máximo la temporalidad injustificada.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reducir progresivamente los contratos temporales.",
+        "efecto": 1
+      },
+      {
+        "texto": "Consolidar las reglas actuales contra la precariedad.",
+        "efecto": 0
+      },
+      {
+        "texto": "Permitir más flexibilidad manteniendo ciertas garantías.",
+        "efecto": -1
+      },
+      {
+        "texto": "Dar a empresas y trabajadores mayor libertad para contratar.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea mejorar los derechos laborales y combatir la precariedad y los abusos empresariales.",
+      "pregunta": "¿Qué cambiaría en tu trabajo si la temporalidad injustificada estuviera limitada?"
+    }
+  },
+  {
+    "id": "vivienda-03",
+    "temas": [
+      "casa"
+    ],
+    "comodin": false,
+    "situacion": "Un barrio se llena de pisos turísticos. Cada año viven menos residentes permanentes.",
+    "enunciado": "¿Qué medida ayudaría a que tus vecinos no tengan que mudarse lejos de su trabajo cuando el barrio se llena de pisos turísticos?",
+    "opciones": [
+      {
+        "texto": "Limitar claramente los pisos turísticos en zonas con falta de vivienda.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reducirlos cuando afecten al acceso de los vecinos a la vivienda.",
+        "efecto": 1
+      },
+      {
+        "texto": "Regularlos para equilibrar turismo y residencia habitual.",
+        "efecto": 0
+      },
+      {
+        "texto": "Dejar la decisión principalmente en manos de los ayuntamientos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Mantener un mercado abierto con pocas restricciones generales.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye eliminar de forma progresiva los pisos turísticos de los edificios residenciales en zonas tensionadas, en un máximo de tres años.",
+      "pregunta": "¿Qué pasaría en tu barrio si esos pisos volvieran a ser vivienda habitual?"
+    }
+  },
+  {
+    "id": "salarios-07",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "La tecnología permite producir más que hace veinte años.",
+    "enunciado": "¿Qué debería hacerse con ese avance?",
+    "opciones": [
+      {
+        "texto": "Reducir progresivamente la jornada laboral para toda la población.",
+        "efecto": 2
+      },
+      {
+        "texto": "Avanzar hacia menos horas de trabajo manteniendo salarios.",
+        "efecto": 1
+      },
+      {
+        "texto": "Impulsar reducciones pactadas de jornada cuando sea viable.",
+        "efecto": 0
+      },
+      {
+        "texto": "Dejar que cada sector negocie sus horarios.",
+        "efecto": -1
+      },
+      {
+        "texto": "Priorizar aumentos salariales frente a reducciones de jornada.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea reducir la jornada a 37,5 horas semanales sin bajar el salario y avanzar después hacia las 32.",
+      "pregunta": "¿Qué harías con las horas que ganarías?"
+    }
+  },
+  {
+    "id": "sanidad-10",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Imagina que eres ministro o ministra de Sanidad. Las listas de espera llevan años aumentando.",
+    "enunciado": "¿Cuál sería tu primera decisión?",
+    "opciones": [
+      {
+        "texto": "Contratar más personal y ampliar la capacidad del sistema público.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reforzar especialmente los centros de atención primaria.",
+        "efecto": 1
+      },
+      {
+        "texto": "Incrementar recursos manteniendo la estructura actual.",
+        "efecto": 0
+      },
+      {
+        "texto": "Combinar nuevas inversiones con objetivos de gestión.",
+        "efecto": -1
+      },
+      {
+        "texto": "Utilizar todos los recursos disponibles, públicos y privados.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea invertir al menos el 8% del PIB en sanidad pública y garantizar una sanidad universal y pública.",
+      "pregunta": "¿Qué cambiaría en tu centro de salud con ese dinero?"
+    }
+  },
+  {
+    "id": "comodin-33",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Una comunidad autónoma reclama más capacidad para decidir sobre sus propios asuntos.",
+    "enunciado": "¿Cómo debería evolucionar el Estado?",
+    "opciones": [
+      {
+        "texto": "Cediendo más competencias a los territorios que quieran asumirlas.",
+        "efecto": 2
+      },
+      {
+        "texto": "Avanzando hacia mayores niveles de autogobierno y capacidad de decisión.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mejorando la cooperación entre administraciones manteniendo el modelo actual.",
+        "efecto": 0
+      },
+      {
+        "texto": "Conservando el sistema autonómico con ajustes limitados.",
+        "efecto": -1
+      },
+      {
+        "texto": "Recuperando competencias para las instituciones centrales del Estado.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea reconocer la diversidad territorial y nacional con un Estado federal y plurinacional.",
+      "pregunta": "¿Qué decisiones deberían tomarse más cerca de donde vives?"
+    }
+  },
+  {
+    "id": "vivienda-02",
+    "temas": [
+      "casa"
+    ],
+    "comodin": false,
+    "situacion": "En tu ciudad hay miles de viviendas vacías, mientras muchas familias tienen dificultades para encontrar una vivienda estable.",
+    "enunciado": "¿Qué debería hacerse para que ninguna familia tenga que vivir en la calle mientras se especula con viviendas vacías?",
+    "opciones": [
+      {
+        "texto": "Facilitar que esas viviendas pasen a formar parte del parque público.",
+        "efecto": 2
+      },
+      {
+        "texto": "Aplicar medidas para que se destinen prioritariamente a alquiler social.",
+        "efecto": 1
+      },
+      {
+        "texto": "Combinar incentivos y regulación para que vuelvan al mercado.",
+        "efecto": 0
+      },
+      {
+        "texto": "Ofrecer ventajas fiscales a quienes las alquilen.",
+        "efecto": -1
+      },
+      {
+        "texto": "Respetar la decisión de los propietarios sobre cuándo utilizarlas.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye expropiar progresivamente las viviendas de los grandes tenedores para incorporarlas al parque público.",
+      "pregunta": "¿Qué pasaría en tu ciudad si esas viviendas vacías volvieran al parque público?"
+    }
+  },
+  {
+    "id": "trabajo-04",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "Una de las grandes empresas del país obtiene beneficios récord. Ese mismo año la mayoría de trabajadores apenas mejora su salario.",
+    "enunciado": "¿Qué debería ocurrir?",
+    "opciones": [
+      {
+        "texto": "Una parte importante de la riqueza generada debería redistribuirse.",
+        "efecto": 2
+      },
+      {
+        "texto": "Los trabajadores deberían participar más en los beneficios obtenidos.",
+        "efecto": 1
+      },
+      {
+        "texto": "La negociación colectiva debería facilitar mejoras salariales.",
+        "efecto": 0
+      },
+      {
+        "texto": "Empresa y trabajadores deberían pactarlo libremente.",
+        "efecto": -1
+      },
+      {
+        "texto": "La empresa debería decidir cómo reinvertir esos beneficios.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea repartir los beneficios empresariales con las plantillas y ampliar su participación en las decisiones.",
+      "pregunta": "¿Qué cambiaría en tu empresa si las plantillas decidieran sobre una parte de los beneficios?"
+    }
+  },
+  {
+    "id": "trabajo-05",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "El coste de la vida sigue creciendo y muchas personas llegan justas a final de mes.",
+    "enunciado": "¿Qué política fiscal prefieres para revertir esto?",
+    "opciones": [
+      {
+        "texto": "Cobrar más a las grandes fortunas y reducir desigualdades.",
+        "efecto": 2
+      },
+      {
+        "texto": "Incrementar la contribución de quienes tienen mayores patrimonios.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mantener impuestos progresivos reforzando algunos tributos altos.",
+        "efecto": 0
+      },
+      {
+        "texto": "Reducir impuestos para estimular la actividad económica.",
+        "efecto": -1
+      },
+      {
+        "texto": "Rebajar impuestos de forma generalizada.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea un impuesto mínimo anual del 3 % sobre los patrimonios de más de cincuenta millones de euros.",
+      "pregunta": "¿Qué haría falta para que ese dinero llegara a los servicios que usas todos los días?"
+    }
+  },
+  {
+    "id": "trabajo-08",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "Una persona autónoma atraviesa un mal año: sus ingresos caen durante varios meses.",
+    "enunciado": "¿Qué sistema consideras más adecuado?",
+    "opciones": [
+      {
+        "texto": "Más protección social cuando los ingresos disminuyen.",
+        "efecto": 2
+      },
+      {
+        "texto": "Un sistema que adapte mejor las cuotas a los ingresos reales.",
+        "efecto": 1
+      },
+      {
+        "texto": "Equilibrar protección y sostenibilidad financiera.",
+        "efecto": 0
+      },
+      {
+        "texto": "Menos burocracia y menores costes administrativos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Menos impuestos y menos obligaciones regulatorias.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye apoyar a las pequeñas y medianas empresas mejorando sus condiciones de financiación y simplificando los trámites.",
+      "pregunta": "¿Con qué debería contar quien trabaja por cuenta propia y un año gana mucho menos?"
+    }
+  },
+  {
+    "id": "trabajo-09",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "Una generación se acerca a la jubilación y la esperanza de vida es cada vez mayor.",
+    "enunciado": "¿Qué prioridad debería tener el sistema de pensiones?",
+    "opciones": [
+      {
+        "texto": "Reforzar de forma clara el sistema público.",
+        "efecto": 2
+      },
+      {
+        "texto": "Aumentar la protección pública especialmente para rentas bajas.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mantener el sistema público y garantizar su sostenibilidad.",
+        "efecto": 0
+      },
+      {
+        "texto": "Combinar pensiones públicas con más ahorro complementario.",
+        "efecto": -1
+      },
+      {
+        "texto": "Favorecer que cada persona pueda complementar su pensión de forma privada.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea garantizar que las pensiones mantengan su poder adquisitivo, revalorizándolas según el coste de la vida.",
+      "pregunta": "¿Qué debería garantizar una pensión para poder vivir de ella?"
+    }
+  },
+  {
+    "id": "sanidad-11",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Tu centro de salud tiene cada vez más pacientes y conseguir cita con tu médico de referencia tarda varias semanas.",
+    "enunciado": "¿Qué estrategia te parece más adecuada?",
+    "opciones": [
+      {
+        "texto": "Contratar más profesionales y ampliar la capacidad de los centros de salud.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reforzar especialmente los equipos que trabajan más cerca de los barrios y municipios.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mantener más personal estable y ampliar los recursos disponibles.",
+        "efecto": 0
+      },
+      {
+        "texto": "Combinar nuevas contrataciones con objetivos de gestión y organización.",
+        "efecto": -1
+      },
+      {
+        "texto": "Utilizar tanto centros públicos como concertados para atender más rápido.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye reforzar la atención primaria con más profesionales y más recursos.",
+      "pregunta": "¿Qué cambiaría en tu centro de salud si hubiera más personal?"
+    }
+  },
+  {
+    "id": "sanidad-12",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Cada vez más personas necesitan ayuda psicológica, especialmente jóvenes y personas que atraviesan situaciones difíciles.",
+    "enunciado": "¿Qué respuesta debería darse?",
+    "opciones": [
+      {
+        "texto": "Crear una gran red pública de atención psicológica accesible para todas las personas.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reforzar la atención psicológica en escuelas, barrios y centros comunitarios.",
+        "efecto": 1
+      },
+      {
+        "texto": "Incorporar más profesionales al sistema sanitario actual.",
+        "efecto": 0
+      },
+      {
+        "texto": "Priorizar los casos más graves y aumentar progresivamente los recursos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Ofrecer distintas alternativas de atención utilizando todos los recursos disponibles.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye ampliar la atención pública a la salud mental.",
+      "pregunta": "¿Qué cambiaría si pedir ayuda psicológica no dependiera de poder pagarla?"
+    }
+  },
+  {
+    "id": "sanidad-13",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Imagina que necesitas una intervención dental costosa: el tratamiento es importante, pero supone un gasto difícil de asumir.",
+    "enunciado": "¿Qué sistema prefieres?",
+    "opciones": [
+      {
+        "texto": "Que la mayoría de tratamientos esenciales estén cubiertos por la sanidad pública.",
+        "efecto": 2
+      },
+      {
+        "texto": "Ampliar progresivamente la cobertura pública dental para más personas.",
+        "efecto": 1
+      },
+      {
+        "texto": "Incorporar más servicios dentales al sistema sanitario actual.",
+        "efecto": 0
+      },
+      {
+        "texto": "Ayudar especialmente a quienes tienen menos recursos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Facilitar seguros y alternativas que permitan elegir entre distintas opciones.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye incorporar progresivamente la salud bucodental, visual y auditiva a la cobertura pública.",
+      "pregunta": "¿Qué cambiaría en tu día a día si el dentista estuviera cubierto por la sanidad pública?"
+    }
+  },
+  {
+    "id": "comodin-14",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Eres madre, padre o tutor de un niño que empieza el colegio.",
+    "enunciado": "¿Qué modelo educativo te gustaría encontrar?",
+    "opciones": [
+      {
+        "texto": "Una red pública fuerte que pueda atender a la mayoría de familias.",
+        "efecto": 2
+      },
+      {
+        "texto": "Una escuela pública reforzada con presencia en todos los territorios.",
+        "efecto": 1
+      },
+      {
+        "texto": "Un sistema equilibrado entre escuela pública y concertada.",
+        "efecto": 0
+      },
+      {
+        "texto": "Diferentes modelos educativos entre los que las familias puedan elegir.",
+        "efecto": -1
+      },
+      {
+        "texto": "Máxima libertad para que cada familia escoja el centro que prefiera.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye reducir las ratios en las aulas y garantizar comedores escolares gratuitos en la escuela pública.",
+      "pregunta": "¿Qué debería tener una escuela pública para que nadie tuviera que buscar otra?"
+    }
+  },
+  {
+    "id": "sanidad-16",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Una persona mayor necesita ayuda diaria para seguir viviendo en su casa.",
+    "enunciado": "¿Qué modelo consideras más adecuado?",
+    "opciones": [
+      {
+        "texto": "Ampliar de forma importante los servicios públicos de dependencia.",
+        "efecto": 2
+      },
+      {
+        "texto": "Priorizar servicios de proximidad adaptados a cada comunidad.",
+        "efecto": 1
+      },
+      {
+        "texto": "Seguir ampliando la red actual de atención a la dependencia.",
+        "efecto": 0
+      },
+      {
+        "texto": "Mejorar la gestión para atender a más personas con los mismos recursos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Potenciar principalmente el apoyo que reciben las familias cuidadoras.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye reforzar el sistema público de dependencia ampliando los servicios y los recursos disponibles.",
+      "pregunta": "¿Qué haría falta para que esa ayuda llegara a tiempo y no solo en los casos extremos?"
+    }
+  },
+  {
+    "id": "sanidad-17",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Muchas personas mayores prefieren seguir viviendo en su propio hogar antes que trasladarse a una residencia.",
+    "enunciado": "¿Qué debería hacerse?",
+    "opciones": [
+      {
+        "texto": "Incrementar ampliamente los servicios de atención domiciliaria.",
+        "efecto": 2
+      },
+      {
+        "texto": "Convertir la atención en casa en la principal alternativa de cuidados.",
+        "efecto": 1
+      },
+      {
+        "texto": "Aumentar progresivamente la ayuda a domicilio disponible.",
+        "efecto": 0
+      },
+      {
+        "texto": "Combinar atención domiciliaria y residencial según cada caso.",
+        "efecto": -1
+      },
+      {
+        "texto": "Facilitar que las familias puedan asumir más fácilmente los cuidados.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea mejorar la atención a domicilio y los servicios públicos de cuidados.",
+      "pregunta": "¿Qué necesitarías para poder seguir viviendo en tu casa?"
+    }
+  },
+  {
+    "id": "sanidad-18",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Una residencia de mayores recibe críticas por la calidad del servicio.",
+    "enunciado": "¿Qué prioridad debería tener la administración?",
+    "opciones": [
+      {
+        "texto": "Incrementar el control público y los estándares de calidad exigidos.",
+        "efecto": 2
+      },
+      {
+        "texto": "Supervisar más de cerca las condiciones de atención y cuidado.",
+        "efecto": 1
+      },
+      {
+        "texto": "Actualizar las normas para mejorar la calidad asistencial.",
+        "efecto": 0
+      },
+      {
+        "texto": "Introducir sistemas de evaluación y seguimiento más exigentes.",
+        "efecto": -1
+      },
+      {
+        "texto": "Aumentar la oferta de plazas disponibles junto al control básico necesario.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea avanzar hacia un sistema público de cuidados que garantice una atención digna.",
+      "pregunta": "¿Quién debería responder cuando una residencia falla?"
+    }
+  },
+  {
+    "id": "trabajo-19",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "Una persona deja temporalmente su trabajo para cuidar a un familiar dependiente.",
+    "enunciado": "¿Qué apoyo debería recibir?",
+    "opciones": [
+      {
+        "texto": "Reconocimiento laboral y económico como parte esencial del sistema de cuidados.",
+        "efecto": 2
+      },
+      {
+        "texto": "Más derechos y protección para quienes realizan tareas de cuidado.",
+        "efecto": 1
+      },
+      {
+        "texto": "Ayudas y servicios que faciliten compatibilizar cuidado y empleo.",
+        "efecto": 0
+      },
+      {
+        "texto": "Programas específicos de apoyo a cuidadores familiares.",
+        "efecto": -1
+      },
+      {
+        "texto": "Prioridad para las familias que asumen directamente la responsabilidad de cuidar.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye mejorar las condiciones laborales de quienes cuidan, sobre todo en los sectores feminizados.",
+      "pregunta": "¿Qué debería recibir alguien que deja su trabajo para cuidar a un familiar?"
+    }
+  },
+  {
+    "id": "vivienda-20",
+    "temas": [
+      "casa",
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "El número de nacimientos disminuye año tras año.",
+    "enunciado": "¿Qué estrategia consideras más adecuada para responder a este reto?",
+    "opciones": [
+      {
+        "texto": "Mejorar servicios públicos, vivienda y conciliación para quienes quieran formar una familia.",
+        "efecto": 2
+      },
+      {
+        "texto": "Ampliar ayudas económicas y recursos de apoyo a la crianza.",
+        "efecto": 1
+      },
+      {
+        "texto": "Combinar ayudas directas, permisos y servicios de conciliación.",
+        "efecto": 0
+      },
+      {
+        "texto": "Incrementar beneficios fiscales para familias con hijos.",
+        "efecto": -1
+      },
+      {
+        "texto": "Situar el apoyo a la natalidad como una de las principales prioridades del país.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye una prestación universal de 200 euros al mes por cada menor de 18 años.",
+      "pregunta": "¿Qué cambiaría en una casa con hijos con 200 euros más al mes por cada uno?"
+    }
+  },
+  {
+    "id": "comodin-21",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "España necesita producir más energía en las próximas décadas: la electricidad será cada vez más importante para viviendas, transporte e industria.",
+    "enunciado": "¿Qué camino prefieres?",
+    "opciones": [
+      {
+        "texto": "Apostar principalmente por energías renovables y ampliar el autoconsumo.",
+        "efecto": 2
+      },
+      {
+        "texto": "Expandir las energías renovables priorizando proyectos integrados en el territorio.",
+        "efecto": 1
+      },
+      {
+        "texto": "Combinar renovables, almacenamiento e inversión pública para garantizar el suministro.",
+        "efecto": 0
+      },
+      {
+        "texto": "Impulsar renovables manteniendo todas las tecnologías útiles disponibles.",
+        "efecto": -1
+      },
+      {
+        "texto": "Utilizar una combinación amplia de tecnologías según coste, seguridad y demanda.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea acelerar el despliegue de energías renovables y reducir la dependencia de los combustibles fósiles.",
+      "pregunta": "¿Qué cambiaría si la energía que usas se produjera más cerca de casa?"
+    }
+  },
+  {
+    "id": "trabajo-23",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": false,
+    "situacion": "La energía ocupa una parte importante del presupuesto familiar.",
+    "enunciado": "¿Qué papel debería tener el Estado?",
+    "opciones": [
+      {
+        "texto": "Participar directamente para influir más en precios e inversiones.",
+        "efecto": 2
+      },
+      {
+        "texto": "Disponer de herramientas públicas que intervengan cuando sea necesario.",
+        "efecto": 1
+      },
+      {
+        "texto": "Regular el mercado para evitar situaciones abusivas.",
+        "efecto": 0
+      },
+      {
+        "texto": "Supervisar el sector garantizando competencia y estabilidad.",
+        "efecto": -1
+      },
+      {
+        "texto": "Intervenir lo mínimo posible y favorecer la competencia entre empresas.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye tres horas de luz gratuita al día y una comercializadora pública de energía.",
+      "pregunta": "¿Qué parte de tu factura crees que no debería depender de una empresa privada?"
+    }
+  },
+  {
+    "id": "comodin-24",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Una ciudad quiere reducir la contaminación y mejorar la movilidad.",
+    "enunciado": "¿Qué estrategia te convence más?",
+    "opciones": [
+      {
+        "texto": "Priorizar claramente el transporte público frente al vehículo privado.",
+        "efecto": 2
+      },
+      {
+        "texto": "Extender el transporte colectivo y reducir gradualmente la dependencia del coche.",
+        "efecto": 1
+      },
+      {
+        "texto": "Equilibrar distintas formas de transporte según las necesidades de cada zona.",
+        "efecto": 0
+      },
+      {
+        "texto": "Mejorar tanto las carreteras como el transporte público.",
+        "efecto": -1
+      },
+      {
+        "texto": "Garantizar que las medidas ambientales no limiten excesivamente el uso del coche.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea reforzar el transporte público y el ferrocarril para reducir la contaminación.",
+      "pregunta": "¿Qué cambiaría en tus trayectos de cada día?"
+    }
+  },
+  {
+    "id": "comodin-25",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "El gobierno dispone de una gran inversión para movilidad.",
+    "enunciado": "¿Dónde crees que tendría más impacto?",
+    "opciones": [
+      {
+        "texto": "En ampliar la red ferroviaria y el transporte colectivo.",
+        "efecto": 2
+      },
+      {
+        "texto": "En reforzar trenes regionales y conexiones territoriales.",
+        "efecto": 1
+      },
+      {
+        "texto": "En mejorar tanto la red ferroviaria como la movilidad urbana.",
+        "efecto": 0
+      },
+      {
+        "texto": "En desarrollar infraestructuras ferroviarias y viarias de forma equilibrada.",
+        "efecto": -1
+      },
+      {
+        "texto": "En mejorar todas las infraestructuras de transporte sin priorizar unas sobre otras.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye un pacto de Estado por el ferrocarril y más inversión en trenes y personal.",
+      "pregunta": "¿Qué línea de tren te gustaría que funcionara mejor?"
+    }
+  },
+  {
+    "id": "sanidad-26",
+    "temas": [
+      "hospital"
+    ],
+    "comodin": false,
+    "situacion": "Algunos políticos se plantean si crear más o eliminar las zonas de bajas emisiones en las ciudades.",
+    "enunciado": "¿Qué debería hacerse con las zonas de bajas emisiones?",
+    "opciones": [
+      {
+        "texto": "Implantarlas ampliamente para mejorar salud y calidad del aire.",
+        "efecto": 2
+      },
+      {
+        "texto": "Aplicarlas donde tengan un impacto demostrado sobre la contaminación.",
+        "efecto": 1
+      },
+      {
+        "texto": "Extenderlas progresivamente adaptándolas a cada municipio.",
+        "efecto": 0
+      },
+      {
+        "texto": "Dejar margen a cada ciudad para decidir cómo aplicarlas.",
+        "efecto": -1
+      },
+      {
+        "texto": "Evitar restricciones generales y buscar alternativas menos limitantes.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea invertir el 3,5 % del PIB anual en la transición ecológica.",
+      "pregunta": "¿Qué debería cambiar en el aire de tu ciudad?"
+    }
+  },
+  {
+    "id": "trabajo-27",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "El campo pierde población cada año y muchos jóvenes se marchan a las ciudades.",
+    "enunciado": "¿Qué sería más útil para que el campo no se convierta en campos de golf?",
+    "opciones": [
+      {
+        "texto": "Reforzar servicios públicos y empleo en las zonas rurales.",
+        "efecto": 2
+      },
+      {
+        "texto": "Impulsar proyectos locales ligados al territorio y a la comunidad.",
+        "efecto": 1
+      },
+      {
+        "texto": "Combinar inversiones, conectividad y actividad económica.",
+        "efecto": 0
+      },
+      {
+        "texto": "Aplicar incentivos fiscales y empresariales para atraer actividad.",
+        "efecto": -1
+      },
+      {
+        "texto": "Reducir trabas a quienes quieran invertir y crear empleo en el medio rural.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea garantizar servicios públicos en los municipios rurales para combatir la despoblación.",
+      "pregunta": "¿Qué haría falta para que alguien joven se quedara a vivir en el pueblo?"
+    }
+  },
+  {
+    "id": "alimentacion-28",
+    "temas": [
+      "zanahoria"
+    ],
+    "comodin": false,
+    "situacion": "Los agricultores se quejan de que venden barato y los consumidores compran caro.",
+    "enunciado": "¿Qué debería hacerse para que lo que pagamos por la comida no acabe en los bolsillos de los grandes intermediarios?",
+    "opciones": [
+      {
+        "texto": "Intervenir para equilibrar mejor el reparto de beneficios en la cadena alimentaria.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reforzar la protección de quienes producen alimentos.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mejorar las normas para garantizar relaciones más equilibradas.",
+        "efecto": 0
+      },
+      {
+        "texto": "Proteger a productores frente a abusos comerciales manteniendo la competencia.",
+        "efecto": -1
+      },
+      {
+        "texto": "Priorizar la rentabilidad de las explotaciones frente a nuevas regulaciones.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye controlar los márgenes de beneficio de las grandes distribuidoras y combatir los abusos.",
+      "pregunta": "¿Cuánto de lo que pagas por la comida crees que llega a quien la produce?"
+    }
+  },
+  {
+    "id": "comodin-31",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "En las próximas décadas España seguirá siendo un lugar al que llegarán personas procedentes de otros países por motivos muy diversos: trabajo, estudios, relaciones familiares, seguridad o búsqueda de nuevas oportunidades de vida.",
+    "enunciado": "¿Qué estrategia elegirías para que la llegada de personas de otros países no se convierta en un problema para nadie?",
+    "opciones": [
+      {
+        "texto": "Facilitar que quienes ya viven en el país puedan regularizar su situación e incorporarse plenamente.",
+        "efecto": 2
+      },
+      {
+        "texto": "Crear más vías de integración para las personas que quieran establecerse y trabajar.",
+        "efecto": 1
+      },
+      {
+        "texto": "Favorecer una inmigración legal vinculada al empleo y a la formación.",
+        "efecto": 0
+      },
+      {
+        "texto": "Ajustar la inmigración a las necesidades económicas y a la capacidad de integración.",
+        "efecto": -1
+      },
+      {
+        "texto": "Priorizar el control de entradas y endurecer los requisitos de residencia.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye una ley integral contra el racismo y vías legales y seguras para migrar.",
+      "pregunta": "¿Qué debería poder hacer alguien que llega y quiere quedarse?"
+    }
+  },
+  {
+    "id": "comodin-32",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Una persona llega al país sin recursos ni red familiar. Tras unos años quiere construir aquí su proyecto de vida.",
+    "enunciado": "¿Qué debería esperar de la sociedad que la recibe?",
+    "opciones": [
+      {
+        "texto": "Un amplio conjunto de herramientas para favorecer su inclusión social y laboral.",
+        "efecto": 2
+      },
+      {
+        "texto": "Programas de acogida e integración adaptados a cada realidad territorial.",
+        "efecto": 1
+      },
+      {
+        "texto": "Oportunidades de integración mediante trabajo, educación y aprendizaje del idioma.",
+        "efecto": 0
+      },
+      {
+        "texto": "Apoyo para integrarse junto con el cumplimiento de determinadas obligaciones comunes.",
+        "efecto": -1
+      },
+      {
+        "texto": "Una integración basada principalmente en la adaptación a las normas y costumbres del país.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas incluye procedimientos estables de regularización para quien ya vive aquí.",
+      "pregunta": "¿Qué debería poder hacer esa persona después de unos años aquí?"
+    }
+  },
+  {
+    "id": "comodin-34",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Dos territorios consideran injusto el sistema actual de financiación.",
+    "enunciado": "¿Qué solución te parece más razonable?",
+    "opciones": [
+      {
+        "texto": "Permitir una mayor autonomía financiera a las comunidades autónomas.",
+        "efecto": 2
+      },
+      {
+        "texto": "Reconocer modelos de financiación adaptados a las características de cada territorio.",
+        "efecto": 1
+      },
+      {
+        "texto": "Reformar el sistema mediante acuerdos entre administraciones.",
+        "efecto": 0
+      },
+      {
+        "texto": "Mantener reglas comunes para todos los territorios con algunas mejoras técnicas.",
+        "efecto": -1
+      },
+      {
+        "texto": "Avanzar hacia un sistema más homogéneo para todo el país.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea un sistema de financiación autonómica más justo, que garantice los recursos de los servicios públicos.",
+      "pregunta": "¿Qué debería poder pagar tu comunidad con ese dinero?"
+    }
+  },
+  {
+    "id": "comodin-38",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Se abre un debate sobre el futuro de la Jefatura del Estado.",
+    "enunciado": "¿Qué posición te genera más confianza?",
+    "opciones": [
+      {
+        "texto": "Abrir un debate ciudadano sobre posibles alternativas institucionales.",
+        "efecto": 2
+      },
+      {
+        "texto": "Permitir que la ciudadanía pueda pronunciarse sobre el modelo de Estado.",
+        "efecto": 1
+      },
+      {
+        "texto": "Mantener el sistema actual sin convertirlo en una prioridad política.",
+        "efecto": 0
+      },
+      {
+        "texto": "Reforzar la estabilidad de la monarquía parlamentaria vigente.",
+        "efecto": -1
+      },
+      {
+        "texto": "Defender activamente la monarquía como elemento de continuidad institucional.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea avanzar hacia una república federal y plurinacional.",
+      "pregunta": "¿Qué debería cambiar en la Jefatura del Estado?"
+    }
+  },
+  {
+    "id": "comodin-39",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "Europa plantea aumentar el gasto en defensa en un contexto internacional más incierto.",
+    "enunciado": "¿Qué enfoque prefieres?",
+    "opciones": [
+      {
+        "texto": "Mantener un gasto contenido y someter cualquier aumento a un control político estricto.",
+        "efecto": 2
+      },
+      {
+        "texto": "Incrementar la cooperación internacional priorizando soluciones diplomáticas.",
+        "efecto": 1
+      },
+      {
+        "texto": "Cumplir los compromisos asumidos con aliados internacionales.",
+        "efecto": 0
+      },
+      {
+        "texto": "Reforzar las capacidades de defensa y la inversión estratégica nacional.",
+        "efecto": -1
+      },
+      {
+        "texto": "Aumentar significativamente los recursos destinados a defensa y seguridad.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea rechazar el objetivo de destinar el 5 % del PIB a gasto militar en el marco de la OTAN.",
+      "pregunta": "¿En qué preferirías que se gastara ese dinero?"
+    }
+  },
+  {
+    "id": "trabajo-40",
+    "temas": [
+      "moneda"
+    ],
+    "comodin": true,
+    "situacion": "España debe decidir qué papel quiere tener en las próximas décadas.",
+    "enunciado": "¿Qué papel debería tener el Estado en la economía del país?",
+    "opciones": [
+      {
+        "texto": "Apostar por una economía innovadora con una fuerte participación pública en sectores estratégicos.",
+        "efecto": 2
+      },
+      {
+        "texto": "Impulsar la innovación y la industria mediante una colaboración estrecha entre instituciones y territorio.",
+        "efecto": 1
+      },
+      {
+        "texto": "Combinar inversión pública y privada para desarrollar sectores competitivos.",
+        "efecto": 0
+      },
+      {
+        "texto": "Favorecer la iniciativa empresarial reduciendo barreras al crecimiento económico.",
+        "efecto": -1
+      },
+      {
+        "texto": "Dar prioridad a la actividad productiva minimizando la intervención pública.",
+        "efecto": -2
+      }
+    ],
+    "reflexion": {
+      "propuesta": "El documento de propuestas plantea una nueva política industrial pública para crear empleo estable y de calidad.",
+      "pregunta": "¿Qué debería producir el país para depender menos de las grandes corporaciones?"
+    }
+  }
+]
