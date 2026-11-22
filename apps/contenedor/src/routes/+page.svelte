@@ -43,7 +43,7 @@
 	{#if data.juegos.length === 0}
 		<p class="vacio">Todavía no hay juegos publicados.</p>
 	{:else}
-		<nav class="juegos" aria-label="Juegos">
+		<nav class="juegos" aria-label="Juegos" style="--n: {data.juegos.length}">
 			{#each data.juegos as juego (juego.slug)}
 				<a class="juego" href="/{juego.slug}/" data-sveltekit-reload>
 					<span class="juego__estrella" aria-hidden="true"></span>
@@ -72,10 +72,18 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		min-height: 100svh;
+		height: 100vh;
 		overflow: hidden;
 		background: var(--negro);
 		color: var(--blanco);
+	}
+
+	/* La altura dinámica descuenta las barras del navegador móvil: con `vh` la
+	   portada quedaría más alta que la ventana y pediría scroll. */
+	@supports (height: 100dvh) {
+		main {
+			height: 100dvh;
+		}
 	}
 
 	:global(html) {
@@ -89,9 +97,10 @@
 	}
 
 	.cabecera {
+		flex: none;
 		display: flex;
 		justify-content: center;
-		padding: clamp(1rem, 3.5vh, 3rem) 1rem clamp(0.6rem, 2vh, 1.75rem);
+		padding: clamp(0.4rem, 3.5vh, 3rem) 1rem clamp(0.3rem, 2vh, 1.75rem);
 	}
 
 	.sonido {
@@ -136,6 +145,7 @@
 	}
 
 	.banda {
+		flex: none;
 		margin: 0;
 		padding: 0.1em 1rem 0.16em;
 		background: var(--verde);
@@ -149,32 +159,62 @@
 		text-transform: uppercase;
 	}
 
+	/* La rejilla ocupa todo el alto que sobra entre la cabecera y los
+	   protagonistas. El número de columnas se elige por proporción de la
+	   ventana y nunca pasa del número de juegos, así que no quedan huecos. */
 	.juegos {
-		flex: 1;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		align-content: center;
-		justify-content: center;
-		gap: clamp(0.5rem, 3.5vw, 2.5rem);
-		padding: clamp(1rem, 4vh, 3rem) clamp(0.75rem, 4vw, 3rem);
+		--holgura: clamp(0.4rem, 2.2vh, 2rem);
+		--cols: min(var(--n, 1), 2);
+		flex: 1 1 0;
+		min-height: 0;
+		display: grid;
+		grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+		grid-auto-rows: minmax(0, 1fr);
+		gap: var(--holgura);
+		padding: clamp(0.4rem, 2.5vh, 2rem) clamp(0.5rem, 3vw, 2.5rem);
 	}
 
+	@media (min-width: 20rem) and (min-aspect-ratio: 1 / 2) {
+		.juegos {
+			--cols: min(var(--n, 1), 3);
+		}
+	}
+
+	/* En apaisado caben todos en una sola fila y los luceros salen mayores. */
+	@media (min-aspect-ratio: 6 / 5) {
+		.juegos {
+			--cols: min(var(--n, 1), 6);
+		}
+	}
+
+	/* El enlace ocupa su celda entera y es la propia celda la que se consulta:
+	   `--lado` es el mayor lucero que entra en ella, así que se ajusta al ancho
+	   y al alto disponibles sin deformarse ni desbordar. En navegadores sin
+	   unidades de contenedor, el lucero ocupa la celda entera, como respaldo. */
 	.juego {
+		--lado: 100%;
 		position: relative;
 		display: grid;
 		place-items: center;
-		width: min(38vw, 24vh, 18rem);
-		aspect-ratio: 1.08;
-		container-type: inline-size;
 		text-decoration: none;
 		transition: transform 180ms ease;
 		-webkit-tap-highlight-color: transparent;
 	}
 
+	@supports (container-type: size) {
+		.juego {
+			--lado: min(100cqw, calc(100cqh * 1.08));
+			container-type: size;
+		}
+	}
+
 	.juego__estrella {
 		position: absolute;
-		inset: 0;
+		top: 50%;
+		left: 50%;
+		width: var(--lado);
+		height: calc(var(--lado) / 1.08);
+		translate: -50% -50%;
 		background: var(--naranja);
 		clip-path: polygon(
 			50% 21%,
@@ -199,10 +239,10 @@
 
 	.juego__nombre {
 		position: relative;
-		width: 58%;
+		width: calc(var(--lado) * 0.58);
 		color: var(--blanco);
 		font-family: var(--display);
-		font-size: 13cqw;
+		font-size: 1rem;
 		font-weight: 400;
 		line-height: 0.94;
 		letter-spacing: 0.01em;
@@ -210,6 +250,12 @@
 		text-transform: uppercase;
 		hyphens: auto;
 		text-wrap: balance;
+	}
+
+	@supports (container-type: size) {
+		.juego__nombre {
+			font-size: calc(var(--lado) * 0.13);
+		}
 	}
 
 	.juego:hover {
@@ -225,13 +271,18 @@
 	}
 
 	.juego:focus-visible {
+		outline: none;
+	}
+
+	.juego:focus-visible .juego__estrella {
 		outline: 3px solid var(--verde);
 		outline-offset: 6px;
 		border-radius: 1rem;
 	}
 
 	.vacio {
-		flex: 1;
+		flex: 1 1 0;
+		min-height: 0;
 		display: grid;
 		place-items: center;
 		margin: 0;
@@ -242,6 +293,7 @@
 	}
 
 	.protagonistas {
+		flex: none;
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;

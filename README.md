@@ -14,6 +14,8 @@ El contenedor decide qué URL existe y qué enlaces aparecen. No renderiza el HT
 
 La portada reproduce un audio de entrada en cada visita, salvo que el visitante lo silencie con el botón de arriba a la derecha; ese estado se recuerda entre visitas. Suena en autoplay donde el navegador lo permite y, si lo bloquea, espera al primer gesto.
 
+La portada no hace scroll: ocupa exactamente el alto de la ventana y la rejilla de luceros se queda con el espacio que dejan la cabecera y los protagonistas. El número de columnas depende de la proporción de la pantalla y nunca pasa del número de juegos publicados, y cada lucero se ajusta al hueco que le toca en ancho y en alto.
+
 La tipografía del cartel es Impact: además de la del sistema, se sirve desde el propio contenedor (`src/lib/assets/impact-webfont.*`) para que Android y Linux vean lo mismo.
 
 ## Los dos tipos de juego
