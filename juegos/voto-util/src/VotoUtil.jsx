@@ -388,7 +388,7 @@ const ESCANOS = [
 const GEO = { "A Coruña": [-8.4, 43.25], "Pontevedra": [-8.55, 42.4], "Asturias": [-5.9, 43.3], "Bizkaia": [-2.9, 43.2], "Navarra": [-1.65, 42.7], "Zaragoza": [-1.0, 41.6], "Barcelona": [1.95, 41.75], "Tarragona": [0.9, 41.05], "Castellón": [-0.25, 40.15], "Madrid|Vox": [-3.7, 40.7], "Madrid|PP": [-3.7, 40.1], "Alicante": [-0.7, 38.4], "Baleares": [2.95, 39.25], "Sevilla": [-5.95, 37.45], "Córdoba": [-4.8, 38.05], "Málaga": [-5.1, 36.55], "Granada": [-2.9, 37.4] };
 const proj = ([lon, lat]) => [(lon + 9.6) * 7.8 + 25, (44.2 - lat) * 10];
 const projC = ([lon, lat]) => [2 + (lon + 18.3) * 5.2, 58 + (29.6 - lat) * 9];
-const CANAR = { "Las Palmas": projC([-14.4, 27.3]), "Santa Cruz de Tenerife": projC([-17.0, 29.35]) };
+const CANAR = { "Las Palmas": projC([-14.4, 27.3]), "Santa Cruz de Tenerife": projC([-15.9, 29.35]) };
 const poly = (pts, pr = proj) => pts.map(pr).map((p) => p.map((v) => v.toFixed(2)).join(",")).join(" ");
 const SPAIN = poly([[-8.87,41.87],[-8.9,42.1],[-8.75,42.25],[-8.88,42.45],[-9.05,42.55],[-9.0,42.75],[-9.3,42.92],[-9.25,43.1],[-8.95,43.25],[-8.5,43.35],[-8.25,43.55],[-7.9,43.75],[-7.6,43.72],[-7.05,43.55],[-6.3,43.57],[-5.85,43.65],[-5.4,43.55],[-4.6,43.4],[-3.8,43.47],[-3.4,43.42],[-3.0,43.38],[-2.4,43.42],[-1.8,43.38],[-1.4,43.25],[-0.7,42.9],[0.0,42.7],[0.7,42.85],[1.4,42.6],[2.0,42.42],[2.6,42.35],[3.17,42.43],[3.3,42.3],[3.1,41.95],[2.8,41.7],[2.2,41.4],[1.6,41.2],[1.0,41.05],[0.7,40.8],[0.9,40.7],[0.5,40.4],[0.1,40.05],[-0.2,39.7],[-0.3,39.4],[-0.1,39.0],[0.2,38.75],[-0.2,38.6],[-0.5,38.35],[-0.7,38.0],[-0.75,37.65],[-1.3,37.55],[-1.65,37.35],[-1.9,36.95],[-2.2,36.73],[-2.8,36.7],[-3.5,36.72],[-4.4,36.72],[-4.9,36.5],[-5.35,36.15],[-5.6,36.0],[-6.0,36.3],[-6.3,36.6],[-6.4,36.8],[-6.95,37.15],[-7.4,37.2],[-7.5,37.55],[-7.25,37.95],[-7.0,38.2],[-7.3,38.45],[-7.15,38.8],[-7.0,39.05],[-7.4,39.45],[-7.0,39.65],[-7.0,39.9],[-6.85,40.25],[-6.8,40.85],[-6.9,41.0],[-6.55,41.25],[-6.2,41.6],[-6.6,41.95],[-7.2,41.88],[-7.9,41.88],[-8.2,42.05],[-8.65,42.0]]);
 const ISLAS = [[[2.35,39.6],[2.7,39.95],[3.1,39.9],[3.45,39.7],[3.25,39.35],[2.95,39.35],[2.7,39.5]], [[3.8,40.0],[4.3,39.95],[4.3,39.8],[3.85,39.92]], [[1.2,38.95],[1.6,39.1],[1.55,38.85],[1.3,38.85]]].map((p) => poly(p));
@@ -498,6 +498,16 @@ const FALLO = [
   "Esa respuesta cotiza en el IBEX. Prueba otra.",
   "Así contesta quien tiene 14 pisos turísticos. Otra vez.",
 ];
+const mobileNow = () => typeof window !== "undefined" && window.innerWidth < 760;
+const NUMF = (n) => n.toLocaleString("es");
+const ESPECIALES = [
+  { k: "desen", w: 4, tag: "DESENCANTADA", ring: "#8a8f98", need: 3, dudas: ["LA IZQUIERDA, SIEMPRE PELEADA…", "¿ADA COLAU? NI IDEA", "¿Y ESTA VEZ VA EN SERIO?"], args: [(t) => "Esta vez, una sola papeleta.", (t) => "La de la PAH. La que paró desahucios.", (t) => "32 horas y alquiler topado. En serio."] },
+  { k: "desen2", w: 3, tag: "INDECISO", ring: "#8a8f98", need: 2, dudas: ["TOTAL, GANAN SIEMPRE LOS MISMOS", "¿Y MI VOTO QUÉ CAMBIA?"], args: [(t) => `Aquí faltan solo ${NUMF(t[2])} votos.`, (t) => `Le quita un escaño a ${t[1]}.`] },
+  { k: "psoe", w: 3, tag: "VOTANTE DEL PSOE", ring: "#e30613", need: 2, dudas: ["EL PSOE GOBIERNA SOLO", "¿PARA QUÉ OTRO PARTIDO?"], args: [(t) => "Solo no suma. Sin nosotras, no hay gobierno.", (t) => `Aquí el escaño se lo quitamos a ${t[1]}.`] },
+  { k: "podemos", w: 2, tag: "VOTANTE DE PODEMOS", ring: "#6b2d8c", need: 2, dudas: ["YO VOTO PODEMOS, AUNQUE NO SAQUE", "¿Y SI NOS VOLVEMOS A DIVIDIR?"], args: [(t) => `En ${t[0]} ese voto no llega a escaño.`, (t) => "Mismas luchas, una papeleta."] },
+  { k: "erc", w: 1, tag: "VOTANT D'ERC", ring: "#f5b700", where: ["Barcelona", "Tarragona"], need: 2, dudas: ["VAM ESCRIURE EL LLIBRE ANTIFATXES", "JA TINC EL MEU PARTIT…"], args: [(t) => "Els llibres no aturen Vox. Els escons, sí.", (t) => "Puja al tren del Frente Amplio."] },
+  { k: "junts", w: 1, tag: "VOTANT DE JUNTS", ring: "#20b2a6", where: ["Barcelona", "Tarragona"], block: true, dudas: ["AMB PP I VOX, EL QUE CALGUI"], note: "Vota con PP y Vox. Solo se mueve con «peixet». Siguiente." },
+];
 const ANIMOS = ["¡Va, que lo consigues!", "¡Ánimo, tú puedes!", "¡A por ellos!", "¡Ya casi está!", "¡No pares ahora!", "¡Sí se puede!", "¡Que no se escape!", "¡Dale, dale!", "¡Lo tienes ahí!", "¡Cada voto cuenta!"];
 const PEEK = [["t", 22], ["t", 50], ["t", 78], ["b", 22], ["b", 50], ["b", 78], ["l", 30], ["l", 70], ["r", 50]];
 const MED_HUCHA = [
@@ -554,6 +564,10 @@ export default function TomaTasa() {
   const [medR1, setMedR1] = useState([]);
   const [cd, setCd] = useState(10);
   const [showRank, setShowRank] = useState(false);
+  const [reward, setReward] = useState(null);
+  const [pickInfo, setPickInfo] = useState(null);
+  const [mobile, setMobile] = useState(() => typeof window !== "undefined" && window.innerWidth < 760);
+  useEffect(() => { const f = () => setMobile(window.innerWidth < 760); window.addEventListener("resize", f); return () => window.removeEventListener("resize", f); }, []);
   const [rankBy, setRankBy] = useState("hucha");
   const [endBg, setEndBg] = useState(0);
   const [place, setPlace] = useState(0);
@@ -561,7 +575,7 @@ export default function TomaTasa() {
   const [dato, setDato] = useState(null);
   const [walkTo, setWalkTo] = useState(null);
   const [idleMood, setIdleMood] = useState(0);
-  const [idleHint, setIdleHint] = useState(0);
+  const [idleHint, setIdleHint] = useState(null);
   useEffect(() => { if (phase !== "pick") return; const t = setInterval(() => setIdleMood((m) => (m + 1) % IDLE_FR.length), 3500); return () => clearInterval(t); }, [phase]);
   const [wrong, setWrong] = useState(null);
   const [firstTry, setFirstTry] = useState(0);
@@ -585,7 +599,7 @@ export default function TomaTasa() {
   }, []);
 
   // reloj común a N1 y N2
-  const timed = (phase === "l1" || phase === "l2") && !intro && !seatBanner;
+  const timed = (phase === "l1" || phase === "l2") && !intro && !seatBanner && !reward;
   useEffect(() => { if (!timed) return; const t = setInterval(() => setLeft((v) => v - 1), phase === "l2" ? Math.max(450, 1000 - seats.length * 90) : 1000); return () => clearInterval(t); }, [timed, seats.length]);
   useEffect(() => { if (!timed) return; if (left === 10 && phase === "l1") Music.fx("alarm"); if (left <= 5 && left > 0) Music.fx("tick"); if (left <= 0) { Music.stop(); Music.fx("win"); setShowList(false); setPhase(phase === "l1" ? "r1" : "r2"); } }, [left]);
 
@@ -601,7 +615,7 @@ export default function TomaTasa() {
       if (free.length) {
         const i = pickR(free), rich = Math.random() < 0.62, k = Math.random();
         const R0 = rich ? pickR(RICOS) : null, name = R0 && R0[0], fortune = R0 && R0[2], look = rich ? (() => { let hh = hash(R0[0]); const n = () => (hh = Math.imul(hh ^ (hh >>> 13), 2654435761) >>> 0); return makeLook(LOOKS.rico, n, R0[1], false); })() : crowdLook(rng(Math.floor(k * 1e9)));
-        setHoles((hs) => { const n = hs.slice(); n[i] = { rich, name, fortune, look, k, t0: Date.now() }; return n; });
+        setHoles((hs) => { const n = hs.slice(); n[i] = { rich, name, fortune, look, k, t0: Date.now(), jx: (Math.random() - 0.5) * 12, jy: (Math.random() - 0.5) * 10, sz: 0.75 + Math.random() * 0.55, gr: Math.random() < 0.5 ? 1.25 : 0.8 }; return n; });
         setTimeout(() => setHoles((hs) => (hs[i] && hs[i].k === k ? Object.assign(hs.slice(), { [i]: null }) : hs)), Math.max(1100, 2800 - el * 60));
       }
       setTimeout(spawn, Math.max(380, 900 - el * 18));
@@ -620,6 +634,8 @@ export default function TomaTasa() {
   const effRef = useRef(1);
   const [wrongMsg, setWrongMsg] = useState("");
   const usedArgs = useRef(new Set());
+  const usedEsp = useRef(new Set());
+  const usedDud = useRef(new Set());
   const endedRef = useRef(false);
   const spamRef = useRef([]);
   const jokeRef = useRef(0);
@@ -644,14 +660,15 @@ export default function TomaTasa() {
   const reparto = SERVICIOS.map((s, i) => [s, Math.round((hucha * [0.24, 0.22, 0.14, 0.12, 0.1, 0.08, 0.05, 0.05][i]))]);
 
   // ---- N2 ----
-  const newCrowd = (pn) => { const r = rng(Math.floor(Math.random() * 1e9)); if (Math.random() < 0.15) return [{ i: 0, k: Math.random(), x: 27, y: 62, look: { ...crowdLook(r), mood: "smirk" }, kind: "facha", step: 0, t0: Date.now(), state: "facha", duda: pickR(FACHA) }]; const tt = pn || target; const PF = perfilFor(tt[0]); let kind, P, frase, arg; for (let q = 0; q < 40; q++) { kind = pickR(Object.keys(PF)); P = PF[kind]; frase = pickR(P.frases[0]); arg = answerFor(frase, tt); if (!usedArgs.current.has(arg)) break; } usedArgs.current.add(arg); const look = crowdLook(r); return [{ i: 0, k: Math.random(), x: 27, y: 62, look: { ...look, mood: P.moods[0] }, kind, step: 0, need: pickR([1, 1, 2, 2, 3, 4]), t0: Date.now(), state: "duda", duda: frase, arg, extra: P.extra[Math.floor(Math.random() * P.extra.length)] }]; };
+  const newCrowd = (pn) => { const r = rng(Math.floor(Math.random() * 1e9)); if (Math.random() < 0.15) return [{ i: 0, k: Math.random(), x: mobileNow() ? 50 : 25, y: mobileNow() ? 30 : 58, look: { ...crowdLook(r), mood: "smirk" }, kind: "facha", step: 0, t0: Date.now(), state: "facha", duda: pickR(FACHA) }]; const tt = pn || target; const X = mobileNow() ? 50 : 25, Y = mobileNow() ? 30 : 58; if (Math.random() < 0.7) { const pool = ESPECIALES.filter((e) => (!e.where || e.where.includes(tt[0])) && !usedEsp.current.has(e.k)); if (pool.length) { const e = (() => { let r0 = Math.random() * pool.reduce((a, q) => a + q.w, 0); for (const q of pool) { r0 -= q.w; if (r0 <= 0) return q; } return pool[0]; })(); usedEsp.current.add(e.k); const base = { i: 0, k: Math.random(), x: X, y: Y, look: { ...crowdLook(r), mood: e.block ? "smirk" : "frown" }, tag: e.tag, ring: e.ring, t0: Date.now(), duda: e.dudas[0] }; return [e.block ? { ...base, state: "facha", note: e.note } : { ...base, state: "duda", kind: "esp", esp: e.k, step: 0, need: e.need, extra: 2, arg: e.args[0](tt) }]; } } const PF = perfilFor(tt[0]); let kind, P, frase, arg; for (let q = 0; q < 40; q++) { kind = pickR(Object.keys(PF)); P = PF[kind]; frase = pickR(P.frases[0]); arg = answerFor(frase, tt); if (!usedArgs.current.has(arg) && !usedDud.current.has(frase)) break; } usedArgs.current.add(arg); usedDud.current.add(frase); const look = crowdLook(r); return [{ i: 0, k: Math.random(), x: mobileNow() ? 50 : 25, y: mobileNow() ? 30 : 58, look: { ...look, mood: P.moods[0] }, kind, step: 0, need: pickR([1, 1, 2, 2, 3, 4]), t0: Date.now(), state: "duda", duda: frase, arg, extra: P.extra[Math.floor(Math.random() * P.extra.length)] }]; };
   const startL2 = () => splashThen(["¡EL 29N", "DECIDIMOS!"], startL2a);
   const startL2a = () => { contRef.current = false; setProvOrder(ESCANOS.map((_, i) => i).sort(() => Math.random() - 0.5)); setPhase("pick"); Music.fx("thudsoft"); Music.start(3); };
   const goL2 = (pi) => { if (walkTo) return; const [wx, wy] = provXY(ESCANOS[pi]); setWalkTo([wx, wy]); Music.fx("thudsoft"); setTimeout(() => { setWalkTo(null); goL2go(pi); }, 2200); };
   const goL2go = (pi) => { pendRef.current = pi; setProvOrder((po) => [pi, ...po.filter((x) => x !== pi)]); startL2b(); };
-  const startL2b = () => { effRef.current = pickR([0.4, 0.6, 1, 1.4, 2]); setPlace(Math.floor(Math.random() * LUGARES.length)); if (!contRef.current) { setLeft(L2_TIME); setSeats([]); } contRef.current = false; setProv(0); setVotos(0); usedArgs.current = new Set(); setCrowd(newCrowd(ESCANOS[pendRef.current])); setPhase("l2"); Music.start(1); };
+  const startL2b = () => { effRef.current = pickR([0.4, 0.6, 1, 1.4, 2]); setPlace(Math.floor(Math.random() * LUGARES.length)); if (!contRef.current) { setLeft(L2_TIME); setSeats([]); } contRef.current = false; setProv(0); setVotos(0); usedArgs.current = new Set(); usedEsp.current = new Set(); usedDud.current = new Set(); setCrowd(newCrowd(ESCANOS[pendRef.current])); setPhase("l2"); Music.start(1); };
   const target = ESCANOS[provOrder[prov % ESCANOS.length]];
   const units = Math.max(1, Math.round((target[2] / 4000) * effRef.current)); const perVote = Math.ceil(target[2] / units);
+  useEffect(() => { if (!reward) return; Music.fx("fanfare"); const t = setTimeout(() => setReward(null), reward.type === "all" ? 7000 : 5500); return () => clearTimeout(t); }, [reward]);
   const nextProv = () => { setSeatBanner(null); contRef.current = true; setVotos(0); setPhase("pick"); };
   const goHome = () => { setSeatBanner(null); Music.stop(); Music.fx("win"); setShowList(false); setPhase("r2"); };
   useEffect(() => { qiRef.current = qi; if (phase === "l3") { qT0.current = Date.now(); setQLeft(Q_TIME); } }, [qi, phase]);
@@ -659,17 +676,17 @@ export default function TomaTasa() {
   useEffect(() => { if (phase !== "l3" || qOk !== null) return; if (qLeft <= 5 && qLeft > 0) Music.fx("tick"); if (qLeft <= 0) { Music.fx("wrong"); setWrong(-1); setWrongMsg("¡Se acabó el tiempo! Esta era la buena:"); setQOk(true); setTimeout(advQ, 3800); } }, [qLeft]);
   const tapL2 = (idx) => {
     if (phase !== "l2" || seatBanner) return; const c = crowd[idx]; if (c && c.state === "facha") { if (Date.now() - (c.t0 || 0) < 1500) return; Music.fx("miss"); setLeft((l) => Math.max(1, l - 3)); setCrowd((cs) => Object.assign(cs.slice(), { [idx]: { ...cs[idx], duda: "¡NI LO INTENTES!" } })); return; } if (!c || c.state !== "duda") return;
-    const PF = perfilFor(target[0]), P = PF[c.kind], step = c.step + 1; if (Date.now() - (c.t0 || 0) < 1300) return;
+    const PF = perfilFor(target[0]), P = PF[c.kind], step = c.step + 1, E = c.esp && ESPECIALES.find((e) => e.k === c.esp); if (Date.now() - (c.t0 || 0) < 1300) return;
     setRays((r) => [...r, { k: Math.random(), idx }]); 
     if (step >= c.need) {
-      Music.fx("ray"); const n = 1 + c.extra;
+      Music.fx("ray"); const n = 1 + (c.extra || 0);
       setCrowd((cs) => Object.assign(cs.slice(), { [idx]: { ...cs[idx], state: "power", look: { ...cs[idx].look, mood: "brave" }, msg: VOY(LOCAL[target[0]]), mult: n } }));
       setVotos((v) => v + perVote * n); setLeft((l) => l + 2 * n); setPlus(Math.random());
-    } else { Music.fx("tick"); const all = Object.values(PF).flatMap((x) => x.frases.flat()); let fr, ar; for (let q = 0; q < 60; q++) { fr = pickR(all); ar = answerFor(fr, target); if (!usedArgs.current.has(ar)) break; } usedArgs.current.add(ar); const moods = ["frown", "plain", "plain", "kind", "kind"]; setCrowd((cs) => Object.assign(cs.slice(), { [idx]: { ...cs[idx], step, t0: Date.now(), look: { ...cs[idx].look, mood: moods[Math.min(4, Math.round((step / c.need) * 4))] }, duda: fr, arg: ar } })); }
+    } else if (E) { Music.fx("tick"); const moods = ["frown", "plain", "kind"]; setCrowd((cs) => Object.assign(cs.slice(), { [idx]: { ...cs[idx], step, t0: Date.now(), look: { ...cs[idx].look, mood: moods[Math.min(2, step)] }, duda: E.dudas[step], arg: E.args[step](target) } })); } else { Music.fx("tick"); const all = Object.values(PF).flatMap((x) => x.frases.flat()); let fr, ar; for (let q = 0; q < 60; q++) { fr = pickR(all); ar = answerFor(fr, target); if (!usedArgs.current.has(ar) && !usedDud.current.has(fr)) break; } usedArgs.current.add(ar); usedDud.current.add(fr); const moods = ["frown", "plain", "plain", "kind", "kind"]; setCrowd((cs) => Object.assign(cs.slice(), { [idx]: { ...cs[idx], step, t0: Date.now(), look: { ...cs[idx].look, mood: moods[Math.min(4, Math.round((step / c.need) * 4))] }, duda: fr, arg: ar } })); }
   };
   useEffect(() => {
     if (phase !== "l2" || votos < target[2] || seatBanner) return;
-    Music.fx("win"); const s = { prov: target[0], rival: target[1], retain: target[3], votos: target[2] }; setSeats((x) => [...x, s]); setSeatBanner(s); setLeft((l) => l + 10); setPlus(Math.random());
+    Music.fx("win"); const s = { prov: target[0], rival: target[1], retain: target[3], votos: target[2] }; setSeats((x) => { const nx = [...x, s]; if (nx.length === ESCANOS.length) setTimeout(() => setReward({ type: "all", list: nx }), 600); else if (nx.length % 3 === 0) setTimeout(() => setReward({ type: "card", list: nx }), 600); return nx; }); setSeatBanner(s); setLeft((l) => l + 10); setPlus(Math.random());
 
   }, [votos]);
   useEffect(() => { if (phase !== "l2" || seatBanner || !crowd.length || crowd.some((c) => c.state === "duda" || c.state === "facha")) return; const t = setTimeout(() => setCrowd(newCrowd()), 2200); return () => clearTimeout(t); }, [crowd, phase, seatBanner]);
@@ -726,30 +743,30 @@ export default function TomaTasa() {
           <div style={S.hud}>
             <div className={left <= 5 ? "blink" : ""} style={{ ...S.box, background: left <= 5 ? MAL : INK }}>{left}</div>
             <div style={{ flex: 1 }}>
-              <div style={S.hudT}>HUCHA DE LA MAYORÍA · {mil(hucha)}</div>
+              <div style={S.hudT}>{mobile ? "HUCHA" : "HUCHA DE LA MAYORÍA"} · {mil(hucha)}</div>
               
             </div>
           </div>
           <div style={S.boardWrap}>
             <div className={left <= 10 ? "alarm" : ""} style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: 18, background: "#fff", border: "4px solid " + INK }}>
-              {holes.map((h, i) => { const [side, pos] = PEEK[i]; return (
-                <div key={i} className={"peek peek-" + side} style={side === "t" || side === "b" ? { left: pos + "%" } : { top: pos + "%" }}>
-                  {h && <div className={"peekIn " + (h.hit ? (h.rich ? "fried" : "oops") : "")} onPointerDown={() => tapL1(i)}><Bicho look={h.look} size={200} talk={i % 3} /></div>}
+              {holes.map((h, i) => h && (
+                <div key={h.k} className="pop" style={{ left: 17 + (i % 3) * 33 + h.jx + "%", top: 18 + Math.floor(i / 3) * 32 + h.jy + "%", "--sz": h.sz, "--gr": h.gr }}>
+                  <div className={"popIn " + (h.hit ? (h.rich ? "fried" : "oops") : "")} onPointerDown={() => tapL1(i)}><Bicho look={h.look} size={200} talk={i % 3} /></div>
                 </div>
-              ); })}
+              ))}
               {joke && <div key={joke} className="joke">{joke}</div>}
               {idle && <div className="idleAd">¡SEÑALA A LOS RICOS<br /><span style={{ color: "#fff" }}>Y TÁSALOS!</span></div>}
               {left <= 10 && left > 0 && <div className="warn">¡A FREÍRLOS A IMPUESTOS!</div>}
               {left <= 10 && left > 0 && <div className="warn warn2">¡PEÑA, VAAAA!</div>}
-              {flash && <div key={flash.k || flash.m + "" + flash.i} className={"tasaC" + (flash.x > 1 ? " tasaX" : "")} style={flash.bad ? { whiteSpace: "normal", width: "min(86%, 900px)", color: "#fff", background: BIEN, padding: "12px 28px", border: "5px solid " + INK, borderRadius: 14, fontSize: "clamp(34px, 7vw, 84px)" } : flash.x > 1 ? { color: MAL, background: YEL, padding: "16px 34px", border: `6px solid ${INK}`, borderRadius: 18, fontSize: flash.x === 3 ? "clamp(56px, 12vw, 150px)" : "clamp(48px, 10.5vw, 130px)" } : { color: MAL }}>{flash.bad ? <>{flash.txt}<br /><span style={{ color: YEL, fontSize: "60%" }}>¡Pierdes {flash.pen} s!</span></> : <>{flash.x === 3 ? "¡TASA TRIPLE!" : flash.x === 2 ? "¡TASA DOBLE!" : "¡TOMA TASA!"}<br />{flash.x > 1 && <span style={{ display: "block", fontSize: "36%", color: INK, margin: "8px 0", textShadow: "none", WebkitTextStroke: 0 }}>{flash.praise}</span>}<span style={{ fontSize: "55%" }}>+{flash.m.toLocaleString("es")} M€</span></>}</div>}
+              {flash && <div key={flash.k || flash.m + "" + flash.i} className={"tasaC" + (flash.x > 1 ? " tasaX" : "")} style={flash.bad ? { whiteSpace: "normal", width: "min(86%, 900px)", color: "#fff", background: BIEN, padding: "12px 28px", border: "5px solid " + INK, borderRadius: 14, fontSize: "clamp(34px, 7vw, 84px)" } : flash.x > 1 ? { color: MAL, background: YEL, whiteSpace: "normal", width: mobile ? "88%" : "auto", padding: mobile ? "12px 10px" : "16px 34px", border: `6px solid ${INK}`, borderRadius: 18, fontSize: mobile ? "11vw" : flash.x === 3 ? "clamp(56px, 12vw, 150px)" : "clamp(48px, 10.5vw, 130px)" } : { color: MAL }}>{flash.bad ? <>{flash.txt}<br /><span style={{ color: YEL, fontSize: "60%" }}>¡Pierdes {flash.pen} s!</span></> : <>{flash.x === 3 ? "¡TASA TRIPLE!" : flash.x === 2 ? "¡TASA DOBLE!" : "¡TOMA TASA!"}<br />{flash.x > 1 && <span style={{ display: "block", fontSize: "36%", color: INK, margin: "8px 0", textShadow: "none", WebkitTextStroke: 0 }}>{flash.praise}</span>}<span style={{ fontSize: "55%" }}>+{flash.m.toLocaleString("es")} M€</span></>}</div>}
             </div>
           </div>
         </div>
       )}
 
       {phase === "pick" && (
-        <div style={{ ...S.res2, justifyContent: "flex-start", paddingTop: 24 }}>
-          <div className="hdrop big3d" style={{ fontFamily: FONT, fontSize: "clamp(40px, 8vw, 96px)", color: YEL, lineHeight: 1, textAlign: "center", fontSize: "clamp(28px, 5vw, 60px)" }}>¡ESCOGE PROVINCIA<br /><span style={{ color: "#fff", fontSize: "0.6em" }}>Y ARREBATA ESCAÑOS A PP/VOX!</span></div>
+        <div style={{ ...S.res2, justifyContent: mobile ? "center" : "flex-start", paddingTop: 24, overflowY: "auto" }}>
+          <div style={{ textAlign: "center", position: "relative", zIndex: 3 }}><div className="titleMove big3d" style={{ fontFamily: FONT, color: YEL, lineHeight: 0.95, fontSize: "clamp(30px, 8vw, 92px)" }}>¡ESCOGE PROVINCIA!</div><div className="bandMove" style={{ display: "inline-block", background: INK, color: "#fff", fontFamily: FONT, fontSize: "clamp(15px, 3vw, 34px)", padding: "6px 18px", marginTop: 6 }}>Y ARREBATA ESCAÑOS A <span style={{ color: YEL }}>PP/VOX</span></div></div>
           {seats.length > 0 && <div style={{ fontFamily: FONT, color: "#fff", background: INK, borderRadius: 999, padding: "6px 18px", marginTop: 8, fontSize: "clamp(14px, 1.8vw, 20px)" }}>Llevas {seats.length} {seats.length === 1 ? "escaño" : "escaños"} · te quedan <span style={{ color: YEL }}>{left} s</span> · ¿a qué provincia vas ahora?</div>}
           <div style={{ position: "relative", width: "min(96vw, calc((100vh - 210px) * 1.53), 1150px)", aspectRatio: "135 / 88", marginTop: 10 }}>
             <svg viewBox="0 0 135 88" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
@@ -758,24 +775,21 @@ export default function TomaTasa() {
               <rect x="1" y="56" width="36" height="30" rx="2" fill="none" stroke="#fff" strokeWidth="0.4" strokeDasharray="1.5 1" />
               {CANARIAS.map((p, k) => <polygon key={k} points={p} fill="#f3d9cf" stroke={INK} strokeWidth="0.4" />)}
             </svg>
-            {provOrder.map((pi, k) => { const e = ESCANOS[pi], [x, y] = provXY(e), won = seats.some((q) => q.prov === e[0] && q.rival === e[1]); return <button key={pi} className={won ? "provWon" : "provBtn"} disabled={won} onClick={() => goL2(pi)} style={{ position: "absolute", left: (x / 135) * 100 + "%", top: (y / 88) * 100 + "%", translate: "-50% -50%", animationDelay: `${0.3 + k * 0.04}s, ${1.2 + (k % 6) * 0.3}s`, background: "#fff", color: INK, border: "2px solid " + INK, borderRadius: 4, boxShadow: `inset 0 0 0 3px ${YEL}, 2px 3px 0 ${INK}`, rotate: `${(k % 3) - 1}deg`, padding: "5px 9px", font: `900 clamp(9px, 1.15vw, 13px)/1.1 ${FONT}`, cursor: "pointer", whiteSpace: "nowrap", zIndex: 2 }}>{e[0]}<br /><span style={{ color: won ? BIEN : MAL }}>{won ? "¡CONSEGUIDO!" : `${e[2].toLocaleString("es")} votos · ${e[1]}`}</span></button>; })}
-            {!walkTo && <div className="idleSit" onClick={() => setIdleHint(Date.now())}>
-              <svg viewBox="0 0 70 80" className="idleBody">
-                <rect x="2" y="56" width="66" height="8" rx="2" fill="#a67852" stroke="#141414" strokeWidth="1.5" /><rect x="6" y="64" width="5" height="14" fill="#8a6a4a" /><rect x="59" y="64" width="5" height="14" fill="#8a6a4a" />
-                <rect x="24" y="48" width="26" height="8" rx="4" fill="#2d3142" /><rect x="44" y="48" width="7" height="26" rx="3" fill="#2d3142" /><rect x="42" y="72" width="12" height="6" rx="2" fill="#141414" />
-                <rect x="30" y="50" width="22" height="7" rx="3.5" fill="#3d405b" /><rect x="47" y="52" width="7" height="24" rx="3" fill="#3d405b" /><rect x="46" y="74" width="12" height="5" rx="2" fill="#141414" />
-                <path d="M18 26 Q28 20 38 26 L38 54 L18 54 Z" fill="#7d8597" stroke="#141414" strokeWidth="1.5" />
-                <path d="M34 30 Q46 38 44 48" stroke="#7d8597" strokeWidth="6" fill="none" strokeLinecap="round" /><circle cx="43" cy="48" r="3.5" fill="#e0ac69" stroke="#141414" />
-                <g className="headDown"><circle cx="30" cy="16" r="10" fill="#e0ac69" stroke="#141414" strokeWidth="1.5" /><path d="M20 14 Q23 4 32 5 Q40 7 40 14 Q34 10 28 11 Q23 11 20 14 Z" fill="#3b2a20" /><circle cx="29" cy="20" r="1.1" fill="#141414" /><circle cx="35" cy="20" r="1.1" fill="#141414" /><path d="M29 24 Q32 22.5 35 24" stroke="#141414" strokeWidth="1" fill="none" /></g>
-              </svg>
-              <div className="bubbleTxt idleBub" key={idleHint && Date.now() - idleHint < 3500 ? "h" + idleHint : idleMood} style={idleHint && Date.now() - idleHint < 3500 ? { background: YEL } : null}>{idleHint && Date.now() - idleHint < 3500 ? "¡Dale a la provincia y busca el voto útil!" : IDLE_FR[idleMood]}</div>
-            </div>}
+            {provOrder.map((pi, k) => { const e = ESCANOS[pi], [x, y] = provXY(e), won = seats.some((q) => q.prov === e[0] && q.rival === e[1]), sel = pickInfo === pi; return <div key={pi} className="pdot" onClick={() => { if (won || pickInfo !== null) return; setPickInfo(pi); Music.fx("tick"); setTimeout(() => { setPickInfo(null); goL2(pi); }, 1500); }} style={{ left: (x / 135) * 100 + "%", top: (y / 88) * 100 + "%", zIndex: sel ? 9 : 2, cursor: won ? "default" : "pointer" }}>
+              <i style={{ background: won ? YEL : "#8b5cf6", animationDelay: `${(k % 7) * 0.2}s` }} />
+              <span>{e[0] === "Madrid" ? `Madrid (${e[1]})` : mobile && e[0] === "Santa Cruz de Tenerife" ? "Tenerife" : e[0]}{won ? " ✓" : ""}</span>
+              {sel && <div className="pinfo">A {e[2].toLocaleString("es")} votos<br />de quitarle el escaño a {e[1]}</div>}
+            </div>; })}
+            {!walkTo && (mobile ? [[16, 122], [50, 132], [84, 122]] : [[-7, 22], [107, 18], [107, 62], [-7, 52]]).map(([fx, fy], n) => { const hint = idleHint && idleHint.n === n && Date.now() - idleHint.t < 3500; return <div key={n} className="idleFace" onClick={() => setIdleHint({ n, t: Date.now() })} style={{ left: fx + "%", top: fy + "%", animationDelay: `${n * 0.7}s` }}>
+              <div className="faceC"><Bicho look={{ ...lookByName("idle" + n, LOOKS.pueblo), mood: n % 2 ? "frown" : "plain" }} size={90} talk={n} /></div>
+              <div className="bubbleTxt idleBub" key={hint ? "h" + idleHint.t : idleMood + n} style={hint ? { background: YEL } : null}>{hint ? "¡Tienes que convencerme! Elige provincia" : IDLE_FR[(idleMood + n * 2) % IDLE_FR.length]}</div>
+            </div>; })}
             {walkTo && <div className="walkerMap" style={{ "--tx": (walkTo[0] / 135) * 100 + "%", "--ty": (walkTo[1] / 88) * 100 + "%" }}>
               <Bicho look={{ ...lookByName("sofa", LOOKS.pueblo), mood: "brave" }} size={80} />
               <div className="bubbleTxt" style={{ fontSize: 18, padding: "6px 12px", background: YEL }}>¡ALLÁ VAMOS! ¡NO PASARÁN!</div>
             </div>}
           </div>
-          <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, opacity: 0.9, marginTop: 6 }}>Votos que faltan para arrebatar el último escaño. Fuente: estimación de la campaña del Frente Amplio.</div>
+          <div style={{ color: "#fff", fontSize: 12, fontWeight: 700, opacity: 0.9, marginTop: 6, display: mobile ? "none" : "block" }}>Votos que faltan para arrebatar el último escaño. Fuente: estimación de la campaña del Frente Amplio.</div>
         </div>
       )}
 
@@ -783,13 +797,10 @@ export default function TomaTasa() {
         <div style={S.res2}>
           <div className="big3d" style={S.resBig}>{mil(hucha)}</div>
           {hucha > 0 && <div className="big3d" style={{ fontFamily: FONT, fontSize: "clamp(26px, 4.4vw, 52px)", color: YEL, lineHeight: 1, marginTop: -6 }}>¡que van para todas!</div>}
-          {hucha === 0 ? <><div style={{ fontFamily: FONT, fontSize: "clamp(22px, 3.6vw, 38px)", color: "#fff", textAlign: "center", lineHeight: 1.1 }}>Sin tasar a nadie no se puede hacer nada.<br />¡Vuelve a por ellos!</div><div style={S.row}><Btn onClick={startL1} bg={INK}>Seguir tasando</Btn></div></> : <>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center", width: "min(92vw, 820px)", margin: "8px 0 14px" }}>{medR1.map((m, i) => <div key={m} className="hdrop" style={{ fontFamily: FONT, fontSize: "clamp(17px, 2.3vw, 28px)", lineHeight: 1.15, color: INK, background: "#fff", border: `4px solid ${INK}`, borderLeft: `14px solid ${YEL}`, borderRadius: 14, padding: "12px 20px", boxShadow: `5px 6px 0 ${INK}`, width: "100%", textAlign: "left", rotate: `${(i - 1) * 0.8}deg`, animationDelay: `${0.5 + i * 0.7}s` }}>{m}</div>)}</div>
-          <div style={S.row}>
-            <Btn href={wa(share1)} bg="#25d366">Compartir</Btn>
-            <Btn onClick={startL1} bg={INK}>Seguir jugando</Btn>
-          </div>
-          <button onClick={startL2} className="nextArrow" aria-label="Ir al nivel 2"><span style={{ fontSize: "1.6em", lineHeight: 0.8 }}>▶</span><span>Nivel 2 en {cd}</span></button></>}
+          {hucha === 0 ? <><div style={{ fontFamily: FONT, fontSize: "clamp(22px, 3.6vw, 38px)", color: "#fff", textAlign: "center", lineHeight: 1.1 }}>Sin tasar a nadie no se puede hacer nada.<br />¡Vuelve a por ellos!</div><button className="go" onClick={startL1}><span>Repetir</span></button></> : <>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center", width: "min(92vw, 820px)", margin: "8px 0 14px" }}>{medR1.map((m, i) => <div key={m} className="hdrop" style={{ fontFamily: FONT, fontSize: "clamp(17px, 2.3vw, 28px)", lineHeight: 1.15, color: INK, background: "#fff", border: `4px solid ${INK}`, borderLeft: `14px solid ${YEL}`, borderRadius: 14, padding: "12px 20px", boxShadow: `5px 6px 0 ${INK}`, width: "100%", boxSizing: "border-box", textAlign: "left", rotate: `${(i - 1) * 0.8}deg`, animationDelay: `${0.5 + i * 0.7}s` }}>{m}</div>)}</div>
+          <button className="go" onClick={startL2}><i className="fill" /><span>Siguiente ▶ {cd}</span></button>
+          <div className="mini"><button onClick={startL1}>Repetir</button><a href={wa(share1)} target="_blank" rel="noreferrer">Compartir</a></div></>}
         </div>
       )}
 
@@ -808,24 +819,27 @@ export default function TomaTasa() {
           <div style={S.field}>
                         {crowd.map((c, idx) => (
               <div key={c.k} onPointerDown={() => tapL2(idx)} className={"walker big solo " + c.state} data-k={c.hitK} style={{ left: c.x + "%", top: c.y + "%", animationDelay: `${(c.i % 7) / 3}s` }}>
-                <div style={{ width: "100%" }}><Bicho look={c.look} size={120} talk={c.i % 3} /></div>
+                {c.tag && <div className="ptag" style={{ background: c.ring }}>{c.tag}</div>}
+                <div style={{ width: "100%", borderRadius: "50%", boxShadow: c.ring ? `0 0 0 8px ${c.ring}` : "none" }}><Bicho look={c.look} size={120} talk={c.i % 3} /></div>
                 {(c.state === "duda" || c.state === "facha") && <div className="bubbleTxt" key={c.duda}>{c.duda}</div>}
-                {c.state === "facha" && <div className="fachaVest"><i /></div>}
+                {c.state === "facha" && !c.tag && <div className="fachaVest"><i /></div>}
                 {c.state === "power" && c.mult > 1 && <div className="mult">+{c.mult - 1}</div>}
                 {c.state === "power" && <div className="bubbleTxt power">{c.msg}</div>}
               </div>
             ))}
             {phase === "l2" && crowd[0] && crowd[0].state === "facha" && <div className="argPanel" key="f" style={{ background: INK, color: "#fff" }}>
               <div style={{ fontFamily: FONT, fontSize: 14, letterSpacing: 2, color: YEL }}>OJO</div>
-              <div style={{ fontFamily: FONT, fontSize: "clamp(22px, 3vw, 38px)", lineHeight: 1.15, margin: "8px 0 16px" }}>A este no le hables: no nos votaría nunca. Si le das la papeleta, pierdes 3 segundos.</div>
+              <div style={{ fontFamily: FONT, fontSize: "clamp(22px, 3vw, 38px)", lineHeight: 1.15, margin: "8px 0 16px" }}>{crowd[0].note || "No nos votaría nunca. Si le das la papeleta, pierdes 3 s."}</div>
               <button className="armedSlow" onPointerDown={(e) => { e.stopPropagation(); Music.fx("tick"); setCrowd(newCrowd()); }} style={{ ...S.btn, background: YEL, color: INK, fontSize: 22, padding: "10px 26px" }}>SIGUIENTE ▶</button>
             </div>}
             {phase === "l2" && crowd[0] && crowd[0].state === "duda" && <div className="argPanel" key={crowd[0].duda}>
-              <div style={{ fontFamily: FONT, fontSize: 14, letterSpacing: 2, color: MAL }}>{LOCAL[target[0]] === "ca" ? "EL TEU ARGUMENT" : LOCAL[target[0]] === "gl" ? "O TEU ARGUMENTO" : "TU ARGUMENTO"}</div>
-              <div style={{ fontFamily: FONT, fontSize: "clamp(18px, 2.4vw, 30px)", lineHeight: 1.15, color: INK, margin: "8px 0 16px" }}>{crowd[0].arg || answerFor(crowd[0].duda, target)}</div>
-              <button className="ballotBtn armed" onPointerDown={(e) => { e.stopPropagation(); tapL2(0); }}>¡VOTO<br />ÚTIL!</button>
+              <button className="voteCard armed" onPointerDown={(e) => { e.stopPropagation(); tapL2(0); }}>
+                <div className="vcHead">¡VOTO ÚTIL!</div>
+                <div className="vcText">{crowd[0].arg || answerFor(crowd[0].duda, target)}</div>
+                <div className="vcTap">TOCA</div>
+              </button>
             </div>}
-            {rays.slice(-6).map((r) => crowd[r.idx] && <div key={r.k} className="ballot" style={{ left: crowd[r.idx].x + 13 + "%", top: crowd[r.idx].y + 20 + "%" }}><span>VOTO<br />ÚTIL</span></div>)}
+            {rays.slice(-6).map((r) => crowd[r.idx] && <div key={r.k} className="ballot" style={{ left: crowd[r.idx].x + "%", top: crowd[r.idx].y + "%" }}><span>VOTO<br />ÚTIL</span></div>)}
             {plus && <div key={plus} className="tasaC" style={{ color: BIEN, top: "16%", fontSize: "clamp(36px,6vw,70px)" }}>{seatBanner ? "+10 s" : "¡+" + 2 * ((crowd[0] && crowd[0].mult) || 1) + " s!"}</div>}
             {seatBanner && <div style={S.seatWrap}><div style={S.seatBan} className="slam"><div className="big3d" style={S.seatBig}>¡ESCAÑO {seatBanner.retain ? "RETENIDO" : "ARREBATADO"}!</div><div style={S.sub2}>{seatBanner.prov.toUpperCase()} · {seatBanner.retain ? "FRENTE A" : "A"} {seatBanner.rival.toUpperCase()}</div><div style={{ fontWeight: 800, fontSize: 18, marginTop: 6 }}>¡Solo dependía de {seatBanner.votos.toLocaleString("es")} votos!</div>
               <div style={{ fontFamily: FONT, fontSize: "clamp(16px, 2vw, 22px)", marginTop: 14 }}>{seats.length} {seats.length === 1 ? "escaño" : "escaños"} · ¿y ahora qué?</div>
@@ -843,11 +857,8 @@ export default function TomaTasa() {
           <div className="big3d" style={S.resBig}>{seats.length} {seats.length === 1 ? "escaño" : "escaños"}</div>
           {seats.length > 0 && <div className="big3d" style={{ fontFamily: FONT, fontSize: "clamp(20px, 3.4vw, 42px)", color: "#fff", textAlign: "center", lineHeight: 1.1, maxWidth: 900 }}>{seats.length === 1 ? "arrebatado" : "arrebatados"} para hacer posible<br /><span style={{ color: YEL }}>¡un gobierno progresista!</span></div>}
           {seats.length <= 1 && <div className="big3d" style={{ fontFamily: FONT, fontSize: "clamp(22px, 3.6vw, 40px)", color: "#fff", textAlign: "center", lineHeight: 1.1, maxWidth: 820 }}>Esto no puede pasar el 29N,<br />¡así que inténtalo otra vez!</div>}
-          <div style={S.row}>
-            {seats.length > 0 && <Btn href={wa(share2)} bg="#25d366">Compartir</Btn>}
-            <Btn onClick={startL2} bg={INK}>Seguir jugando</Btn>
-          </div>
-          {seats.length > 0 && <button onClick={startL3} className="nextArrow" aria-label="Ir al nivel 3"><span style={{ fontSize: "1.6em", lineHeight: 0.8 }}>▶</span><span>Nivel 3 en {cd}</span></button>}
+          {seats.length > 0 ? <><button className="go" onClick={startL3}><i className="fill" /><span>Siguiente ▶ {cd}</span></button>
+          <div className="mini"><button onClick={startL2}>Repetir</button><a href={wa(share2)} target="_blank" rel="noreferrer">Compartir</a></div></> : <button className="go" onClick={startL2}><span>Repetir</span></button>}
         </div>
       )}
 
@@ -866,14 +877,16 @@ export default function TomaTasa() {
         </div>); })()}
 
       {phase === "end" && (
-        <div style={{ ...S.res2, overflow: "hidden" }} className="epic">
+        <div style={{ ...S.res2, overflowX: "hidden", overflowY: "auto", justifyContent: mobile ? "flex-start" : "center", paddingTop: mobile ? 40 : undefined }} className="epic">
           <div className="rays" />
+          <div className="rocket"><svg viewBox="0 0 60 140" width="100%"><path d="M30 0 C46 18 48 50 46 90 L14 90 C12 50 14 18 30 0 Z" fill="#fff" stroke="#141414" strokeWidth="3" /><circle cx="30" cy="42" r="9" fill="#c6f432" stroke="#141414" strokeWidth="3" /><path d="M14 70 L0 100 L14 92 Z M46 70 L60 100 L46 92 Z" fill="#e8452c" stroke="#141414" strokeWidth="3" /><text x="30" y="80" textAnchor="middle" fontFamily="Archivo Black" fontSize="11" fill="#141414">29N</text><path className="flame" d="M18 92 Q30 140 42 92 Z" fill="#ffd25a" /></svg></div>
           {endBg === 0 && <div className="bgCrowd">{Array.from({ length: 14 }, (_, i) => <div key={i} className="jumper" style={{ left: 2 + i * 7 + "%", animationDelay: `${(i % 5) * 0.15}s` }}><Bicho look={lookByName("fiesta" + i, EMPOWER_LOOK)} size={100} talk={i % 3} /></div>)}</div>}
           {endBg === 1 && <div className="bgFire">{Array.from({ length: 7 }, (_, i) => <div key={i} className="burst" style={{ left: 8 + i * 13 + "%", top: 10 + (i % 3) * 18 + "%", animationDelay: `${i * 0.45}s`, color: [YEL, "#fff", "#ffd25a"][i % 3] }}>{Array.from({ length: 12 }, (_, j) => <i key={j} style={{ rotate: j * 30 + "deg" }} />)}</div>)}</div>}
           {endBg === 2 && <div className="bgFlags">{Array.from({ length: 9 }, (_, i) => <div key={i} className="flag" style={{ left: 3 + i * 11 + "%", animationDelay: `${i * 0.2}s`, background: [YEL, "#fff", INK][i % 3] }}><span>{["29N", "SÍ", "VOTA", "ÚTIL", "¡YA!", "29N", "SÍ", "VOTA", "¡YA!"][i]}</span></div>)}</div>}
           {endBg === 3 && <div className="bgCity">{Array.from({ length: 10 }, (_, i) => <div key={i} className="bldg" style={{ left: i * 10 + "%", height: 25 + ((i * 37) % 40) + "%" }}>{Array.from({ length: 12 }, (_, j) => <i key={j} style={{ animationDelay: `${(i * 7 + j * 3) % 20 * 0.2}s` }} />)}</div>)}</div>}
           {Array.from({ length: 60 }, (_, i) => <i key={i} className="confeti" style={{ left: (i * 37) % 100 + "%", background: [YEL, "#fff", INK][i % 3], animationDelay: `${(i % 12) * 0.25}s`, animationDuration: `${2.6 + (i % 5) * 0.5}s` }} />)}
-          <div className="hdrop big3d" style={{ position: "relative", fontFamily: FONT, fontSize: "clamp(36px, min(7vw, 9vh), 100px)", color: YEL, lineHeight: 0.92, textAlign: "center" }}>¡GRACIAS!<br /><span style={{ color: "#fff" }}>¡LO CONSEGUIMOS!</span></div>
+          <div className="hdrop big3d" style={{ position: "relative", fontFamily: FONT, fontSize: "clamp(36px, min(7vw, 9vh), 100px)", color: YEL, lineHeight: 0.92, textAlign: "center" }}>¡MISIÓN 29N<br /><span style={{ color: "#fff" }}>CUMPLIDA!</span></div>
+          <div className="statsRow">{[[tasados.length, "megarricos tasados"], [mil(hucha), "para la mayoría"], [seats.length, "escaños a la derecha"], [NUMF(seats.reduce((a, q) => a + q.votos, 0)), "votos movilizados"], [firstTry + "/5", "aciertos"]].map(([v, l]) => <div key={l}><b>{v}</b><span>{l}</span></div>)}</div>
           <div style={{ position: "relative", display: "flex", gap: "clamp(14px, 3vw, 40px)", flexWrap: "wrap", justifyContent: "center", margin: "14px 0" }}>
             {[[rankH, "en tasar megarricos", mil(hucha)], [rankS, "en arrebatar escaños", seats.length + (seats.length === 1 ? " escaño" : " escaños")]].map(([r, l, v], k) => <div key={l} className="medal hdrop" style={{ animationDelay: `${1.6 + k * 0.6}s, ${2.4 + k * 0.6}s` }}>
               <div style={{ fontFamily: FONT, fontSize: "clamp(15px, 1.6vw, 20px)", color: INK }}>ERES LA</div>
@@ -884,7 +897,25 @@ export default function TomaTasa() {
             </div>)}
           </div>
           <div className="hdrop" style={{ position: "relative", animationDelay: "3.2s", fontFamily: FONT, fontSize: "clamp(16px, min(2.4vw, 3.2vh), 30px)", color: "#fff", textAlign: "center", lineHeight: 1.15, maxWidth: 900 }}>Pasó en EE. UU., en Brasil y ahora en España,<br /><span style={{ color: YEL }}>gracias a tu compromiso con la democracia.</span><br /><span className="big3d" style={{ display: "inline-block", marginTop: 10, fontSize: "1.5em", color: "#fff" }}>¡LO HAREMOS POSIBLE!</span></div>
-          <div style={{ ...S.row, position: "relative", marginTop: 18 }}><Btn href={wa(shareEnd)} bg="#25d366">Compartir</Btn><Btn onClick={() => setShowRank(true)}>Ranking</Btn><Btn onClick={startL1} bg={INK}>Jugar otra vez</Btn></div>
+          <div style={{ position: "relative", marginTop: 18, textAlign: "center" }}><button className="go" onClick={startL1}><span>Jugar otra vez</span></button><div className="mini"><a href={wa(shareEnd)} target="_blank" rel="noreferrer">Compartir</a><button onClick={() => setShowRank(true)}>Ranking</button></div></div>
+        </div>
+      )}
+
+      {reward && (
+        <div onClick={() => setReward(null)} style={{ position: "fixed", inset: 0, zIndex: 70, background: "rgba(20,20,20,.88)", display: "grid", placeItems: "center", padding: 16 }}>
+          {reward.type === "card" ? <div className="rewardCard">
+            <div style={{ font: `900 13px ${FONT}`, letterSpacing: 3, color: MAL }}>CARTA ÚNICA · {reward.list.length} ESCAÑOS</div>
+            <div className="big3d" style={{ fontFamily: FONT, fontSize: "clamp(30px, 7vw, 52px)", color: YEL, lineHeight: 1, margin: "8px 0" }}>¡TRIPLETE!</div>
+            {reward.list.slice(-6).map((q) => <div key={q.prov + q.rival} style={{ font: `900 clamp(12px, 2vw, 18px) ${FONT}`, color: INK, background: "#fff", border: `2px solid ${INK}`, borderRadius: 8, padding: "4px 10px", margin: "4px 0" }}>{q.prov} · arrebatado a {q.rival} · {NUMF(q.votos)} votos</div>)}
+            <div style={{ font: `900 clamp(15px, 2vw, 20px) ${FONT}`, color: INK, marginTop: 8 }}>{NUMF(reward.list.reduce((a, q) => a + q.votos, 0))} votos movilizados</div>
+          </div> : <div style={{ textAlign: "center" }}>
+            <svg viewBox="0 0 300 200" className="ship" style={{ width: "min(90vw, 560px)" }}>
+              <rect x="0" y="130" width="300" height="70" fill="#1b3a6b" /><g className="shipBody"><path d="M60 110 L240 110 L220 140 L80 140 Z" fill="#141414" /><rect x="90" y="88" width="120" height="22" fill="#e9e1d3" stroke="#141414" strokeWidth="2" />{[110, 140, 170].map((x) => <rect key={x} x={x} y="62" width="14" height="26" fill="#e8452c" stroke="#141414" strokeWidth="2" />)}<text x="150" y="132" textAnchor="middle" fill="#fff" fontFamily="Archivo Black" fontSize="16">PP + VOX</text></g>
+              <path className="wave" d="M0 135 Q25 125 50 135 T100 135 T150 135 T200 135 T250 135 T300 135 V200 H0 Z" fill="#2a5aa0" />
+            </svg>
+            <div className="big3d" style={{ fontFamily: FONT, fontSize: "clamp(30px, 7vw, 64px)", color: YEL, lineHeight: 1 }}>¡TODAS LAS PROVINCIAS!</div>
+            <div style={{ fontFamily: FONT, fontSize: "clamp(18px, 3vw, 30px)", color: "#fff" }}>La derecha se hunde: {reward.list.length} escaños arrebatados</div>
+          </div>}
         </div>
       )}
 
@@ -1123,7 +1154,7 @@ h1 span,.tasaC,.warn,.big3d{text-shadow:.02em .02em 0 #141414,.04em .04em 0 #141
 @keyframes fall{0%{translate:0 -10vh;rotate:0deg}100%{translate:30px 110vh;rotate:720deg}}
 .medal{background:#fff;border:6px solid #141414;border-radius:26px;padding:10px 24px;text-align:center;min-width:clamp(220px,26vw,330px);box-shadow:0 0 0 8px #c6f432,10px 12px 0 8px #141414;animation:hdrop .5s cubic-bezier(.5,0,.75,0) both,medalGlow 1.6s ease-in-out infinite alternate}
 @keyframes medalGlow{to{scale:1.04;rotate:-1deg}}
-.argPanel{position:absolute;left:50%;top:10%;width:min(46%,560px);z-index:6;background:#fff;border:5px solid #141414;border-radius:22px;padding:18px 22px;box-shadow:8px 10px 0 #141414;animation:bubFadeD2 .45s ease-out both;text-align:center}
+.argPanel{position:absolute;left:50%;top:0;width:50%;height:100%;box-sizing:border-box;z-index:6;background:#fff;border-left:4px dashed #141414;padding:24px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;animation:bubFadeD2 .45s ease-out both}
 @keyframes bubFadeD2{from{opacity:0;translate:20px 0}to{opacity:1;translate:0 0}}
 .ballotBtn{width:clamp(120px,13vw,170px);aspect-ratio:3/4;background:#fff;border:4px solid #141414;border-radius:8px;box-shadow:inset 0 0 0 10px #c6f432,4px 6px 0 #141414;font:900 clamp(22px,2.8vw,34px)/1 "Archivo Black",sans-serif;color:#141414;cursor:pointer;animation:provPulse 1.2s ease-in-out infinite;touch-action:manipulation}
 .ballotBtn:active{scale:.94}
@@ -1165,6 +1196,72 @@ h1 span,.tasaC,.warn,.big3d{text-shadow:.02em .02em 0 #141414,.04em .04em 0 #141
 .fachaVest i{position:absolute;left:62%;top:30%;width:22%;height:16%;background:linear-gradient(#c60b1e 0 25%,#ffc400 25% 75%,#c60b1e 75%);border:1px solid #141414}
 .envFlap{position:absolute;left:0;right:0;top:0;height:70%;background:#c6f432;clip-path:polygon(0 0,100% 0,50% 62%);border-bottom:none;pointer-events:none}
 .envFlap::after{content:"";position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 62%,50% 58%,96% 0,4% 0,50% 58%);background:#141414}
+.peek.peek-m{width:clamp(90px,26vw,150px);height:clamp(90px,26vw,150px);translate:-50% -50%;border-radius:50%;background:#f3ece2;border:3px solid #141414;overflow:hidden}
+.peek.peek-m .peekIn{animation:peekUpM .3s cubic-bezier(.2,1.4,.4,1) both}
+.peek .peekIn svg{width:100%;height:100%;display:block}
+@keyframes peekUpM{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@media (max-width:760px){
+.argPanel{left:0 !important;width:100% !important;top:50% !important;height:50% !important;border-left:none !important;border-top:4px dashed #141414 !important;padding:12px 16px !important}
+.ballotBtn{width:clamp(96px,26vw,130px)}
+.walker.solo{width:clamp(130px,38vw,190px)}
+.walker.solo .bubbleTxt{font-size:15px;max-width:80vw}
+.ballot{width:clamp(70px,20vw,110px);font-size:18px}
+.provBtn,.provWon{padding:2px 4px !important;font-size:8px !important;border-width:1.5px !important}
+.medal{min-width:150px;padding:6px 12px}
+.medal .big3d{font-size:44px !important}
+.idleFace{width:62px}
+.idleFace .idleBub{max-width:110px !important;font-size:11px !important}
+.walkerMap{display:none}
+.warn{font-size:clamp(22px,8vw,40px)}
+.tasaC{font-size:clamp(34px,11vw,60px)}
+}
+.pop{position:absolute;width:calc(clamp(104px,27vmin,200px) * var(--sz));aspect-ratio:1;translate:-50% -50%;z-index:2;animation:popGrow 2.6s ease-out both}
+.popIn{width:100%;height:100%;border-radius:50%;overflow:hidden;background:#f3ece2;border:3px solid #141414;cursor:pointer;touch-action:manipulation}
+.popIn svg{width:100%;height:100%;display:block}
+@keyframes popGrow{0%{scale:0}12%{scale:1.08}20%{scale:1}100%{scale:var(--gr)}}
+.go{position:relative;overflow:hidden;background:#c6f432;color:#141414;border:4px solid #141414;border-radius:999px;font:900 clamp(20px,3vw,30px) "Archivo Black",sans-serif;padding:14px 40px;cursor:pointer;box-shadow:4px 5px 0 #141414;min-width:min(80vw,340px)}
+.go .fill{position:absolute;left:0;top:0;bottom:0;background:rgba(20,20,20,.15);animation:fillGo 10s linear forwards}
+@keyframes fillGo{from{width:0}to{width:100%}}
+.go span{position:relative}
+.mini{display:flex;gap:10px;justify-content:center;margin-top:12px}
+.mini button,.mini a{background:transparent;color:#fff;border:2px solid #fff;border-radius:999px;font:800 15px Inter,sans-serif;padding:8px 18px;cursor:pointer;text-decoration:none}
+.pdot{position:absolute;translate:-50% -50%;display:flex;flex-direction:column;align-items:center}
+.pdot i{width:clamp(14px,1.8vw,22px);height:clamp(14px,1.8vw,22px);border-radius:50%;border:2px solid #141414;animation:dotP 1.4s ease-in-out infinite}
+@keyframes dotP{0%,100%{scale:.8}50%{scale:1.35;box-shadow:0 0 0 6px rgba(139,92,246,.35)}}
+.pdot span{margin-top:3px;font:900 clamp(9px,1.1vw,13px) "Archivo Black",sans-serif;color:#141414;background:rgba(255,255,255,.85);padding:1px 5px;border-radius:6px;white-space:nowrap}
+.pdot:hover i{scale:1.5}
+.pinfo{position:absolute;bottom:calc(100% + 6px);background:#141414;color:#c6f432;font:900 clamp(12px,1.5vw,16px)/1.2 "Archivo Black",sans-serif;padding:8px 12px;border-radius:10px;white-space:nowrap;text-align:center;animation:pop .3s}
+.titleMove{animation:hdrop .5s cubic-bezier(.5,0,.75,0) both,tMove 2.4s ease-in-out .6s infinite}
+@keyframes tMove{0%,100%{rotate:-2deg;scale:1}50%{rotate:2deg;scale:1.06}}
+.bandMove{rotate:-2deg;animation:bandIn .5s cubic-bezier(.2,1.5,.4,1) .45s both,bandW 1.8s ease-in-out 1s infinite alternate}
+@keyframes bandIn{from{translate:-120vw 0}to{translate:0 0}}
+@keyframes bandW{from{translate:-6px 0}to{translate:6px 0}}
+.idleFace{position:absolute;width:clamp(64px,8vw,100px);translate:-50% -50%;z-index:5;cursor:pointer;animation:faceBob 2.6s ease-in-out infinite alternate}
+@keyframes faceBob{to{translate:-50% -56%}}
+.faceC{width:100%;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#f3ece2;border:3px solid #141414;box-shadow:3px 4px 0 #141414}
+.faceC svg{width:100%;height:100%;display:block}
+.voteCard{width:min(100%,460px);background:#fff;border:5px solid #141414;border-radius:14px;box-shadow:inset 0 0 0 10px #c6f432,6px 8px 0 #141414;padding:22px 22px 16px;cursor:pointer;display:flex;flex-direction:column;gap:10px;align-items:center;touch-action:manipulation;color:#141414}
+.voteCard:active{scale:.97}
+.voteCard.armed{animation:armIn 1.3s steps(1) both,cardP 1.4s ease-in-out 1.3s infinite}
+@keyframes cardP{50%{scale:1.03}}
+.vcHead{font:900 clamp(30px,4.5vw,56px)/1 "Archivo Black",sans-serif;color:#e8452c}
+.vcText{font:900 clamp(18px,2.6vw,30px)/1.15 "Archivo Black",sans-serif}
+.vcTap{font:800 13px Inter,sans-serif;opacity:.6;text-transform:uppercase;letter-spacing:1px}
+.ptag{position:absolute;top:calc(100% + 10px);left:50%;translate:-50% 0;white-space:nowrap;color:#fff;font:900 clamp(11px,1.4vw,15px) "Archivo Black",sans-serif;padding:4px 12px;border:2px solid #141414;border-radius:999px;z-index:5}
+.rewardCard{box-sizing:border-box;width:min(88vw,440px);background:linear-gradient(160deg,#fff 0,#f3ece2 100%);border:6px solid #141414;border-radius:22px;box-shadow:0 0 0 8px #c6f432,0 0 60px #c6f432;padding:20px;text-align:center;animation:cardIn .7s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes cardIn{from{rotate:-30deg;scale:0}to{rotate:-2deg;scale:1}}
+.shipBody{animation:sink 6s ease-in forwards;transform-origin:150px 120px}
+@keyframes sink{0%{translate:0 0;rotate:0deg}30%{rotate:8deg}100%{translate:0 90px;rotate:24deg}}
+.wave{animation:wv 1.2s ease-in-out infinite alternate}
+@keyframes wv{to{translate:-12px 0}}
+.statsRow{position:relative;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0 4px;max-width:900px}
+.statsRow div{background:#141414;color:#fff;border-radius:12px;padding:6px 12px;display:flex;flex-direction:column;align-items:center;min-width:96px}
+.statsRow b{font:900 clamp(18px,2.6vw,28px) "Archivo Black",sans-serif;color:#c6f432}
+.statsRow span{font:800 11px Inter,sans-serif;text-transform:uppercase}
+.rocket{position:absolute;left:8%;bottom:-30%;width:clamp(50px,7vw,90px);z-index:0;animation:launch 5s cubic-bezier(.5,0,.6,1) 1s infinite;pointer-events:none}
+@keyframes launch{0%{translate:0 0;rotate:10deg}100%{translate:80vw -170vh;rotate:28deg}}
+.flame{animation:fl .12s steps(2) infinite}
+@keyframes fl{50%{opacity:.4}}
 .peek{position:absolute;width:clamp(150px,30vmin,280px);height:clamp(150px,30vmin,280px);z-index:2}
 .peek-t{top:0;translate:-50% 0;rotate:180deg}.peek-b{bottom:0;translate:-50% 0}
 .peek-l{left:0;translate:0 -50%;rotate:90deg}.peek-r{right:0;translate:0 -50%;rotate:-90deg}
