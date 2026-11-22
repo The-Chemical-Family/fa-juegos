@@ -23,7 +23,6 @@ import type {
   EstadoPartida,
   Guardado,
   MotivoCierre,
-  Pantalla,
   Pregunta,
   Textos
 } from './tipos'
@@ -57,6 +56,15 @@ let ahoraActual: () => number = () => Date.now()
 let seleccionActual: EstadoSeleccion = { bolsa: [], historial: [] }
 let comodinesEnBatalla = 0
 
+/**
+ * Hay partida en curso cuando ya se ha respondido o desbloqueado a un villano.
+ * El guardado que solo registra el mapa recién abierto no cuenta: la intro no
+ * debe saltarse al recargar.
+ */
+function hayProgreso(guardado: Guardado): boolean {
+  return guardado.villanoActivo > 0 || guardado.historial.length > 0
+}
+
 export const partida = writable<EstadoPartida>(estadoInicial())
 
 export interface OpcionesInicio {
@@ -80,15 +88,16 @@ export function iniciar(opciones: OpcionesInicio): void {
   const ids = new Set(porId.keys())
   const guardado = cargar(almacenActual, ids)
 
-  if (guardado) {
+  // La pantalla no se guarda: se decide al cargar. La intro y el final no se
+  // recuperan nunca; el mapa solo aparece si hay una partida empezada de verdad.
+  if (guardado && !guardado.completada && hayProgreso(guardado)) {
     seleccionActual = {
       bolsa: bolsaDesdeHistorial(banco, guardado.historial, rngActual),
       historial: guardado.historial
     }
-    const pantalla: Pantalla = guardado.completada ? 'final' : 'mapa'
     partida.set({
       ...guardado,
-      pantalla,
+      pantalla: 'mapa',
       batalla: null,
       almacenamientoDisponible: almacenActual !== null
     })
@@ -136,15 +145,17 @@ function sacarDeLaBolsa(): EstadoBatalla {
 }
 
 export function empezarPartida(): void {
+  borrar(almacenActual)
   seleccionActual = crearSeleccion(banco, rngActual)
   comodinesEnBatalla = 0
+  // No se guarda nada hasta la primera respuesta: si se recarga en el mapa sin
+  // haber jugado, no hay progreso y se vuelve a la intro.
   partida.set({
     ...progresoInicial(),
     pantalla: 'mapa',
     batalla: null,
     almacenamientoDisponible: almacenActual !== null
   })
-  persistirProgreso()
 }
 
 export function entrarBatalla(): void {

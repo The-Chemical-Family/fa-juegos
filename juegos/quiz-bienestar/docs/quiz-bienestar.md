@@ -134,7 +134,7 @@ Botones por resultado en la pantalla de Resultado:
 | Victoria, derrota o empate antes de la tercera | «Volver al mapa» |
 | Tercera victoria | «Ver el final» |
 
-Regla de entrada al abrir o recargar: sin datos guardados se muestra la intro; con la partida completa se muestra el final; en cualquier otro caso, el mapa. La pantalla de batalla nunca se restaura.
+Regla de entrada al abrir o recargar: la pantalla actual no se guarda, se decide al cargar. Se muestra la intro cuando no hay una partida empezada de verdad —sin datos guardados, con el mapa recién abierto o después de entrar en batalla sin responder nada— y también cuando la partida estaba completa, de modo que el final no se recupera al recargar. Solo si hay respuestas o villanos desbloqueados se vuelve al mapa. La pantalla de batalla nunca se restaura: recargar en mitad de una batalla devuelve al mapa con el historial conservado.
 
 ### Esquema del contenido
 
@@ -359,7 +359,7 @@ Se guarda un único objeto en `localStorage` bajo la clave `juego-bienestar:v1`:
 
 `ultimaBatalla` guarda el resultado de la última batalla cerrada y es lo que permite que el botón del villano activo se etiquete «Reintentar». La bolsa y la lista de villanos derrotados no se guardan porque se deducen. Al cargar se descartan los identificadores del historial que ya no existan en el banco, de modo que corregir o retirar una pregunta no rompe una partida en curso. Si la `version` guardada no coincide con la esperada, se descarta el progreso y se empieza de cero. Los campos se validan y se limitan uno a uno, así que un guardado manipulado no puede producir un estado imposible.
 
-Momentos de guardado: después de cada respuesta aceptada se guarda el historial; al cerrar la batalla se guardan además los símbolos, el villano activo y el indicador de partida completa.
+Momentos de guardado: después de cada respuesta aceptada se guarda el historial; al cerrar la batalla se guardan además los símbolos, el villano activo y el indicador de partida completa. Pulsar «Empezar» no guarda nada y borra cualquier resto anterior, así que el mapa recién abierto no deja progreso y recargar allí vuelve a la intro.
 
 `src/lib/persistencia.ts` expone `cargar(): Guardado | null`, `guardar(g: Guardado): void`, `borrar(): void` y `almacenamientoDisponible(): boolean`, y recibe el objeto de almacenamiento como parámetro para poder probar los fallos. Si `localStorage` no está disponible, el juego sigue en memoria y el mapa avisa de que el progreso no se conservará. `src/lib/estado.ts` expone un store de Svelte con las acciones `empezarPartida()`, `entrarBatalla()`, `responder(indiceVisible)`, `cerrarBatalla(motivo)`, `volverAlMapa()`, `verFinal()` y `reiniciar()`. Ninguna recibe el villano ni la opción elegida: el villano activo ya está en el estado y la opción se resuelve con `ordenOpciones[indiceVisible]`, que es el índice que el componente tiene delante. `almacenamientoDisponible` se calcula una vez al arrancar y viaja en el estado, para que el mapa avise sin llamar al almacenamiento en cada render.
 

@@ -16,7 +16,7 @@ import {
 } from './estado'
 import { generadorFijo } from './azar'
 import { crearPregunta, textosValidos } from './pruebas-ayuda'
-import type { Almacen } from './persistencia'
+import { guardar, type Almacen } from './persistencia'
 import type { Efecto } from './tipos'
 
 const BANCO = [crearPregunta('q1')]
@@ -182,7 +182,49 @@ describe('recarga', () => {
     expect(estado.historial).toEqual(['q1', 'q1'])
   })
 
-  it('una partida completa guardada vuelve directamente al final', () => {
+  it('al recargar en el mapa sin haber jugado se vuelve a la intro', () => {
+    const almacen = new AlmacenFalso()
+    arrancar(almacen)
+    empezarPartida()
+    // Empezar no guarda nada: no hay progreso que recordar.
+    expect(almacen.datos.size).toBe(0)
+
+    reiniciarModulo()
+    arrancar(almacen)
+
+    expect(get(partida).pantalla).toBe('intro')
+  })
+
+  it('al recargar después de entrar en batalla sin responder se vuelve a la intro', () => {
+    const almacen = new AlmacenFalso()
+    arrancar(almacen)
+    empezarPartida()
+    entrarBatalla()
+
+    reiniciarModulo()
+    arrancar(almacen)
+
+    expect(get(partida).pantalla).toBe('intro')
+  })
+
+  it('un guardado antiguo sin progreso vuelve a la intro', () => {
+    const almacen = new AlmacenFalso()
+    guardar(almacen, {
+      version: 1,
+      villanoActivo: 0,
+      completada: false,
+      ultimaBatalla: null,
+      simbolos: { casa: 4, zanahoria: 4, hospital: 4, moneda: 4 },
+      historial: []
+    })
+
+    arrancar(almacen)
+
+    expect(get(partida).pantalla).toBe('intro')
+    expect(get(partida).historial).toEqual([])
+  })
+
+  it('una partida completa guardada vuelve a la intro', () => {
     const almacen = new AlmacenFalso()
     arrancar(almacen)
     empezarPartida()
@@ -190,12 +232,15 @@ describe('recarga', () => {
       ganarBatalla()
       if (i < 2) volverAlMapa()
     }
+    expect(get(partida).completada).toBe(true)
 
     reiniciarModulo()
     arrancar(almacen)
 
-    expect(get(partida).pantalla).toBe('final')
-    expect(get(partida).completada).toBe(true)
+    const estado = get(partida)
+    expect(estado.pantalla).toBe('intro')
+    expect(estado.completada).toBe(false)
+    expect(estado.villanoActivo).toBe(0)
   })
 })
 
