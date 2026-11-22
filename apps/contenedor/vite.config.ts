@@ -15,6 +15,13 @@ function juegosCopiados(): string[] {
 		.map((entrada) => entrada.name);
 }
 
+// `npm run dev:todo` arranca los juegos en sus puertos y activa el proxy para
+// que el contenedor los sirva en /<slug>/. Sin la variable, el contenedor
+// sirve las copias construidas que hay en static/.
+const proxyJuegos = process.env.PROXY_JUEGOS === '1';
+const puertoQuiz = Number(process.env.PUERTO_QUIZ ?? 5174);
+const puertoVoto = Number(process.env.PUERTO_VOTO ?? 4175);
+
 export default defineConfig({
 	plugins: [
 		sveltekit({
@@ -36,5 +43,26 @@ export default defineConfig({
 			// hay función de servidor en el camino de las visitas.
 			adapter: adapter()
 		})
-	]
+	],
+
+	server: proxyJuegos
+		? {
+				proxy: {
+					'/quiz-bienestar': {
+						target: `http://localhost:${puertoQuiz}`,
+						changeOrigin: true,
+						ws: true,
+						// El servidor de Vite no resuelve la ruta sin barra; en Vercel
+						// sí, vía índice de carpeta.
+						rewrite: (ruta) => (ruta === '/quiz-bienestar' ? '/quiz-bienestar/' : ruta)
+					},
+					'/voto-util': {
+						target: `http://localhost:${puertoVoto}`,
+						changeOrigin: true,
+						// El juego es un único HTML autocontenido servido en la raíz.
+						rewrite: (ruta) => ruta.replace(/^\/voto-util\/?/, '/')
+					}
+				}
+			}
+		: undefined
 });

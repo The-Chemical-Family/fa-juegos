@@ -27,6 +27,29 @@ npm run dev     # servidor de desarrollo del contenedor
 
 `npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos con `publicar: true`, los copia a `apps/contenedor/static/<slug>/`, inyecta la analítica y verifica cada artefacto.
 
+## Verificar en local
+
+Un solo comando levanta el sitio completo, con el contenedor sirviendo cada juego en su ruta real:
+
+```bash
+npm run dev:todo
+```
+
+- `http://localhost:5173/` — el sitio como se despliega: la lista y los dos juegos bajo el mismo origen.
+- `http://localhost:5174/quiz-bienestar/` — quiz-bienestar con recarga en caliente. Los cambios también se ven en el 5173, que hace de proxy.
+- `http://localhost:4175/` — voto-util ya construido. Aquí no hay recarga: edita, ejecuta `npm run build -w juegos/voto-util` y recarga.
+
+Antes de arrancar comprueba los tres puertos y construye el sitio una vez, porque la lista sale de lo que hay copiado en `static/`.
+
+Si solo quieres revisar el resultado del despliegue, sin servidores de desarrollo:
+
+```bash
+npm run build
+npm run preview   # http://localhost:4173/
+```
+
+`preview` sirve exactamente el HTML y los ficheros que genera el ensamblado, incluido el 404 y las rutas con y sin barra final.
+
 ## Añadir un juego
 
 1. Crear `juegos/<slug>/` con un `package.json` que tenga un script `build`.
