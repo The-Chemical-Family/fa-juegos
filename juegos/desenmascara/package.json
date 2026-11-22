@@ -1,0 +1,10 @@
+{
+  "name": "desenmascara",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Desenmascara: derriba la fachada a mazazos (juego estático, sin dependencias)",
+  "scripts": {
+    "build": "node ../../tools/estatico.mjs dist index.html css js",
+    "serve": "node ../../tools/servir-estatico.mjs dist"
+  }
+}

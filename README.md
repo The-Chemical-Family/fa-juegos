@@ -35,11 +35,12 @@ Un solo comando levanta el sitio completo, con el contenedor sirviendo cada jueg
 npm run dev:todo
 ```
 
-- `http://localhost:5173/` — el sitio como se despliega: la lista y los dos juegos bajo el mismo origen.
-- `http://localhost:5174/quiz-bienestar/` — quiz-bienestar con recarga en caliente. Los cambios también se ven en el 5173, que hace de proxy.
-- `http://localhost:4175/` — voto-util ya construido. Aquí no hay recarga: edita, ejecuta `npm run build -w juegos/voto-util` y recarga.
+- `http://localhost:5173/` — el sitio como se despliega: la lista y todos los juegos bajo el mismo origen.
+- Un puerto por juego, desde el 5174 y en orden alfabético. El comando imprime la URL de cada uno y avisa de cuáles no tienen recarga en caliente.
 
-Antes de arrancar comprueba los tres puertos y construye el sitio una vez, porque la lista sale de lo que hay copiado en `static/`.
+Los juegos con script `dev` se sirven con su servidor de desarrollo y recargan solos, también a través del contenedor. Los que sólo tienen `serve` se sirven ya construidos: edita, `npm run build -w juegos/<slug>` y recarga.
+
+Antes de arrancar comprueba los puertos y construye el sitio una vez, porque la lista sale de lo que hay copiado en `static/`.
 
 Si solo quieres revisar el resultado del despliegue, sin servidores de desarrollo:
 
@@ -52,7 +53,7 @@ npm run preview   # http://localhost:4173/
 
 ## Añadir un juego
 
-1. Crear `juegos/<slug>/` con un `package.json` que tenga un script `build`.
+1. Crear `juegos/<slug>/` con un `package.json` que tenga un script `build`. Si el juego ya es HTML, CSS y JS sin herramienta, basta con `node ../../tools/estatico.mjs dist index.html css js`.
 2. Ese build debe dejar `dist/index.html` y sus recursos, y funcionar servido bajo `/<slug>/` (usa `base: '/<slug>/'` o rutas relativas).
 3. Crear `juegos/<slug>/juego.json`:
 

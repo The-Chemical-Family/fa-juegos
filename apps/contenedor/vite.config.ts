@@ -1,7 +1,7 @@
 import adapter from '@sveltejs/adapter-vercel';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 // Los enlaces a los juegos apuntan a ficheros estáticos, no a rutas de
@@ -15,12 +15,34 @@ function juegosCopiados(): string[] {
 		.map((entrada) => entrada.name);
 }
 
-// `npm run dev:todo` arranca los juegos en sus puertos y activa el proxy para
-// que el contenedor los sirva en /<slug>/. Sin la variable, el contenedor
-// sirve las copias construidas que hay en static/.
-const proxyJuegos = process.env.PROXY_JUEGOS === '1';
-const puertoQuiz = Number(process.env.PUERTO_QUIZ ?? 5174);
-const puertoVoto = Number(process.env.PUERTO_VOTO ?? 4175);
+// `npm run dev:todo` escribe aquí el puerto de cada juego y activa el proxy.
+// Sin ese archivo, el contenedor sirve las copias construidas de static/.
+function proxyDeJuegos() {
+	if (process.env.PROXY_JUEGOS !== '1') return undefined;
+
+	const ruta = join(process.cwd(), '.juegos-dev.json');
+	if (!existsSync(ruta)) return undefined;
+
+	const mapa = JSON.parse(readFileSync(ruta, 'utf8'));
+	const proxy: Record<string, object> = {};
+
+	for (const [slug, datos] of Object.entries(mapa)) {
+		const { puerto, quitarPrefijo } = datos as { puerto: number; quitarPrefijo: boolean };
+		proxy[`/${slug}`] = {
+			target: `http://localhost:${puerto}`,
+			changeOrigin: true,
+			ws: true,
+			// Los servidores estáticos sirven en la raíz; Vite ya sirve en /<slug>/.
+			rewrite: quitarPrefijo
+				? (ruta: string) => ruta.replace(new RegExp(`^/${slug}/?`), '/')
+				: (ruta: string) => (ruta === `/${slug}` ? `/${slug}/` : ruta)
+		};
+	}
+
+	return proxy;
+}
+
+const proxy = proxyDeJuegos();
 
 export default defineConfig({
 	plugins: [
@@ -45,24 +67,5 @@ export default defineConfig({
 		})
 	],
 
-	server: proxyJuegos
-		? {
-				proxy: {
-					'/quiz-bienestar': {
-						target: `http://localhost:${puertoQuiz}`,
-						changeOrigin: true,
-						ws: true,
-						// El servidor de Vite no resuelve la ruta sin barra; en Vercel
-						// sí, vía índice de carpeta.
-						rewrite: (ruta) => (ruta === '/quiz-bienestar' ? '/quiz-bienestar/' : ruta)
-					},
-					'/voto-util': {
-						target: `http://localhost:${puertoVoto}`,
-						changeOrigin: true,
-						// El juego es un único HTML autocontenido servido en la raíz.
-						rewrite: (ruta) => ruta.replace(/^\/voto-util\/?/, '/')
-					}
-				}
-			}
-		: undefined
+	server: proxy ? { proxy } : undefined
 });
