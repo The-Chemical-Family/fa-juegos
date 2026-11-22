@@ -169,6 +169,49 @@ Comprobar en la URL desplegada `/` y cada juego (`/quiz-bienestar/`, `/el-pueblo
 - La analítica sin cookies se inyecta en el paso de ensamblado y usa `/_vercel/insights/script.js`, que sólo existe si Vercel Web Analytics está activado en el proyecto.
 - La lista y el 404 se prerenderizan; las rutas no encontradas las atiende la función de reserva del adapter.
 
+### Google Analytics
+
+Las visitas se miden con Google Analytics 4, flujo web con ID **`G-TP80CWS52D`** (definido en `tools/analitica.mjs` y en `apps/contenedor/src/app.html`).
+
+- **Portada:** el snippet va en `apps/contenedor/src/app.html`, así que se carga en todas las páginas del contenedor, incluida la de error.
+- **Juegos:** el ensamblado lo inyecta, junto a la analítica de Vercel, antes de `</head>` de cada juego. Por eso los juegos deben conservar `</head>`.
+- **Separación por juego:** no hay que configurar nada más. GA4 registra la ruta de cada visita: `/` es la portada y `/<slug>/` es `voto-util`, `tasa-a-los-ricos`, etc.
+- **Desarrollo:** en `localhost`, `127.0.0.1` y `[::1]` el snippet no hace nada, así que las pruebas locales no ensucian las estadísticas.
+- **Consultas:** en GA4, *Informes → Compromiso → Páginas y pantallas*, con la dimensión *Ruta de la página*. El flujo web debe apuntar a `https://muchachadarcade.es`.
+- GA4 instala sus cookies propias (`_ga` y `_ga_<ID>`) en el navegador del visitante; el aviso de cookies del sitio debe mencionarlo. La analítica de Vercel que ya existía sigue funcionando en paralelo y no usa cookies.
+
+### Dominio y DNS
+
+El sitio se publica en **muchachadarcade.es** (apex) desde el proyecto de Vercel. Configuración verificada:
+
+| Registro | Nombre | Valor |
+| --- | --- | --- |
+| A | `muchachadarcade.es` | `216.198.79.1` (IP anycast de Vercel) |
+| NS | delegación en `.es` | `ns1`–`ns5` de cdmon |
+
+- El certificado TLS lo emite Vercel para el apex. No hace falta ningún ajuste en el código ni en SvelteKit (`base`, `paths` u `origin` se quedan por defecto): las rutas se generan relativas al directorio de cada página, así que el mismo build funciona en `localhost`, en el dominio de preview y en el dominio final.
+
+La URL pública es **solo el apex**; `www` queda como redirección para quien lo teclee de memoria. Hoy `www.muchachadarcade.es` no existe (NXDOMAIN), así que hay que configurarlo en dos sitios, ninguno de ellos el código:
+
+1. **Vercel** → Project → Settings → Domains → *Add* `www.muchachadarcade.es` y elegir **Redirect to another domain** → `muchachadarcade.es` (308). Vercel emite el certificado de `www` automáticamente.
+2. **cdmon** (zona DNS de `muchachadarcade.es`) → añadir `CNAME` con nombre `www` y valor `cname.vercel-dns.com` (TTL 3600). No hace falta `A` ni `AAAA` para `www`.
+
+Cuando ambos pasos estén hechos, `https://www.muchachadarcade.es` responde `308` hacia el apex y el apex sigue sirviendo el sitio. Verificación:
+
+```bash
+dig +short www.muchachadarcade.es CNAME    # cname.vercel-dns.com.
+curl -sI https://www.muchachadarcade.es    # HTTP/2 308, location: https://muchachadarcade.es/
+```
+
+Comprobación rápida desde cualquier red:
+
+```bash
+dig +short muchachadarcade.es A        # 216.198.79.1
+curl -I https://muchachadarcade.es     # HTTP/2 200
+```
+
+Si un equipo concreto no resuelve el dominio pero sí el resto de internet (SERVFAIL en su resolver), el problema está en el DNS de esa red —filtros corporativos, bloqueo de dominios de nueva creación o caché negativa— y no en el despliegue; se contrasta con `dig @1.1.1.1 muchachadarcade.es`.
+
 ## Notas de mantenimiento
 
 - Todo el monorepo usa una sola versión de Vite, la 8.3.8: es la que exigen SvelteKit 3 y el adaptador de Vercel que despliega el contenedor. `@sveltejs/vite-plugin-svelte` va emparejado en su versión 7, porque la 5 solo acepta Vite 6. Al subir Vite hay que cambiar la versión en los tres `package.json` a la vez: contenedor, juego y plantilla.

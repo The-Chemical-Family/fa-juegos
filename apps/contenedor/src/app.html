@@ -5,6 +5,26 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
 		<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E" />
+		<script>
+			/* Google Analytics 4. Las visitas se separan por ruta: `/` es la
+			   portada y `/<slug>/` cada juego. En local no se envía nada. */
+			(() => {
+				const LOCAL = ['', 'localhost', '127.0.0.1', '[::1]'];
+				if (LOCAL.includes(location.hostname)) return;
+
+				const etiqueta = document.createElement('script');
+				etiqueta.async = true;
+				etiqueta.src = 'https://www.googletagmanager.com/gtag/js?id=G-TP80CWS52D';
+				document.head.append(etiqueta);
+
+				window.dataLayer = window.dataLayer || [];
+				window.gtag = function gtag() {
+					window.dataLayer.push(arguments);
+				};
+				gtag('js', new Date());
+				gtag('config', 'G-TP80CWS52D');
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

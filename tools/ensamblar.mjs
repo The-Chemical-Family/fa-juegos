@@ -2,12 +2,16 @@ import { execFileSync } from 'node:child_process';
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { leerManifiestos } from './manifiestos.mjs';
+import { snippetAnalitica } from './analitica.mjs';
 import { verificarJuego } from './verificar-juego.mjs';
 import { prepararVercel } from './preparar-vercel.mjs';
 
 const INICIO = '<!-- analitica:start -->';
 const FIN = '<!-- analitica:end -->';
-const SNIPPET = '<script defer src="/_vercel/insights/script.js"></script>';
+const SNIPPET = [
+	'<script defer src="/_vercel/insights/script.js"></script>',
+	snippetAnalitica()
+].join('');
 const NO_SE_SIRVEN = new Set(['juego.json', 'README.md', 'dist', 'node_modules']);
 
 const raiz = process.cwd();
