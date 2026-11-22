@@ -11,28 +11,18 @@
 }
 
 :root {
-  --primario: #ee3c08;
-  --secundario: #c8ee88;
+  /* Cartel: naranja a sangre, lima para lo que se pulsa y negro para el texto. */
+  --naranja: #f03900;
+  --lima: #d2ff42;
+  --lima-claro: #e4ff7a;
   --negro: #070606;
-  --fondo: #faf9f6;
-  --superficie: #f1efea;
-  --texto: #1a1818;
-
-  /* Tonos de apoyo, derivados de los seis de identidad. */
-  --tenue: #5f594f;
-  --borde: #e0dbd1;
-  --pista: #dcd6cb;
   --blanco: #ffffff;
-  --primario-oscuro: #d1350a;
-  --superficie-oscura: #e9e5dd;
+
+  /* Veladuras sobre el vídeo y sobre el naranja. */
   --velo: rgba(7, 6, 6, 0.78);
   --velo-fuerte: rgba(7, 6, 6, 0.92);
   --velo-tenue: rgba(7, 6, 6, 0.22);
 
-  /* Cartel de la intro y del mapa: naranja de fondo, lima para los rótulos. */
-  --naranja: #f03900;
-  --lima: #d2ff42;
-  --lima-claro: #e4ff7a;
   --display: 'Impact Web', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 
   --hueco: 12px;
@@ -47,8 +37,8 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--fondo);
-  color: var(--texto);
+  background: var(--naranja);
+  color: var(--negro);
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-weight: 500;
   line-height: 1.55;
@@ -56,15 +46,6 @@ body {
 
 #app {
   min-height: 100vh;
-}
-
-.pantalla {
-  max-width: 42rem;
-  margin: 0 auto;
-  padding: calc(var(--hueco) * 2);
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--hueco) * 1.5);
 }
 
 h1 {
@@ -87,26 +68,25 @@ p {
   margin: 0;
 }
 
-.situacion {
-  color: var(--tenue);
-}
-
 button {
-  font: inherit;
-  color: var(--blanco);
-  background: var(--primario);
+  font-family: var(--display);
+  font-size: clamp(1rem, 4vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--naranja);
+  background: var(--lima);
   border: 0;
-  border-radius: 10px;
+  border-radius: 0;
   min-height: 48px;
   min-width: 48px;
   padding: 12px 20px;
   cursor: pointer;
-  font-weight: 800;
-  letter-spacing: 0.01em;
 }
 
 button:hover:not(:disabled) {
-  background: var(--primario-oscuro);
+  background: var(--lima-claro);
 }
 
 button:focus-visible,
@@ -121,13 +101,13 @@ button:disabled {
 }
 
 button.secundario {
-  background: var(--superficie);
-  color: var(--texto);
-  border: 1px solid var(--borde);
+  background: var(--negro);
+  color: var(--lima);
 }
 
 button.secundario:hover:not(:disabled) {
-  background: var(--superficie-oscura);
+  background: var(--negro);
+  color: var(--blanco);
 }
 
 /* ---------------------------------------------------------------------------
@@ -372,114 +352,229 @@ button.secundario:hover:not(:disabled) {
   filter: grayscale(1);
 }
 
-.barras {
+/* ---------------------------------------------------------------------------
+   Batalla: la misma cartelería, con el retrato del villano al lado del
+   marcador. La pregunta va en negro y las respuestas en lima, de modo que el
+   ojo distingue lo que se lee de lo que se pulsa.
+--------------------------------------------------------------------------- */
+
+.batalla {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.barra {
-  display: grid;
-  grid-template-columns: 7rem 1fr 4rem;
-  align-items: center;
-  gap: 10px;
-}
-
-.barra .nombre {
-  font-weight: 800;
+  gap: clamp(0.6rem, 3vw, 1.5rem);
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding: clamp(0.9rem, 3.5vw, 2.25rem) clamp(0.9rem, 4vw, 2rem) clamp(1.25rem, 4vw, 2.5rem);
+  background: var(--naranja);
   color: var(--negro);
-  font-size: 0.9rem;
 }
 
-.barra .pista {
-  background: var(--pista);
-  border-radius: 8px;
-  height: 20px;
+.batalla > * {
+  width: 100%;
+  max-width: 40rem;
+  margin-inline: auto;
+}
+
+.batalla .duelo {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(0.5rem, 2.5vw, 1.25rem);
+}
+
+.batalla .retrato {
+  flex: 0 0 30%;
+  height: auto;
+  align-self: center;
+}
+
+.batalla .marcador {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+}
+
+.batalla .barras {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.batalla .barra {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'nombre valor'
+    'pista pista';
+  align-items: baseline;
+  gap: 0.15rem 0.5rem;
+}
+
+.batalla .barra .nombre {
+  grid-area: nombre;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(0.95rem, 3.6vw, 1.3rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.batalla .barra .valor {
+  grid-area: valor;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.batalla .barra .pista {
+  grid-area: pista;
+  height: 14px;
+  background: var(--velo-tenue);
   overflow: hidden;
 }
 
-.barra .relleno {
+.batalla .barra .relleno {
   height: 100%;
-  border-radius: 8px;
   transition: width 0.25s ease;
-  box-shadow: inset 0 0 0 1px var(--velo-tenue);
 }
 
-.barra.jugador .relleno {
-  background: var(--secundario);
+.batalla .barra.jugador .relleno {
+  background: var(--lima);
 }
 
-.barra.villano .relleno {
-  background: var(--primario);
+.batalla .barra.villano .relleno {
+  background: var(--negro);
 }
 
-.barra .valor {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: var(--negro);
-}
-
-.globo {
-  background: var(--blanco);
-  border: 2px solid var(--negro);
-  border-radius: 16px;
-  padding: var(--hueco);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.enunciado {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--negro);
+.batalla .reloj {
+  padding: 0 0.5em;
+  background: var(--lima);
+  color: var(--naranja);
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 4.4vw, 1.55rem);
   line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
 }
 
-.opciones {
+.batalla .globo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.45rem;
+  padding: clamp(0.75rem, 3vw, 1.25rem);
+  background: var(--negro);
+  color: var(--blanco);
 }
 
-.opcion {
+.batalla .globo .situacion {
+  color: var(--blanco);
+  opacity: 0.78;
+  font-size: 0.95rem;
+}
+
+.batalla .globo .enunciado {
+  font-size: clamp(1.05rem, 4.2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--blanco);
+}
+
+.batalla .opciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.batalla .opcion {
   text-align: left;
-  background: var(--blanco);
-  border: 1px solid var(--borde);
-  color: var(--texto);
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--negro);
+  background: var(--lima);
+  padding: 12px 16px;
   min-height: 52px;
 }
 
-.opcion:hover:not(:disabled) {
-  background: var(--superficie);
-  border-color: var(--primario);
+.batalla .opcion:hover:not(:disabled) {
+  background: var(--lima-claro);
 }
 
-.reloj {
-  font-variant-numeric: tabular-nums;
-  color: var(--tenue);
-  font-weight: 800;
-  font-size: 1.1rem;
-}
+/* ---------------------------------------------------------------------------
+   Resultado: título en Impact, cuadro lima con el retrato del villano y el
+   desenlace, y la vuelta al mapa como flecha, igual que en la intro.
+--------------------------------------------------------------------------- */
 
-.mensaje {
+.resultado {
   display: flex;
   flex-direction: column;
-  gap: var(--hueco);
-  background: var(--secundario);
-  border-left: 6px solid var(--negro);
-  border-radius: 12px;
-  padding: var(--hueco);
-  color: var(--texto);
+  align-items: center;
+  gap: clamp(1rem, 5vw, 2.5rem);
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(0.9rem, 4vw, 2rem) clamp(1.5rem, 5vw, 3rem);
+  background: var(--naranja);
+  color: var(--negro);
 }
 
-.mensaje .frase {
-  font-size: 1.6rem;
-  font-weight: 800;
+.resultado > * {
+  width: 100%;
+  max-width: 34rem;
+}
+
+.resultado h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 6.6vw, 2.75rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.resultado .mensaje {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: clamp(0.85rem, 3.5vw, 1.4rem);
+  background: var(--lima);
+  text-align: center;
+}
+
+.resultado .mensaje .retrato {
+  width: min(11rem, 50%);
+  height: auto;
+}
+
+.resultado .mensaje .frase {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 7vw, 2.75rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--naranja);
+}
+
+.resultado .mensaje .situacion {
   color: var(--negro);
-  line-height: 1.1;
+  opacity: 0.78;
+}
+
+.resultado .acciones {
+  display: flex;
+  justify-content: center;
+}
+
+.resultado .flecha {
+  width: min(24rem, 100%);
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
 }
 
 .final {
@@ -504,9 +599,12 @@ button.secundario:hover:not(:disabled) {
 .final .cargando {
   position: absolute;
   margin: 0;
-  color: var(--blanco);
-  font-weight: 700;
+  color: var(--lima);
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 5vw, 2rem);
   letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .solo-lectores {
@@ -534,6 +632,11 @@ button.secundario:hover:not(:disabled) {
   justify-content: center;
 }
 
+.final .controles button {
+  font-size: clamp(0.85rem, 3vw, 1.05rem);
+  padding: 10px 16px;
+}
+
 .credito {
   font-size: 0.85rem;
   color: var(--blanco);
@@ -546,7 +649,6 @@ button.secundario:hover:not(:disabled) {
   display: inline-block;
   max-width: 100%;
   padding: 8px 12px;
-  border-radius: 10px;
   background: var(--velo);
 }
 
@@ -561,35 +663,56 @@ button.secundario:hover:not(:disabled) {
 
 .fuentes a {
   display: inline-block;
-  color: var(--secundario);
-  font-weight: 700;
+  color: var(--lima);
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   padding: 4px 12px;
-  border-radius: 10px;
   background: var(--velo);
 }
 
 .campo-url {
   width: 100%;
   padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--borde);
-  background: var(--fondo);
-  color: var(--texto);
+  border: 0;
+  background: var(--negro);
+  color: var(--lima);
   font: inherit;
 }
 
 .error {
   display: flex;
   flex-direction: column;
-  gap: var(--hueco);
+  align-items: center;
+  gap: clamp(0.75rem, 3.5vw, 1.5rem);
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding: clamp(1rem, 4vw, 2.5rem) clamp(0.9rem, 4vw, 2rem);
+  background: var(--naranja);
+  color: var(--negro);
 }
 
-.lista-errores {
+.error > * {
+  width: 100%;
+  max-width: 40rem;
+}
+
+.error h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 6.6vw, 2.75rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.error .lista-errores {
   margin: 0;
-  padding-left: 1.2rem;
+  padding: clamp(0.75rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.25rem) clamp(0.75rem, 3vw, 1.25rem) 2rem;
+  background: var(--lima);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.85rem;
-  color: var(--tenue);
 }
 
 @media (prefers-reduced-motion: reduce) {

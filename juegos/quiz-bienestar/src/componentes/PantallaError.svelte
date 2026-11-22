@@ -4,7 +4,7 @@
   let { errores }: { errores: ErrorContenido[] } = $props()
 </script>
 
-<main class="pantalla error">
+<main class="error">
   <h1>El contenido no es válido</h1>
   <p>El juego no puede empezar hasta corregir estos problemas en los archivos de contenido.</p>
   <ul class="lista-errores">

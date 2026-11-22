@@ -33,6 +33,16 @@
 
   const villanoActual = $derived(textos?.villanos[$partida.villanoActivo] ?? null)
 
+  // En la victoria el índice ya ha avanzado al siguiente villano; en la derrota
+  // o el empate se queda donde estaba. Así el resultado enseña a quien se ha
+  // peleado, no a quien viene después.
+  const villanoDeLaBatalla = $derived.by(() => {
+    const lista = textos?.villanos
+    if (!lista) return null
+    const gano = $partida.ultimaBatalla === 'victoria' || $partida.ultimaBatalla === 'perfect'
+    return lista[gano ? $partida.villanoActivo - 1 : $partida.villanoActivo] ?? null
+  })
+
   const desbloqueado = $derived.by(() => {
     const gano = $partida.ultimaBatalla === 'victoria' || $partida.ultimaBatalla === 'perfect'
     if (!gano || $partida.villanoActivo >= (textos?.villanos.length ?? 0)) return null
@@ -41,7 +51,7 @@
 </script>
 
 {#if textos === null}
-  <main class="pantalla error">
+  <main class="error">
     <h1>Falta el contenido</h1>
     <p>No se han cargado los textos del juego.</p>
   </main>
@@ -66,6 +76,7 @@
 {:else if pantalla === 'resultado' && $partida.batalla?.resultado}
   <Resultado
     mensaje={mensajeDePartida($partida)}
+    villano={villanoDeLaBatalla}
     {desbloqueado}
     esFinal={$partida.villanoActivo >= textos.villanos.length}
     alVolver={volverAlMapa}

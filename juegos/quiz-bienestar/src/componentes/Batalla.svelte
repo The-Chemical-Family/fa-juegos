@@ -1,5 +1,6 @@
 <script lang="ts">
   import { energiaInicial } from '../lib/config'
+  import { retratoDeVillano } from '../lib/retratos'
   import type { EstadoBatalla, Villano } from '../lib/tipos'
   import BarraEnergia from './BarraEnergia.svelte'
 
@@ -58,18 +59,27 @@
   }
 </script>
 
-<section class="pantalla batalla">
-  <div class="barras">
-    <BarraEnergia valor={batalla.energiaJugador} maximo={energiaInicial} nombre="Tú" bando="jugador" />
-    <BarraEnergia
-      valor={batalla.energiaVillano}
-      maximo={energiaInicial}
-      nombre={villano.nombre}
-      bando="villano"
-    />
-  </div>
-
-  <p class="reloj" aria-live="off">{segundos} s</p>
+<section class="batalla">
+  <header class="duelo">
+    <img class="retrato" src={retratoDeVillano(villano.id)} alt="" />
+    <div class="marcador">
+      <div class="barras">
+        <BarraEnergia
+          valor={batalla.energiaJugador}
+          maximo={energiaInicial}
+          nombre="Tú"
+          bando="jugador"
+        />
+        <BarraEnergia
+          valor={batalla.energiaVillano}
+          maximo={energiaInicial}
+          nombre={villano.nombre}
+          bando="villano"
+        />
+      </div>
+      <p class="reloj" aria-live="off">{segundos} s</p>
+    </div>
+  </header>
 
   <p class="solo-lectores" aria-live="polite">{anuncio}</p>
 
