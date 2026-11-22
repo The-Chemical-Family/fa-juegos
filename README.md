@@ -145,6 +145,8 @@ Si el juego carga un recurso desde JavaScript, créalo en `static/` con `publicD
 
 La plantilla mínima está en `tools/plantillas/estatico/`. La carpeta del juego es el artefacto: lo que hay en ella es lo que se sirve, salvo `juego.json`, `README.md` y los archivos ocultos.
 
+Las plantillas incluyen `og:image` y `twitter:image` apuntando a `https://muchachadarcade.es/splash.png`, la imagen que muestran WhatsApp y otras redes al compartir una URL. El fichero vive en `apps/contenedor/static/splash.png` y lo usan tanto la portada como los juegos. Si se sustituye, hay que actualizar también `og:image:width` y `og:image:height` en las plantillas y en `apps/contenedor/src/routes/+page.svelte`.
+
 ## Despliegue
 
 El proyecto de Vercel debe usar **la raíz del repositorio**, no `apps/contenedor`, como Root Directory. Configuración en Settings → Build and Deployment:

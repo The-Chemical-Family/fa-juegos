@@ -15,6 +15,21 @@
 <svelte:head>
 	<title>Juega FrenteAmplio</title>
 	<meta name="description" content="Muchachada Arcade apoya a Frente Amplio" />
+	<link rel="canonical" href="https://muchachadarcade.es/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Juega FrenteAmplio" />
+	<meta property="og:title" content="Juega FrenteAmplio" />
+	<meta property="og:description" content="Muchachada Arcade apoya a Frente Amplio" />
+	<meta property="og:url" content="https://muchachadarcade.es/" />
+	<meta property="og:image" content="https://muchachadarcade.es/splash.png" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:width" content="1414" />
+	<meta property="og:image:height" content="750" />
+	<meta property="og:image:alt" content="Juega FrenteAmplio" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Juega FrenteAmplio" />
+	<meta name="twitter:description" content="Muchachada Arcade apoya a Frente Amplio" />
+	<meta name="twitter:image" content="https://muchachadarcade.es/splash.png" />
 </svelte:head>
 
 <main>
