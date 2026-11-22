@@ -4,7 +4,10 @@ Monorepo de los juegos web de campaña. Un único dominio sirve una lista de jue
 
 - `/` — portada de los juegos, generada a partir de los manifiestos.
 - `/quiz-bienestar/` — juego de preguntas y bienestar (Svelte 5 + Vite).
-- `/desenmascara/` — derriba la fachada a mazazos (HTML, CSS y JS ya construidos).
+- `/el-pueblo-vs-fachalecos/` — resiste a los fachas (HTML, CSS y JS ya construidos).
+- `/rompe-el-fachamuro/` — derriba el muro a mazazos (HTML, CSS y JS ya construidos).
+- `/tasa-a-los-ricos/` — reparte la riqueza a base de tasas (HTML, CSS y JS ya construidos).
+- `/trivial-del-frente/` — trivial de programa (HTML, CSS y JS ya construidos).
 - `/voto-util/` — voto útil (HTML, CSS y JS ya construidos).
 
 El contenedor decide qué URL existe y qué enlaces aparecen. No renderiza el HTML de los juegos: cada juego se publica como artefacto estático.
@@ -159,7 +162,7 @@ Para cada juego publicado se añade una regla que sirve `/<slug>/index.html` tan
 
 Si el despliegue actual solo muestra el contenedor, corregir estos ajustes y crear un nuevo despliegue. Construir solo `apps/contenedor` omite el ensamblado: las carpetas de juegos en `static/` son generadas y no están en git.
 
-Comprobar en la URL desplegada `/`, `/desenmascara/`, `/quiz-bienestar/` y `/voto-util/`, también sin barra final y recargando cada juego directamente. Una ruta inexistente debe seguir devolviendo 404.
+Comprobar en la URL desplegada `/` y cada juego (`/quiz-bienestar/`, `/el-pueblo-vs-fachalecos/`, `/rompe-el-fachamuro/`, `/tasa-a-los-ricos/`, `/trivial-del-frente/` y `/voto-util/`), también sin barra final y recargando cada juego directamente. Una ruta inexistente debe seguir devolviendo 404.
 
 - La analítica sin cookies se inyecta en el paso de ensamblado y usa `/_vercel/insights/script.js`, que sólo existe si Vercel Web Analytics está activado en el proyecto.
 - La lista y el 404 se prerenderizan; las rutas no encontradas las atiende la función de reserva del adapter.

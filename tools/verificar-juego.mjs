@@ -3,6 +3,10 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { leerManifiestos } from './manifiestos.mjs';
 
+// `url(...)` de CSS, pero no `createObjectURL(...)` de JavaScript: el segundo
+// aparece en juegos de un solo fichero y no es una ruta.
+const URL_EN_CSS = /(?<![.\w])url\(\s*(?:"([^"]*)"|'([^']*)'|([^'")\s]+))\s*\)/gi;
+
 /**
  * Comprueba que un juego se puede servir en /<slug>/.
  *
@@ -66,7 +70,7 @@ export function cargasDelDocumento(html) {
 		valores.add((coincidencia[2] ?? coincidencia[3] ?? '').trim());
 	}
 
-	for (const coincidencia of html.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^'")\s]+))\s*\)/gi)) {
+	for (const coincidencia of html.matchAll(URL_EN_CSS)) {
 		valores.add((coincidencia[1] ?? coincidencia[2] ?? coincidencia[3] ?? '').trim());
 	}
 
@@ -80,7 +84,7 @@ export function cargasDelDocumento(html) {
 export function cargasDeCss(css) {
 	const valores = new Set();
 
-	for (const coincidencia of css.matchAll(/url\(\s*(?:"([^"]*)"|'([^']*)'|([^'")\s]+))\s*\)/gi)) {
+	for (const coincidencia of css.matchAll(URL_EN_CSS)) {
 		valores.add((coincidencia[1] ?? coincidencia[2] ?? coincidencia[3] ?? '').trim());
 	}
 

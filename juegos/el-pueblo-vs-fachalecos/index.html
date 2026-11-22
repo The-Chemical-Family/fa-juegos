@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05050c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>El Pueblo vs Fachalecos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fa:#a335ee; --psoe:#e02424; --pp:#2358d6; --vox:#3fa63f; --otras:#7a7a7a; --empty:#1d1d2b;
+  --yel:#ffd400; --bg:#05050c; --txt:#f4f1e6;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Press Start 2P',monospace;overflow:hidden;touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{position:fixed;inset:0}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(rgba(0,0,0,.28) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+button{font-family:inherit;cursor:pointer}
+#game{height:100vh;height:100dvh;display:flex;flex-direction:column;gap:6px;max-width:1100px;margin:0 auto;
+  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+#game.shake{animation:shake .08s infinite}
+@keyframes shake{0%{transform:translate(4px,-3px)}25%{transform:translate(-5px,2px)}50%{transform:translate(3px,4px)}75%{transform:translate(-3px,-4px)}}
+
+/* HUD */
+#hud{display:flex;justify-content:space-between;align-items:center;font-size:10px;gap:8px;border-bottom:4px solid #333;padding-bottom:6px}
+#hud .logo{color:var(--yel);letter-spacing:1px}
+#hud .logo b{color:var(--fa)} #hud .logo i{font-style:normal;color:var(--pp)}
+#hud .stats{display:flex;gap:14px;color:#9cf}
+#combo.hot{color:var(--yel);animation:blink .3s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+
+/* Hemiciclo */
+#hemiWrap{position:relative;display:flex;flex-direction:column;align-items:center}
+#hemi{width:100%;max-height:31vh;display:block}
+#hemiWrap.danger #hemi{filter:drop-shadow(0 0 6px #f00)}
+#drift{position:absolute;right:4px;top:4px;font-size:8px;color:var(--pp);opacity:0}
+#drift.on{animation:fade 0.9s steps(6)}
+@keyframes fade{0%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+#legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font-size:9px;margin-top:4px}
+#legend span{display:flex;align-items:center;gap:5px}
+#legend i{display:inline-block;width:10px;height:10px}
+#bars{width:100%;font-size:8px;display:grid;gap:4px;margin-top:6px}
+.meter{position:relative;height:14px;background:var(--empty);border:2px solid #444}
+.meter .f{position:absolute;top:0;bottom:0;left:0}
+.meter .mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--yel)}
+.meterLbl{display:flex;justify-content:space-between;color:#bbb}
+.meterLbl b{color:var(--txt)}
+.meterLbl:has(#faOk){align-items:center}
+#faOk{font-size:11px;padding:5px 8px;border:3px solid #fff;box-shadow:3px 3px 0 #000;white-space:nowrap}
+#faOk.no{background:#ff2020;color:#fff;animation:faPulse .5s steps(2) infinite}
+#faOk.ok{background:#1f9a3a;color:#fff;border-color:#bfffbf}
+@keyframes faPulse{50%{background:#7a0000;transform:scale(1.06)}}
+
+/* Cartas */
+#arena{position:relative;flex:1;display:flex;flex-direction:column;gap:6px;min-height:0}
+#timer{height:10px;background:#222;border:2px solid #444}
+#timerFill{height:100%;background:var(--yel);transform-origin:left;transform:scaleX(1)}
+#panels{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;min-height:0}
+.panel{touch-action:none;position:relative;border:6px solid #000;outline:4px solid #fff;outline-offset:-10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;cursor:pointer;overflow:hidden;text-align:center;padding:10px 4px}
+.panel .lbl{font-size:clamp(12px,3.9vw,26px);line-height:1.35;text-shadow:3px 3px 0 #000;word-break:break-word}
+.panel .key{font-size:8px;opacity:.7}
+.panel .ico{width:clamp(28px,7vw,64px);image-rendering:pixelated}
+.panel.pp{background:linear-gradient(var(--pp) 0 82%,var(--vox) 82%)}
+.panel.fa{background:var(--fa)} .panel.psoe{background:var(--psoe)}
+.panel.pop{animation:pop .12s steps(3)}
+@keyframes pop{0%{transform:scale(.85)}100%{transform:scale(1)}}
+.panel:active{filter:brightness(1.3)}
+.float{position:absolute;font-size:clamp(14px,3vw,28px);color:var(--yel);text-shadow:3px 3px 0 #000;animation:up .6s steps(8) forwards;pointer-events:none}
+@keyframes up{to{transform:translateY(-70px);opacity:0}}
+#msg{position:absolute;left:0;right:0;top:45%;text-align:center;font-size:clamp(12px,3vw,24px);pointer-events:none;opacity:0;text-shadow:3px 3px 0 #000;z-index:5}
+#msg.show{animation:msg .7s steps(7)}
+#msg.bad{color:#ff3b3b;background:rgba(0,0,0,.75);padding:10px 0}
+@keyframes msg{0%{opacity:1;transform:scale(1.4)}70%{opacity:1;transform:scale(1)}100%{opacity:0}}
+#arena.redflash{animation:rf .25s steps(2)}
+@keyframes rf{50%{background:#a00}}
+
+/* Overlays */
+.ov{position:fixed;inset:0;display:none;align-items:center;justify-content:flex-start;flex-direction:column;z-index:50;background:rgba(5,5,12,.94);text-align:center;gap:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;
+  padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+.ov>:first-child{margin-top:auto}.ov>:last-child{margin-bottom:auto}
+.ov.on{display:flex}
+.big{font-size:clamp(18px,5vw,44px);line-height:1.3}
+.btn{font-size:clamp(10px,2vw,14px);padding:14px 18px;border:4px solid #000;outline:3px solid var(--yel);background:var(--yel);color:#000;box-shadow:6px 6px 0 #000}
+.btn:active{transform:translate(3px,3px);box-shadow:3px 3px 0 #000}
+.btn.alt{background:#fff;outline-color:#fff}
+#title .t1{color:var(--fa);text-shadow:4px 4px 0 #000,0 0 0 #000}
+#title .vs{color:var(--yel);font-size:clamp(12px,3vw,22px)}
+#title .t2{color:var(--pp);text-shadow:4px 4px 0 var(--vox)}
+#title .how{max-width:640px;font-size:clamp(8px,1.6vw,11px);line-height:2;color:#ccc;text-align:left;border:4px dashed #444;padding:14px}
+#title .how b{color:var(--yel)}
+#title .attempt{color:#ff5050;font-size:10px;line-height:1.8}
+#unlockBadge{display:none;font-size:9px;color:var(--yel);border:3px solid var(--yel);padding:10px;cursor:pointer;animation:blink 1s steps(2) infinite}
+.blink{animation:blink .6s steps(2) infinite}
+.muteBtn{font-size:8px;background:#000;color:var(--yel);border:2px solid var(--yel);padding:3px 6px;touch-action:manipulation}
+
+/* Resultado */
+#results .rows{display:grid;gap:8px;width:min(560px,100%);font-size:10px}
+#results .row{display:grid;grid-template-columns:minmax(80px,120px) 1fr 40px;align-items:center;gap:8px;text-align:left}
+#results .row .b{height:16px}
+#results .verdict{font-size:clamp(10px,2.2vw,16px);color:var(--yel);line-height:1.8}
+
+/* Cartas tipo coleccionable */
+.pcard{width:min(340px,90vw);border:10px solid var(--yel);border-radius:14px;background:#f6e7b0;color:#111;padding:10px;box-shadow:10px 10px 0 #000;text-align:left;font-size:8px;line-height:1.7}
+.pc-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px}
+.pc-hp{color:#c00;font-size:10px}
+.pc-art{border:5px solid #888;background:#7ab;height:clamp(100px,24vh,170px);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.pc-art svg{height:88%;width:auto}
+.pc-info{font-size:7px;background:#e0c870;padding:3px 6px;margin-bottom:8px;text-align:center}
+.pc-atk{border-bottom:2px solid #0003;padding:5px 0}
+.pc-atk .h{display:flex;justify-content:space-between;font-size:9px}
+.pc-atk p{font-size:7px;color:#333}
+.pc-foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:6px;margin-top:6px;text-align:center}
+.pc-flavor{font-size:7px;font-style:italic;border:2px solid #0004;padding:5px;margin-top:6px}
+.pcard.fach{background:#2a0a0a;color:#ffdede;border-color:#ff1a1a;animation:glitch .18s infinite}
+.pcard.fach .pc-art{background:repeating-linear-gradient(45deg,#7a9a00 0 10px,#3e5200 10px 20px);border-color:#ff1a1a}
+.pcard.fach .pc-info{background:#600;color:#fff}
+.pcard.fach .pc-atk p{color:#f99}
+.pcard.fach .pc-flavor{border-color:#f00}
+@keyframes glitch{0%{transform:translate(0)}20%{transform:translate(-3px,1px) skewX(2deg)}40%{transform:translate(3px,-2px)}60%{transform:translate(-1px,2px) skewX(-2deg)}80%{transform:translate(2px,0)}}
+.pcard.thanks{background:linear-gradient(135deg,#f3d4ff,#ffd6d6)}
+.pcard.thanks .pc-art{background:repeating-linear-gradient(0deg,#ffe27a 0 8px,#ffd23c 8px 16px)}
+.pcard.colau{background:linear-gradient(135deg,#d9f7ff,#f0e3ff);border-color:#b98cff}
+.pcard.colau .pc-art{background:repeating-linear-gradient(90deg,#9fe0a0 0 10px,#7ccf7e 10px 20px)}
+.pcard.flip{animation:flip .5s steps(6)}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+#alarmBanner{font-size:clamp(11px,3vw,20px);color:#ff2020;animation:blink .35s steps(2) infinite}
+#fachOv{background:rgba(40,0,0,.92)}
+#fachOv.strobe{animation:strobe .4s steps(2) infinite}
+@keyframes strobe{50%{background:rgba(160,0,0,.95)}}
+#count{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;font-size:min(40vw,260px);color:#fff;text-shadow:10px 10px 0 #f00;pointer-events:none}
+#count.on{display:flex}
+#count.zas{background:#fff;color:#f00;text-shadow:10px 10px 0 #000;font-size:min(22vw,160px)}
+#popup .box{border:6px solid #ff2020;background:#000;padding:22px;max-width:560px;box-shadow:12px 12px 0 #ff2020;display:flex;flex-direction:column;gap:16px;align-items:center}
+#popup .box h2{font-size:clamp(14px,3.4vw,26px);color:#ff2020;line-height:1.5}
+#popup .box p{font-size:clamp(9px,1.8vw,12px);line-height:2}
+#popup .bar{width:100%;background:#ff2020;color:#000;font-size:9px;padding:4px;text-align:left}
+#boom{position:fixed;inset:0;z-index:80;pointer-events:none;display:none}
+/* ---------- Móvil ---------- */
+@media (hover:none){.panel .key{display:none}}
+@media (max-width:600px){
+  #hud{font-size:8px;padding-bottom:4px;border-bottom-width:3px}
+  #hud .stats{gap:8px}
+  #hemi{max-height:27vh}
+  #legend{font-size:7px;gap:4px 9px}
+  #legend i{width:8px;height:8px}
+  #bars{font-size:7px;margin-top:4px}
+  #faOk{font-size:9px;padding:4px 6px}
+  .meter{height:10px}
+  .panel{border-width:4px;outline-width:3px;outline-offset:-7px;gap:8px}
+  .panel .ico{width:clamp(26px,9vw,44px)}
+  #title .how{font-size:8px;line-height:1.9;padding:10px}
+  .pcard{font-size:7px;padding:8px;border-width:7px}
+  .pc-top{font-size:10px}
+  .pc-atk .h{font-size:8px}
+  .btn{padding:16px 14px;min-height:52px}
+}
+@media (max-height:700px) and (orientation:portrait){
+  .pc-atk p{display:none}
+  .pc-flavor{font-size:6px}
+}
+/* Móvil en horizontal: hemiciclo a la izquierda, cartas a la derecha */
+@media (orientation:landscape) and (max-height:520px){
+  #game{display:grid;grid-template-columns:44% 1fr;grid-template-rows:auto 1fr;gap:6px 10px}
+  #hud{grid-column:1/-1;font-size:8px;padding-bottom:3px}
+  #hemiWrap{justify-content:center;min-height:0}
+  #hemi{max-height:48vh}
+  #legend{font-size:7px;gap:3px 8px}
+  #bars{font-size:6px}
+  .meter{height:9px}
+  #arena{min-height:0}
+  .panel .lbl{font-size:clamp(10px,2.6vw,20px)}
+  .panel .ico{width:clamp(22px,5vw,40px)}
+  .pc-art{height:clamp(80px,28vh,140px)}
+  .pc-atk p{display:none}
+  .big{font-size:clamp(14px,4vw,30px)}
+  #title .how{font-size:7px;line-height:1.8}
+}
+#unlockTag{font-size:10px;color:#6a00c8;background:var(--yel);padding:6px 8px;border:3px solid #000;animation:blink .5s steps(2) infinite}
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="hud">
+    <div class="logo"><b>EL PUEBLO</b> vs <i>FACHALECOS</i></div>
+    <div class="stats"><span id="lvl">NIVEL 1</span><span id="combo">COMBO x0</span><button class="muteBtn" type="button">🔊 MÚSICA</button></div>
+  </div>
+  <div id="hemiWrap">
+    <svg id="hemi" viewBox="0 0 200 104" shape-rendering="crispEdges"></svg>
+    <div id="drift">MÁQUINA DEL FANGO +1</div>
+    <div id="legend">
+      <span><i style="background:var(--fa)"></i>FRENTE AMPLIO <b id="nFa">0</b></span>
+      <span><i style="background:var(--psoe)"></i>PSOE <b id="nPsoe">0</b></span>
+      <span><i style="background:var(--otras)"></i>OTRAS <b>52</b></span>
+      <span><i style="background:var(--pp)"></i>PP-VOX <b id="nPp">0</b></span>
+      <span style="color:#888">TOTAL <b id="nTot">52</b>/350</span>
+    </div>
+    <div id="bars">
+      <div class="meterLbl"><span>BLOQUE PROGRESISTA <b id="lProg">0</b>/176</span><span>PP-VOX <b id="lPp">0</b>/176</span></div>
+      <div class="meter" id="mMain"><div class="f" id="fFa" style="background:var(--fa)"></div><div class="f" id="fPsoe" style="background:var(--psoe)"></div><div class="f" id="fPp" style="background:var(--pp);left:auto;right:0"></div><div class="mark" style="left:50.29%"></div></div>
+      <div class="meterLbl"><span>FRENTE AMPLIO &gt;15%: <b id="lFa">0</b>/53 MÍN.</span><span id="faOk" class="no">⚠ FA INSUFICIENTE ⚠</span></div>
+    </div>
+  </div>
+  <div id="arena">
+    <div id="timer"><div id="timerFill"></div></div>
+    <div id="panels"></div>
+    <div id="msg"></div>
+  </div>
+</div>
+
+<!-- Pantalla de título -->
+<div class="ov on" id="title">
+  <div class="big t1">EL PUEBLO</div>
+  <div class="vs">— VS —</div>
+  <div class="big t2">FACHALECOS</div>
+  <div class="attempt" id="attempt"></div>
+  <div class="how">
+    ▶ Llena el hemiciclo: <b>350 escaños</b>.<br>
+    ▶ Las cartas no paran. <b>Toca rápido</b> el partido que quieres: cuanto antes votas, <b>más escaños</b> por clic.<br>
+    ▶ Las posiciones cambian. <b>¡No te equivoques!</b> Si dudas, la abstención suma a la derecha.<br>
+    ▶ Gobierno progresista: <b>PSOE + FA ≥ 176</b> y <b>FA &gt; 15%</b>.<br>
+    ▶ Teclado: <b>1 2 3</b> o <b>← ↓ →</b>
+  </div>
+  <div id="unlockBadge">★ CARTA DESBLOQUEADA: ADA COLAU · MINISTRA DE VIVIENDA ★</div>
+  <button class="btn blink" id="startBtn">▶ PULSA START</button>
+  <button class="muteBtn" type="button" style="font-size:10px;padding:8px 12px">🔊 MÚSICA</button>
+</div>
+
+<!-- Resultados -->
+<div class="ov" id="results">
+  <div class="big" style="color:var(--yel)">ESCRUTINIO 100%</div>
+  <div class="rows" id="resRows"></div>
+  <div class="verdict" id="verdict"></div>
+</div>
+
+<!-- Fachaleco -->
+<div class="ov" id="fachOv">
+  <div id="alarmBanner">⚠ ALERTA DEMOCRÁTICA ⚠ MAYORÍA PP-VOX ⚠</div>
+  <div id="fachCard"></div>
+</div>
+<div id="count"></div>
+<div class="ov" id="popup" style="background:rgba(0,0,0,.85)">
+  <div class="box">
+    <div class="bar">SISTEMA_DEMOCRACIA.EXE — ERROR FATAL</div>
+    <h2>⚠ INADMISIBLE PARA LA DEMOCRACIA ⚠</h2>
+    <p>Una mayoría PP-VOX no se puede aceptar.<br>Este juego se autodestruye.</p>
+    <button class="btn" id="boomBtn" style="background:#ff2020;outline-color:#ff2020">💥 ¡RECONDUCIR LA SITUACIÓN!</button>
+  </div>
+</div>
+<canvas id="boom"></canvas>
+
+<!-- Progresista -->
+<div class="ov" id="winOv">
+  <div class="big" style="color:var(--yel)" id="winTitle">¡GOBIERNO PROGRESISTA!</div>
+  <div id="winCard"></div>
+  <button class="btn" id="winBtn">DESBLOQUEAR →</button>
+</div>
+
+<!-- Bloqueo -->
+<div class="ov" id="blockOv">
+  <div class="big" style="color:#9cf">BLOQUEO</div>
+  <div class="verdict" id="blockTxt" style="font-size:12px;line-height:2;max-width:620px"></div>
+  <button class="btn" id="blockBtn">↻ REPETICIÓN ELECTORAL</button>
+</div>
+
+<script>
+(()=>{
+const TOTAL=350, OTRAS=52, MAJ=176, FA_MIN=53;
+const P={fa:{name:'FRENTE AMPLIO',col:'#a335ee'},psoe:{name:'PSOE',col:'#e02424'},pp:{name:'PP-VOX',col:'#2358d6'},otras:{col:'#7a7a7a'},empty:{col:'#1d1d2b'}};
+const $=id=>document.getElementById(id);
+let S=null, attempts=0;
+let store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let colauUnlocked=store.get('mvf_colau')==='1';
+
+/* ---------- Sprites pixel ---------- */
+function spr(rows,pal){
+  const w=Math.max(...rows.map(r=>r.length)),h=rows.length;
+  let s=`<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">`;
+  rows.forEach((r,y)=>[...r].forEach((c,x)=>{if(pal[c])s+=`<rect x="${x}" y="${y}" width="1.03" height="1.03" fill="${pal[c]}"/>`}));
+  return s+'</svg>';
+}
+const FACH=[
+"..R..............R..",
+"..RR..hhhhhhhh..RR..",
+"...RRhhhhhhhhhhRR...",
+"....hhhhhhhhhhhh....",
+"....hssssssssssh....",
+"....gggggssggggg....",
+"....gRRggssggRRg....",
+"....sggggssggggs....",
+"....sssssksssss.....",
+"....skwkwkwkwkws....",
+"....sskkkkkkkkss....",
+".....ssssssssss.....",
+"...vvvvvvbbvvvvvv...",
+"..vvvwvvvbbvvvwvvv..",
+".vvwvvvvbRybvvvvwvv.",
+".vvvvwvvbbbbvvwvvvv.",
+"svvwvvvvbbbbvvvvwvvs",
+"ss.vvvwvbbbbvwvvv.ss",
+"...vvvvvbbbbvvvvv...",
+"...kkkk......kkkk..."];
+const FACH_PAL={R:'#ff2020',h:'#5a3418',s:'#f0b08a',g:'#111',k:'#000',w:'#fff',v:'#14215a',b:'#8fd0ff',y:'#ffd400'};
+const VEST=["..vv..vv..",".vvvbbvvv.","vvwvbbvwvv","vvvvbbvvvv","vwvvbbvvwv","vvvvbbvvvv",".vvvbbvvv."];
+const VEST_PAL={v:'#0d1640',w:'#fff',b:'#8fd0ff'};
+const HEART=[
+"y.PPP...RRR..y",
+".PPPPP.RRRRR..",
+"PPPPPPPRRRRRR.",
+"PPkwPPPRRkwRR.",
+"PPkkPPPRRkkRR.",
+"PPPPPPPRRRRRR.",
+".PPPkPPRkRRR..",
+"..PPPkkkkRR...",
+"...PPPPRRR....",
+"....PPPRR....y",
+".y...PPR......",
+"......R......."];
+const HEART_PAL={P:'#a335ee',R:'#e02424',k:'#000',w:'#fff',y:'#ffd400'};
+const HOUSE=[
+"..y...kk.....y",
+".....kRRk.....",
+"....kRRRRk....",
+"...kRRRRRRk...",
+"..kRRRRRRRRk..",
+".kRRRRRRRRRRk.",
+"kkkkkkkkkkkkkk",
+".kccccccccccck",
+".kcbbccccbbcck",
+".kcbbccccbbcck",
+".kccccddccccck",
+".kccccddccccck",
+".kccccdyccccck",
+"gkkkkkkkkkkkkkg",
+"ggggggggggggggg"];
+const HOUSE_PAL={k:'#000',R:'#e02424',c:'#ffe9a8',b:'#8fd0ff',d:'#7a4a1e',y:'#ffd400',g:'#2f8f30'};
+const ICON={fa:spr(["..yy..","yyyyyy",".yyyy.","yy..yy"],{y:'#fff'}),psoe:spr(["..ww..",".wwww.","wwwwww",".wwww.","..ww.."],{w:'#fff'})};
+
+/* ---------- Audio ---------- */
+let AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function beep(f,d=.08,type='square',vol=.06,delay=0){const a=AC;if(!a)return;const t=a.currentTime+delay,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.02)}
+function noise(d=1,vol=.25){const a=AC;if(!a)return;const b=a.createBuffer(1,a.sampleRate*d,a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/c.length,2);const s=a.createBufferSource(),g=a.createGain();g.gain.value=vol;s.buffer=b;s.connect(g).connect(a.destination);s.start()}
+let siren=null;
+function sirenOn(){const a=AC;if(!a||siren)return;const o=a.createOscillator(),l=a.createOscillator(),lg=a.createGain(),g=a.createGain();o.type='square';o.frequency.value=700;l.frequency.value=1.8;lg.gain.value=260;l.connect(lg).connect(o.frequency);g.gain.value=.05;o.connect(g).connect(a.destination);o.start();l.start();siren={o,l,g}}
+function sirenOff(){if(siren){try{siren.o.stop();siren.l.stop()}catch(e){}siren=null}}
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+
+/* ---------- Música de fondo: reggaetón chiptune ---------- */
+const music=(()=>{
+  let master=null,nbuf=null,timer=null,step=0,nextT=0,on=false;
+  let bpm=88,muted=store.get('mvf_mute')==='1';
+  // Progresión hortera i-VI-III-VII (Am F C G)
+  const CH=[[220,261.6,329.6],[174.6,220,261.6],[261.6,329.6,392],[196,246.9,293.7]];
+  const BASS=[55,43.65,65.41,49];
+  const KICK=[0,4,8,12],SNARE=[3,6,11,14],LEAD=[0,2,3,6,8,10,11,14],LPAT=[2,1,0,1,2,1,2,0];
+  function init(){
+    const a=ac();if(!a)return false;
+    if(!master){master=a.createGain();master.gain.value=muted?0:.55;master.connect(a.destination);
+      nbuf=a.createBuffer(1,a.sampleRate*.3,a.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+    return true;
+  }
+  function tone(f,t,d,type,vol,slideTo){const a=AC,o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(slideTo)o.frequency.exponentialRampToValueAtTime(slideTo,t+d);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(master);o.start(t);o.stop(t+d+.02)}
+  function nz(t,d,vol,hp){const a=AC,src=a.createBufferSource(),f=a.createBiquadFilter(),g=a.createGain();src.buffer=nbuf;f.type='highpass';f.frequency.value=hp;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);src.connect(f).connect(g).connect(master);src.start(t);src.stop(t+d+.02)}
+  function play(st,t){
+    const s16=st%16,bar=Math.floor(st/16)%4,dur=60/bpm/4;
+    if(KICK.includes(s16))tone(150,t,.16,'sine',.7,40);
+    if(SNARE.includes(s16)){nz(t,.12,.28,1500);tone(220,t,.05,'triangle',.08)}
+    if(s16%2===0)nz(t,.03,.06,7000); else nz(t,.02,.03,9000);
+    if(s16===0||s16===3||s16===8||s16===11)tone(BASS[bar],t,dur*2.6,'triangle',.32);
+    const li=LEAD.indexOf(s16);
+    if(li>=0){const n=CH[bar][LPAT[li]]*2;tone(n,t,dur*1.4,'square',.045);tone(n*1.005,t,dur*1.4,'square',.02)}
+    if(s16===0&&bar%2===0)tone(CH[bar][2]*4,t,dur*.6,'square',.025);
+  }
+  function sched(){if(!on||!AC)return;while(nextT<AC.currentTime+.12){play(step,nextT);nextT+=60/bpm/4;step++}}
+  return{
+    start(){if(on||!init())return;on=true;step=0;nextT=AC.currentTime+.05;timer=setInterval(sched,25);sched()},
+    stop(){on=false;clearInterval(timer);timer=null},
+    tempo(b){bpm=Math.max(70,Math.min(170,b))},
+    get on(){return on},
+    toggleMute(){muted=!muted;store.set('mvf_mute',muted?'1':'0');if(master)master.gain.value=muted?0:.55;return muted},
+    get muted(){return muted}
+  };
+})();
+function muteLabel(){const t=music.muted?'🔇 MÚSICA':'🔊 MÚSICA';document.querySelectorAll('.muteBtn').forEach(b=>b.textContent=t)}
+
+const jingle=()=>[523,659,784,1047,784,1047,1319].forEach((f,i)=>beep(f,.14,'square',.06,i*.11));
+
+/* ---------- Hemiciclo ---------- */
+let seatEls=[];
+function buildHemi(){
+  const svg=$('hemi'),rows=10,rIn=40,rOut=96,cx=100,cy=100,radii=[];
+  for(let i=0;i<rows;i++)radii.push(rIn+(rOut-rIn)*i/(rows-1));
+  const sum=radii.reduce((a,b)=>a+b,0);
+  const counts=radii.map(r=>Math.floor(TOTAL*r/sum));
+  let rem=TOTAL-counts.reduce((a,b)=>a+b,0);for(let i=rows-1;rem>0;i=(i-1+rows)%rows,rem--)counts[i]++;
+  const seats=[];
+  radii.forEach((r,i)=>{const n=counts[i];for(let j=0;j<n;j++){const th=Math.PI*(1-j/(n-1));seats.push({x:cx+r*Math.cos(th),y:cy-r*Math.sin(th),th,r})}});
+  seats.sort((a,b)=>(b.th-a.th)||(a.r-b.r));
+  let h='';seats.forEach((s,i)=>h+=`<rect id="s${i}" x="${(s.x-2).toFixed(2)}" y="${(s.y-2).toFixed(2)}" width="4" height="4" fill="${P.empty.col}"/>`);
+  h+=`<text x="100" y="94" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="7" fill="#ffd400">176</text><text x="100" y="102" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="4" fill="#888">MAYORÍA</text>`;
+  svg.innerHTML=h;seatEls=seats.map((_,i)=>$('s'+i));
+}
+const total=()=>S.fa+S.psoe+S.pp+OTRAS;
+function render(){
+  const {fa,psoe,pp}=S;
+  for(let k=0;k<TOTAL;k++){
+    let c=P.empty.col;
+    if(k<fa)c=P.fa.col;else if(k<fa+psoe)c=P.psoe.col;else if(k>=TOTAL-pp)c=P.pp.col;else if(k>=TOTAL-pp-OTRAS)c=P.otras.col;
+    if(seatEls[k].__c!==c){seatEls[k].setAttribute('fill',c);seatEls[k].__c=c}
+  }
+  $('nFa').textContent=fa;$('nPsoe').textContent=psoe;$('nPp').textContent=pp;$('nTot').textContent=total();
+  $('lProg').textContent=fa+psoe;$('lPp').textContent=pp;$('lFa').textContent=fa;
+  $('fFa').style.width=(fa/TOTAL*100)+'%';$('fPsoe').style.left=(fa/TOTAL*100)+'%';$('fPsoe').style.width=(psoe/TOTAL*100)+'%';$('fPp').style.width=(pp/TOTAL*100)+'%';
+  const ok=fa>=FA_MIN;$('faOk').textContent=ok?'✓ FA SUFICIENTE':'⚠ FA INSUFICIENTE ⚠';$('faOk').className=ok?'ok':'no';
+  $('hemiWrap').classList.toggle('danger',pp>=140);
+  $('lvl').textContent='NIVEL '+(S.level+1);
+  const cb=$('combo');cb.textContent='COMBO x'+S.combo;cb.classList.toggle('hot',S.combo>=5);
+}
+
+/* ---------- Cartas ---------- */
+const panelsEl=$('panels');let panelEls=[];
+function buildPanels(){panelsEl.innerHTML='';panelEls=[0,1,2].map(i=>{const d=document.createElement('div');d.className='panel';d.addEventListener('pointerdown',e=>{e.preventDefault();choose(i)});panelsEl.appendChild(d);return d})}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function newCard(){
+  if(!S.running)return;
+  S.cards++;S.level=Math.floor(S.cards/10);
+  const d=Math.max(620,2200-S.cards*25);
+  const opts=[{party:'fa'},{party:'psoe'},{party:'pp'}];
+  shuffle(opts);
+  S.card={opts,start:performance.now(),d,done:false};
+  music.tempo(92+S.cards*1.4);
+  const keys=['1 · ←','2 · ↓','3 · →'];
+  opts.forEach((o,i)=>{
+    const el=panelEls[i];el.className='panel '+o.party;void el.offsetWidth;el.classList.add('pop');
+    const name=P[o.party].name;
+    const ico=o.party==='pp'?spr(VEST,VEST_PAL):ICON[o.party];
+    el.innerHTML=`<div class="ico">${ico}</div><div class="lbl">${name.replace(' ','<br>')}</div><div class="key">${keys[i]}</div>`;
+  });
+  render();
+}
+function floatAt(i,txt,col){const f=document.createElement('div');f.className='float';f.textContent=txt;if(col)f.style.color=col;f.style.left=(30+Math.random()*30)+'%';f.style.top='40%';panelEls[i].appendChild(f);setTimeout(()=>f.remove(),650)}
+function msg(t,bad){const m=$('msg');m.textContent=t;m.className=bad?'bad':'';void m.offsetWidth;m.classList.add('show')}
+function add(party,n){const room=TOTAL-total();n=Math.min(n,room);S[party]+=n;render();return n}
+function choose(i){
+  const c=S&&S.card;if(!S||!S.running||!c||c.done)return;c.done=true;
+  const o=c.opts[i],frac=Math.max(0,1-(performance.now()-c.start)/c.d);
+  let seats=2+Math.floor(frac*5)+Math.floor(S.level/2);if(S.combo>=5)seats++;
+  if(o.party==='pp'){
+    seats=Math.max(3,seats);const n=add('pp',seats);S.combo=0;
+    msg('¡TE EQUIVOCASTE! +'+n+' PP-VOX',true);
+    $('arena').classList.remove('redflash');void $('arena').offsetWidth;$('arena').classList.add('redflash');
+    beep(110,.25,'sawtooth',.09);beep(80,.3,'sawtooth',.08,.1);vib(120);floatAt(i,'+'+n,'#8fd0ff');
+  }else{
+    const n=add(o.party,seats);S.combo++;beep(330+seats*120,.07);if(seats>=4)beep(990,.05,'square',.04,.05);
+    floatAt(i,'+'+n);if(S.combo===5)msg('¡COMBO! +1 ESCAÑO EXTRA');
+  }
+  render();afterMove();
+}
+function timeout(){
+  const n=add('pp',3+Math.floor(S.level/2));S.combo=0;msg('¡ABSTENCIÓN! +'+n+' PP-VOX',true);vib(60);beep(150,.2,'triangle',.08);render();afterMove();
+}
+function afterMove(){
+  if(checkEnd())return;
+  setTimeout(newCard,110);
+}
+function checkEnd(){
+  if(S.pp>=MAJ&&!S.autofill){S.autofill=true;S.running=false;autofill();return true}
+  if(total()>=TOTAL){S.running=false;showResults();return true}
+  return false;
+}
+function autofill(){
+  msg('¡OLA REACCIONARIA! EL HEMICICLO SE LLENA SOLO',true);music.stop();sirenOn();
+  const iv=setInterval(()=>{
+    if(total()>=TOTAL){clearInterval(iv);setTimeout(()=>{sirenOff();showResults()},400);return}
+    const r=Math.random();add(r<.6?'pp':r<.8?'psoe':'fa',1);beep(200+Math.random()*400,.03,'square',.03);
+  },22);
+}
+function loop(now){
+  if(!S||!S.running)return;
+  const c=S.card;
+  if(c&&!c.done){const t=(now-c.start)/c.d;$('timerFill').style.transform=`scaleX(${Math.max(0,1-t)})`;$('timerFill').style.background=t>.7?'#ff3b3b':'#ffd400';if(t>=1){c.done=true;timeout()}}
+  const di=Math.max(600,1000-S.level*80);
+  if(S.running&&now-S.lastDrift>di){S.lastDrift=now;const n=add('pp',1+Math.floor(S.level/3));if(n){const d=$('drift');d.textContent='MÁQUINA DEL FANGO +'+n;d.classList.remove('on');void d.offsetWidth;d.classList.add('on');beep(90,.05,'triangle',.05)}if(checkEnd())return}
+  requestAnimationFrame(loop);
+}
+
+/* ---------- Botón con espera para poder leer ---------- */
+function lockBtn(b,sec){
+  const label=b.textContent;b.disabled=true;b.style.opacity=.45;let n=sec;
+  b.textContent='LEE… '+n;
+  const iv=setInterval(()=>{n--;if(n<=0){clearInterval(iv);b.disabled=false;b.style.opacity=1;b.textContent=label}else b.textContent='LEE… '+n},1000);
+}
+/* ---------- Partida ---------- */
+function startGame(){
+  ac();hideAll();music.tempo(92);music.start();
+  S={fa:0,psoe:0,pp:0,cards:0,combo:0,level:0,running:true,card:null,lastDrift:performance.now()+1200,autofill:false};
+  $('game').style.visibility='visible';render();
+  let n=3;msg('¡A VOTAR!');beep(440,.1);
+  setTimeout(()=>{newCard();requestAnimationFrame(loop)},500);
+}
+function hideAll(){document.querySelectorAll('.ov').forEach(o=>o.classList.remove('on','strobe'));$('count').className=''}
+
+function showResults(){
+  hideAll();
+  const rows=[['FRENTE AMPLIO',S.fa,P.fa.col],['PSOE',S.psoe,P.psoe.col],['OTRAS',OTRAS,P.otras.col],['PP-VOX',S.pp,P.pp.col]];
+  $('resRows').innerHTML=rows.map(r=>`<div class="row"><span>${r[0]}</span><div class="b" style="width:${r[1]/TOTAL*100*2.4}%;background:${r[2]};max-width:100%"></div><b>${r[1]}</b></div>`).join('');
+  const prog=S.fa+S.psoe;let v;
+  if(S.pp>=MAJ)v='PP-VOX: MAYORÍA ABSOLUTA ('+S.pp+')';
+  else if(prog>=MAJ&&S.fa>=FA_MIN)v='PSOE + FRENTE AMPLIO: '+prog+' ESCAÑOS';
+  else v='NADIE GOBIERNA...';
+  $('verdict').textContent=v;$('results').classList.add('on');
+  [262,330,392].forEach((f,i)=>beep(f,.12,'square',.05,i*.15));
+  setTimeout(()=>{
+    if(S.pp>=MAJ)fachaleco();
+    else if(prog>=MAJ&&S.fa>=FA_MIN)progresista();
+    else bloqueo();
+  },2200);
+}
+
+/* ---------- Final FACHALECO ---------- */
+function fachaleco(){
+  hideAll();
+  $('fachCard').innerHTML=`<div class="pcard fach">
+    <div class="pc-top"><span>FACHALECO</span><span class="pc-hp">PV 666 ☠</span></div>
+    <div class="pc-art">${spr(FACH,FACH_PAL)}</div>
+    <div class="pc-info">TIPO: TINIEBLAS · NIVEL: MAYORÍA ABSOLUTA · ${S.pp} ESCAÑOS</div>
+    <div class="pc-atk"><div class="h"><b>RECORTAZO</b><b>120</b></div><p>Elimina un servicio público al azar. Repite cada turno.</p></div>
+    <div class="pc-atk"><div class="h"><b>BULO MASIVO</b><b>90</b></div><p>Confunde a todos los rivales durante 4 años.</p></div>
+    <div class="pc-atk"><div class="h"><b>CHALECO ACOLCHADO</b><b>∞</b></div><p>Pasiva: inmune a la empatía.</p></div>
+    <div class="pc-foot"><span>DEBILIDAD<br>MOVILIZACIÓN ×2</span><span>RESISTENCIA<br>DATOS −30</span><span>RETIRADA<br>NUNCA</span></div>
+    <div class="pc-flavor">Aparece cuando la abstención se duerme. Muy peligroso. No alimentar.</div></div>`;
+  music.stop();$('fachOv').classList.add('on','strobe');sirenOn();
+  setTimeout(()=>countdown(3),7000);
+}
+function countdown(n){
+  const c=$('count');
+  if(n>0){c.className='on';c.textContent=n;beep(880,.25,'square',.09);vib(150);setTimeout(()=>countdown(n-1),1000)}
+  else{c.className='on zas';c.textContent='¡ZAS!';noise(.6,.3);beep(60,.6,'sawtooth',.12);
+    setTimeout(()=>{c.className='';sirenOff();$('fachOv').classList.remove('on','strobe');$('popup').classList.add('on');lockBtn($('boomBtn'),4);beep(1200,.1);beep(1200,.1,'square',.06,.15)},700)}
+}
+$('boomBtn').addEventListener('click',()=>{ac();explode()});
+function explode(){
+  hideAll();attempts++;
+  const cv=$('boom'),W=innerWidth,H=innerHeight,dpr=Math.min(2,window.devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);cv.style.display='block';
+  $('game').classList.add('shake');noise(1.8,.4);vib([300,80,300,80,600]);beep(50,1.2,'sawtooth',.12);
+  const cols=[P.fa.col,P.psoe.col,P.pp.col,P.otras.col,'#ffd400','#3fa63f','#fff','#ff2020'];
+  const sz=Math.max(14,Math.round(Math.min(W,H)/28)),parts=[];
+  for(let y=0;y<H;y+=sz)for(let x=0;x<W;x+=sz){const dx=x-W/2,dy=y-H/2,d=Math.hypot(dx,dy)+1,sp=8+Math.random()*22;parts.push({x,y,vx:dx/d*sp+(Math.random()-.5)*6,vy:dy/d*sp-Math.random()*12,c:cols[Math.random()*cols.length|0],s:sz})}
+  setTimeout(()=>{$('game').style.visibility='hidden'},60);
+  let f=0;
+  (function fr(){
+    ctx.fillStyle=f<4?'#fff':'#05050c';ctx.fillRect(0,0,W,H);
+    parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.7;p.s*=.985;ctx.fillStyle=p.c;ctx.fillRect(p.x|0,p.y|0,p.s|0,p.s|0)});
+    if(++f<110)requestAnimationFrame(fr);
+    else{cv.style.display='none';$('game').classList.remove('shake');showTitle()}
+  })();
+}
+
+/* ---------- Final PROGRESISTA ---------- */
+function progresista(){
+  hideAll();jingle();music.tempo(110);
+  $('winTitle').textContent='¡GOBIERNO PROGRESISTA!';
+  $('winCard').innerHTML=`<div class="pcard thanks flip">
+    <div class="pc-top"><span>AGRADECIMIENTO</span><span class="pc-hp">PV ${S.fa+S.psoe} ♥</span></div>
+    <div class="pc-art">${spr(HEART,HEART_PAL)}</div>
+    <div class="pc-info">TIPO: SOLIDARIDAD · PSOE ${S.psoe} + FRENTE AMPLIO ${S.fa}</div>
+    <div class="pc-atk"><div class="h"><b>ESCUDO SOCIAL</b><b>100</b></div><p>Protege a todo el equipo de los recortes.</p></div>
+    <div class="pc-atk"><div class="h"><b>VOTO EN MASA</b><b>80</b></div><p>Cuantos más participan, más fuerte golpea.</p></div>
+    <div class="pc-foot"><span>DEBILIDAD<br>ABSTENCIÓN</span><span>RESISTENCIA<br>BULOS −50</span><span>RETIRADA<br>★</span></div>
+    <div class="pc-flavor">Gracias por votar. Con un Frente Amplio fuerte, el gobierno puede nombrar ministras nuevas…</div></div>`;
+  $('winBtn').textContent='DESBLOQUEAR →';$('winBtn').onclick=showColau;
+  $('winOv').classList.add('on');lockBtn($('winBtn'),5);
+}
+function colauCard(){return `<div class="pcard colau flip">
+    <div class="pc-top"><span>ADA COLAU</span><span class="pc-hp">PV 350 ⌂</span></div>
+    <div class="pc-art">${spr(HOUSE,HOUSE_PAL)}</div>
+    <div class="pc-info">CARTA ESPECIAL · MINISTRA DE VIVIENDA</div>
+    <div class="pc-atk"><div class="h"><b>TOPE AL ALQUILER</b><b>120</b></div><p>Congela la subida de precios durante varios turnos.</p></div>
+    <div class="pc-atk"><div class="h"><b>STOP DESAHUCIOS</b><b>100</b></div><p>Ninguna familia de tu equipo puede ser expulsada.</p></div>
+    <div class="pc-atk"><div class="h"><b>PARQUE PÚBLICO</b><b>80</b></div><p>Construye vivienda asequible en cada ronda.</p></div>
+    <div class="pc-foot"><span>DEBILIDAD<br>FONDOS BUITRE</span><span>RESISTENCIA<br>LOBBIES −40</span><span>RETIRADA<br>—</span></div>
+    <div class="pc-flavor">Desbloqueada gracias a un Frente Amplio por encima del 15%.</div></div>`}
+function showColau(){
+  colauUnlocked=true;store.set('mvf_colau','1');
+  $('winTitle').innerHTML='<span id="unlockTag">★ ¡DESBLOQUEADA! ★</span>';
+  $('winCard').innerHTML=colauCard();
+  [784,988,1175,1568].forEach((f,i)=>beep(f,.18,'square',.06,i*.12));
+  $('winBtn').textContent='↻ JUGAR OTRA VEZ';$('winBtn').onclick=()=>{hideAll();showTitle()};lockBtn($('winBtn'),6);
+}
+
+/* ---------- BLOQUEO ---------- */
+function bloqueo(){
+  hideAll();const prog=S.fa+S.psoe;let t;
+  if(prog>=MAJ&&S.fa<FA_MIN)t=`PSOE + FA suman ${prog}, pero el Frente Amplio se queda en ${S.fa} escaños (necesita 53+, más del 15%).<br><br>Sin un Frente Amplio fuerte no hay gobierno progresista.`;
+  else t=`Nadie llega a 176.<br>Bloque progresista: ${prog} · PP-VOX: ${S.pp}<br><br>Más rápido, menos errores, y que el Frente Amplio pase del 15%.`;
+  $('blockTxt').innerHTML=t;$('blockOv').classList.add('on');beep(196,.3,'triangle',.07);beep(147,.4,'triangle',.07,.25);
+}
+$('blockBtn').addEventListener('click',()=>{hideAll();showTitle()});
+
+/* ---------- Título ---------- */
+function showTitle(){
+  hideAll();$('game').style.visibility='visible';
+  S={fa:0,psoe:0,pp:0,cards:0,combo:0,level:0,running:false,card:null};render();
+  $('attempt').innerHTML=attempts?`¡LA DEMOCRACIA HA EXPLOTADO ${attempts} ${attempts>1?'VECES':'VEZ'}!<br>INTENTA RECONDUCIR LA SITUACIÓN`:'';
+  $('unlockBadge').style.display=colauUnlocked?'block':'none';
+  if(AC&&!siren){music.tempo(88);music.start()}
+  $('title').classList.add('on');
+}
+$('unlockBadge').addEventListener('click',()=>{ac();hideAll();$('winTitle').textContent='TU COLECCIÓN';$('winCard').innerHTML=colauCard();$('winBtn').textContent='← VOLVER';$('winBtn').onclick=()=>showTitle();$('winOv').classList.add('on')});
+$('startBtn').addEventListener('click',startGame);
+document.addEventListener('touchstart',()=>{const a=ac();if(a){try{const b=a.createBuffer(1,1,22050),src=a.createBufferSource();src.buffer=b;src.connect(a.destination);src.start(0)}catch(e){}}},{once:true,passive:true});
+let musicWasOn=false;
+document.addEventListener('visibilitychange',()=>{if(document.hidden){sirenOff();musicWasOn=music.on;music.stop()}else if(musicWasOn&&!siren){music.start()}});
+document.querySelectorAll('.muteBtn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();ac();music.toggleMute();muteLabel();if(!music.on&&!siren)music.start()}));
+muteLabel();
+document.addEventListener('gesturestart',e=>e.preventDefault());
+document.addEventListener('dblclick',e=>e.preventDefault());
+
+document.addEventListener('keydown',e=>{
+  const m={'1':0,'2':1,'3':2,ArrowLeft:0,ArrowDown:1,ArrowUp:1,ArrowRight:2,a:0,s:1,d:2};
+  if(e.key in m&&S&&S.running){e.preventDefault();choose(m[e.key])}
+  else if((e.key==='Enter'||e.key===' ')&&$('title').classList.contains('on')){e.preventDefault();startGame()}
+});
+
+buildHemi();buildPanels();showTitle();
+})();
+</script>
+</body>
+</html>
