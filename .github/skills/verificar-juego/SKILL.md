@@ -40,8 +40,8 @@ node tools/verificar-juego.mjs juegos/<slug>
 
 Qué exige la verificación:
 
-- `index.html` existe y tiene `</head>` (analítica) y `</body>` (botón de
-  compartir).
+- `index.html` existe y tiene `</head>` (analítica) y `</body>` (botones de
+  atrás y compartir).
 - Existe `designs/og/<slug>.png`, la captura de 1200 × 630 que declara `og:image`.
 - Existe `designs/historias/<slug>.png`, la historia de 1080 × 1920 para Instagram.
 - En el HTML, todo `src`/`href`/`poster` y todo `url()`/`@import` es absoluto y
@@ -54,7 +54,7 @@ Qué exige la verificación:
 
 ```bash
 npm run build     # limpia static/, construye los svelte, copia los estatico,
-                  # inyecta analítica y botón de compartir, y verifica
+                  # inyecta analítica y botones, y verifica
 npm run dev:todo  # servidores de desarrollo + contenedor en http://localhost:5173/
 npm run preview   # sirve exactamente lo construido en http://localhost:4173/
 ```

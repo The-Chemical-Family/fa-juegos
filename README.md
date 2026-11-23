@@ -52,7 +52,7 @@ npm run dev     # servidor de desarrollo del contenedor
 npm run nuevo-juego -- --tipo svelte --slug <slug> --nombre "<Nombre>"   # crea un juego
 ```
 
-`npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos `svelte` con `publicar: true`, copia los `estatico`, inyecta la analítica y el botón de compartir, y verifica cada artefacto.
+`npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos `svelte` con `publicar: true`, copia los `estatico`, inyecta la analítica y los botones de atrás y compartir, y verifica cada artefacto.
 
 `npm run check` comprueba los dos tipos: en los `svelte` valida el manifiesto y, si existe `dist/`, sus referencias; en los `estatico` valida el manifiesto y verifica la carpeta directamente. Después ejecuta el `check` de cada workspace que lo declare.
 
@@ -145,15 +145,21 @@ Añadir la captura `designs/og/<slug>.png` (1200 × 630) antes de publicarlo: es
 2. **No** añadir `package.json`, ni `node_modules`, ni un paso de compilación.
 3. Usar rutas absolutas `/<slug>/...` en `index.html` para los subrecursos, y relativas solo dentro del CSS. Si el juego se construyó para otro prefijo, `--prefijo-anterior <segmento>` lo reescribe.
 4. Crear `juego.json` con `"tipo": "estatico"`.
-5. El `index.html` debe tener `</head>` y `</body>`: antes de `</head>` se inyecta la analítica y antes de `</body>` el botón de compartir.
+5. El `index.html` debe tener `</head>` y `</body>`: antes de `</head>` se inyecta la analítica y antes de `</body>` los botones de atrás y compartir.
 
 La plantilla mínima está en `tools/plantillas/estatico/`. La carpeta del juego es el artefacto: lo que hay en ella es lo que se sirve, salvo `juego.json`, `README.md` y los archivos ocultos.
 
 Cada juego publica su propia imagen para `og:image` y `twitter:image`: `https://muchachadarcade.es/og/<slug>.png`. La captura vive en `designs/og/<slug>.png` (1200 × 630) y el ensamblado la copia a `apps/contenedor/static/og/`, que se sirve desde `/og/`. Si falta la captura de un juego publicado, `npm run build` falla con un mensaje que nombra el fichero. Para generarla, abre el juego a 1200 × 630, captura su pantalla inicial y guarda el resultado con ese nombre; las plantillas ya apuntan a esa ruta. La portada y el 404 siguen usando `apps/contenedor/static/splash.png` (1414 × 750), declarada en `apps/contenedor/src/routes/+page.svelte`.
 
+## Volver a la portada
+
+Todos los juegos llevan un botón de atrás en la esquina superior izquierda, encima del de compartir. Es un enlace a `/`, la portada del contenedor, así que funciona también cuando alguien entra directamente a un juego y no solo desde la lista. Lo inyecta el ensamblado (`tools/compartir.mjs`) junto al resto del bloque.
+
+La portada y el 404 no lo tienen: ya son el contenedor.
+
 ## Compartir
 
-Todas las pantallas tienen dos botones en la esquina superior izquierda: el de compartir y, debajo, el de Instagram. En los juegos los inyecta el ensamblado (`tools/compartir.mjs`); en la portada y el 404 los renderiza `apps/contenedor/src/lib/Compartir.svelte` desde el layout.
+Todas las pantallas tienen los botones de compartir en la esquina superior izquierda: el de compartir y, debajo, el de Instagram. En los juegos, encima de ellos está el de atrás. Los inyecta el ensamblado (`tools/compartir.mjs`); en la portada y el 404 los de compartir los renderiza `apps/contenedor/src/lib/Compartir.svelte` desde el layout.
 
 ### Compartir (texto)
 
@@ -248,6 +254,17 @@ Los dos botones de compartir emiten el evento `boton_compartir_interno` en GA4:
 
 Se emite desde el widget inyectado en los juegos y desde `Compartir.svelte` en el contenedor. Si `gtag` no existe (desarrollo, `localhost`), no se envía nada.
 
+### Evento de atrás
+
+El botón de atrás de los juegos emite el evento `boton_atras_portada` en GA4:
+
+| Parámetro | Valores | Cuándo |
+| --- | --- | --- |
+| `juego` | Nombre del juego | Siempre |
+| `ruta` | Ruta del juego, por ejemplo `/voto-util/` | Siempre |
+
+Se envía por beacon (`transport_type: 'beacon'`), así que el evento sale aunque la página se descargue al navegar a la portada. Se emite desde el widget inyectado en los juegos; si `gtag` no existe (desarrollo, `localhost`), no se envía nada y el enlace navega igual. Para usarlo en informes, registra `juego` y `ruta` como dimensiones personalizadas de ámbito *Evento* (GA4 → Admin → Definiciones personalizadas).
+
 ### Eventos del quiz-bienestar
 
 El quiz emite eventos propios (definidos en `juegos/quiz-bienestar/src/lib/analitica.ts`) además del `page_view` inicial. Los nombres son estables: los embudos de GA4 se construyen con ellos, así que no deben renombrarse sin actualizar esta tabla. En desarrollo y en las pruebas no se emite nada, porque `gtag` no existe.
@@ -263,11 +280,10 @@ El quiz emite eventos propios (definidos en `juegos/quiz-bienestar/src/lib/anali
 | `mapa_abierto` | Al volver del resultado al mapa | `villano_activo` |
 | `final_visto` | Al pulsar «Ver el final» | `villano_activo` (3) |
 | `partida_reiniciada` | Al pulsar «Volver a jugar» en el final | — |
-| `enlace_compartido` | Al compartir desde el final | `metodo` (`nativo`/`portapapeles`/`manual`) |
 
 `villano_id` es el villano con el que se pelea: 0 es el primero, 1 el segundo y 2 el tercero.
 
-**Antes de desplegar** hay que registrar como dimensiones personalizadas de ámbito *Evento* (GA4 → Admin → Definiciones personalizadas) los parámetros que se vayan a usar en informes o embudos: `villano_id`, `villano`, `resultado`, `valoracion`, `ganada`, `motivo`, `numero`, `efecto`, `temas`, `completada` y `metodo`. GA4 no aplica las definiciones personalizadas a los datos ya recogidos.
+**Antes de desplegar** hay que registrar como dimensiones personalizadas de ámbito *Evento* (GA4 → Admin → Definiciones personalizadas) los parámetros que se vayan a usar en informes o embudos: `villano_id`, `villano`, `resultado`, `valoracion`, `ganada`, `motivo`, `numero`, `efecto`, `temas` y `completada`. GA4 no aplica las definiciones personalizadas a los datos ya recogidos.
 
 ### Embudos (tunnels) propuestos
 
@@ -306,11 +322,10 @@ Se crean en GA4 → *Explorar* → *Exploración de embudo*. En todos los casos 
 2. `batalla_iniciada`
 3. `batalla_terminada` con `ganada` = `true`
 
-**E. Después del final — ¿se comparte y se reengancha?**
+**E. Después del final — ¿se reengancha?**
 
 1. `final_visto`
-2. `enlace_compartido`
-3. `partida_reiniciada`
+2. `partida_reiniciada`
 
 Notas para montarlos:
 

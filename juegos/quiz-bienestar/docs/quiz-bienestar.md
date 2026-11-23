@@ -116,16 +116,15 @@ Arranque: `main.ts` importa los dos archivos de contenido, valida ambos y descar
                                    │
                                    └─(tercera victoria)─► Final
                                                            │
-                                              ┌────────────┴────────────┐
-                                         Compartir              Volver a jugar
-                                                          (borra y reinicia)
+                                                Volver a jugar
+                                              (borra y reinicia)
 ```
 
 *   **Intro**: cartel sobre fondo naranja con el retrato dibujado de cada villano junto a su nombre, la misión leída de `textos.json`, la regla del juego en su texto literal y la flecha «Empezar». El rótulo del villano alterna de lado en cada fila: retrato a la izquierda, retrato a la derecha, retrato a la izquierda. Todo el cartel se mide en una unidad propia —la ventana repartida en 45 unidades de ancho y 60 de alto, la que resulte menor—, así que tipografías, huecos y retratos se reducen o crecen juntos y la pantalla entra siempre entera, sin scroll, sea cual sea el alto de la ventana.
 *   **Mapa**: el mismo cartel naranja, con el estado del bienestar en una línea de texto, tres retratos dibujados y una flecha lima por villano. Como en la intro, el cartel se escala a la ventana y nunca necesita scroll. El villano activo es el único control de avance: su flecha es un botón cuya etiqueta es «Luchar» y pasa a «Reintentar» si la última batalla terminó sin desbloquear al siguiente. Las dos etiquetas despachan la misma acción. Los villanos ya derrotados y los todavía bloqueados muestran su estado dentro de la flecha, con el retrato apagado, y no son seleccionables. Si el progreso no se puede guardar, aparece un aviso. Si la partida está completa, el mapa no es alcanzable: se abre el final.
 *   **Batalla**: retrato del villano junto a las dos barras de energía y el reloj; el globo de la situación y el enunciado en negro, las cinco opciones en lima y el fondo naranja del cartel. El reloj es el único texto que se actualiza sin anunciarse; la energía que se mueve se anuncia por una región activa.
 *   **Resultado**: cuadro lima con el retrato del villano al que se acaba de pelear, el desenlace en titular y la propuesta y la pregunta del tema ganador; la vuelta al mapa —o «Ver el final» tras la tercera victoria— es una flecha, igual que en la intro. Tras una victoria el índice del villano activo ya ha avanzado, así que la pantalla deshace ese paso para enseñar al rival que se ha derrotado, no al siguiente.
-*   **Final**: vídeo a pantalla completa sobre negro, que arranca con sonido si el navegador lo permite y, si lo bloquea, se reintenta en silencio dejando el botón para activarlo; controles de sonido y de pausa; botones «Compartir» y «Volver a jugar» superpuestos; la línea de crédito sobre el fotograma, tomada de `textos.json`, y los enlaces al documento de preguntas y al de propuestas, desde `fuentePreguntas` y `fuente` respectivamente. Si la reproducción automática falla, aparece un botón de reproducción y los demás controles siguen disponibles. «Compartir» usa `navigator.share` si existe, si no copia al portapapeles, y si tampoco hay portapapeles muestra la dirección en un campo seleccionable; la dirección es el origen más la ruta base, sin parámetros ni fragmento.
+*   **Final**: vídeo a pantalla completa sobre negro, que arranca con sonido si el navegador lo permite y, si lo bloquea, se reintenta en silencio dejando el botón para activarlo; controles de sonido y de pausa; botón «Volver a jugar» superpuesto; la línea de crédito sobre el fotograma, tomada de `textos.json`, y los enlaces al documento de preguntas y al de propuestas, desde `fuentePreguntas` y `fuente` respectivamente. Si la reproducción automática falla, aparece un botón de reproducción y los demás controles siguen disponibles. El botón de compartir no vive en el juego, sino en el marco del sitio contenedor, que lo coloca en la esquina superior izquierda.
 
 Botones por resultado en la pantalla de Resultado:
 
@@ -386,7 +385,7 @@ Todo el juego es un cartel: el mismo naranja de fondo, los mismos bloques de lim
 | --- | --- | --- |
 | `--naranja` | `#F03900` naranja bermellón | fondo de las pantallas de cartel: intro, mapa, batalla, resultado y error |
 | `--lima` | `#D2FF42` verde lima | relleno de lo que se pulsa, rótulos de villano y cuadros de contenido |
-| `--lima-claro` | `#E4FF7A` | hover de los elementos lima |
+| `--lima-claro` | `#E4FF7A` | realce al pasar el puntero por los elementos lima |
 | `--negro` | `#070606` | titulares sobre el naranja, texto sobre el lima, cuadro de la pregunta y pantalla final |
 | `--blanco` | `#FFFFFF` | texto sobre el negro: pregunta, opciones del vídeo y crédito |
 
@@ -408,7 +407,7 @@ Las barras de energía llevan su valor en texto y el nombre de quien las tiene. 
 | 5–6 | «mejorado» |
 | 7–8 | «muy mejorado» |
 
-Los emoji son decorativos para los lectores de pantalla (`aria-hidden`) y nunca son la única forma de identificar un elemento. Las opciones son botones reales, con foco visible y orden de tabulación igual al visible. La pérdida de energía, el cierre de la batalla y el desbloqueo del villano siguiente se anuncian por una región activa (`aria-live`). El texto y los botones mantienen un contraste mínimo de 4,5:1 y 3:1 respectivamente, con la excepción declarada del naranja sobre el lima de los titulares y de los botones del cartel, que queda en 3,4:1 (véase «Paleta y tipografía»). Las transiciones se reducen si el sistema pide menos movimiento, y el desenfoque se reduce si el sistema pide más contraste; en ambos casos la etiqueta de texto sigue siendo la señal principal.
+Los emoji son decorativos para los lectores de pantalla (`aria-hidden`) y nunca son la única forma de identificar un elemento. Las opciones son botones reales, con foco visible y orden de tabulación igual al visible. El realce al pasar el puntero (`--lima-claro`) solo se aplica donde hay un puntero que señala (`@media (hover: hover)`), porque en pantalla táctil el navegador deja marcado el último botón tocado; además, cada pregunta monta sus opciones de nuevo, así que el botón pulsado no reaparece coloreado en la siguiente y el foco del teclado se devuelve al mismo puesto. La pérdida de energía, el cierre de la batalla y el desbloqueo del villano siguiente se anuncian por una región activa (`aria-live`). El texto y los botones mantienen un contraste mínimo de 4,5:1 y 3:1 respectivamente, con la excepción declarada del naranja sobre el lima de los titulares y de los botones del cartel, que queda en 3,4:1 (véase «Paleta y tipografía»). Las transiciones se reducen si el sistema pide menos movimiento, y el desenfoque se reduce si el sistema pide más contraste; en ambos casos la etiqueta de texto sigue siendo la señal principal.
 
 La línea de crédito y su enlace van sobre el fotograma del vídeo, cuyo brillo cambia a lo largo de la reproducción, así que cada uno lleva su propio fondo negro translúcido en lugar de confiar en la zona oscura del degradado. Sobre ese fondo, el blanco del crédito queda en 10,8:1 y el lima del enlace en 8,3:1 en el peor caso, con el fotograma completamente blanco debajo.
 
@@ -547,6 +546,6 @@ Herramientas: `package.json` con las versiones mayores fijadas —`svelte` 5, `v
 *   **Lector de pantalla — pendiente de una persona.** Que los anuncios se emitan está comprobado (las regiones activas contienen el texto y no están ocultas con `display: none`), pero oírlos depende del lector y de quien lo escucha. Es la mitad de esta comprobación que no se puede automatizar.
 *   **Contraste:** el texto y los botones se miden en 4,5:1 y 3:1, con las cifras de la excepción del naranja sobre el lima ya anotadas en «Paleta y tipografía» para que nadie vuelva a abrir la discusión desde cero.
 *   **Navegación privada:** el juego avisa de que el progreso no se conservará y permite jugar igualmente.
-*   **Vídeo bloqueado:** con la reproducción automática desactivada, el final sigue ofreciendo reproducir, silenciar, pausar, compartir y volver a jugar.
+*   **Vídeo bloqueado:** con la reproducción automática desactivada, el final sigue ofreciendo reproducir, silenciar, pausar y volver a jugar.
 *   **Vídeo transcodificado:** con `ffmpeg` instalado, `ffprobe` informa 480 px de lado corto (480×854), 78 segundos de duración y un peso entre 4 y 5 MB.
 *   **Línea de crédito:** en una captura a 375 px de ancho sobre el fotograma de 480×854, dos personas comprueban que se lee sin ampliar, que nombra a quienes hicieron el vídeo y que lo presenta como meme no oficial. En escritorio el vídeo aparece centrado con franjas laterales, sin recorte.

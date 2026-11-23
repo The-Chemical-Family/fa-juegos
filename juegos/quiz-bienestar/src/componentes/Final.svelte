@@ -1,7 +1,6 @@
 <script lang="ts">
   import { untrack } from 'svelte'
-  import { EVENTOS, registrarEvento } from '../lib/analitica'
-  import { sitioUrl, videoFinal } from '../lib/config'
+  import { videoFinal } from '../lib/config'
   import type { Textos } from '../lib/tipos'
 
   let { textos, alReiniciar }: { textos: Textos; alReiniciar: () => void } = $props()
@@ -11,7 +10,6 @@
   let cargado = $state(false)
   let silenciado = $state(false)
   let pausado = $state(false)
-  let urlVisible = $state<string | null>(null)
 
   $effect(() => {
     const video = elemento
@@ -92,28 +90,6 @@
       pausado = true
     }
   }
-
-  async function compartir(): Promise<void> {
-    const url = `${sitioUrl}/quiz-bienestar`
-    const navegador = navigator as Navigator & { share?: (datos: ShareData) => Promise<void> }
-    if (typeof navegador.share === 'function') {
-      try {
-        await navegador.share({ title: 'Juego de preguntas y bienestar', url })
-        registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'nativo' })
-        return
-      } catch {
-        // El usuario canceló o el navegador rechazó: se prueba el portapapeles.
-      }
-    }
-    try {
-      await navigator.clipboard.writeText(url)
-      registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'portapapeles' })
-      return
-    } catch {
-      urlVisible = url
-      registrarEvento(EVENTOS.enlaceCompartido, { metodo: 'manual' })
-    }
-  }
 </script>
 
 <main class="final">
@@ -163,11 +139,6 @@
     <button class="secundario" onclick={alternarPausa}>
       {pausado ? 'Reanudar' : 'Pausar'}
     </button>
-    <button onclick={compartir}>Compartir</button>
     <button class="secundario" onclick={alReiniciar}>Volver a jugar</button>
-
-    {#if urlVisible}
-      <input class="campo-url" readonly value={urlVisible} aria-label="Dirección para compartir" />
-    {/if}
   </div>
 </main>

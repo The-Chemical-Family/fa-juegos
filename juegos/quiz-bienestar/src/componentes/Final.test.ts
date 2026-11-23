@@ -24,11 +24,11 @@ describe('Final', () => {
     expect(screen.queryByText('Reproducir')).toBeNull()
   })
 
-  it('compartir y volver a jugar siguen disponibles aunque la reproducción falle', async () => {
+  it('volver a jugar sigue disponible aunque la reproducción falle', async () => {
     simularPlayQueRechaza()
     render(Final, { props: { textos: textosValidos, alReiniciar: vi.fn() } })
     await esperarPromesas()
-    expect(screen.getByText('Compartir')).toBeTruthy()
+    expect(screen.queryByText('Compartir')).toBeNull()
     expect(screen.getByText('Volver a jugar')).toBeTruthy()
   })
 

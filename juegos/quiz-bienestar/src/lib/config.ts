@@ -23,9 +23,6 @@ export const sonidos = {
   victoria: ''
 }
 
-// El juego se sirve desde /quiz-bienestar/ del sitio contenedor.
-export const sitioUrl = 'https://juegoamplista.es'
-
 export const videoFinal = `${import.meta.env.BASE_URL}video/video_meme.mp4`
 
 function indiceBanda(valor: number): number {

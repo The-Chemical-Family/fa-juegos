@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte'
   import { energiaInicial } from '../lib/config'
   import { retratoDeVillano } from '../lib/retratos'
   import type { EstadoBatalla, Villano } from '../lib/tipos'
@@ -18,6 +19,7 @@
 
   let restante = $state(0)
   let bloqueado = $state(false)
+  let opcionesEl = $state<HTMLDivElement>()
 
   $effect(() => {
     batalla.respuestas.length
@@ -52,10 +54,20 @@
     return 'La respuesta no cambia ninguna energía.'
   })
 
-  function elegir(indiceVisible: number): void {
+  function elegir(indiceVisible: number, boton: HTMLButtonElement): void {
     if (bloqueado) return
     bloqueado = true
+    // La lista se vuelve a montar con cada pregunta, así que el botón pulsado
+    // desaparece: sin esto, quien navega con teclado perdería el foco. Se
+    // devuelve al mismo puesto, que es donde estaba antes de responder.
+    const teniaFoco = document.activeElement === boton
     alResponder(indiceVisible)
+    if (teniaFoco) {
+      tick().then(() => {
+        const siguiente = opcionesEl?.children[indiceVisible]
+        if (siguiente instanceof HTMLButtonElement) siguiente.focus()
+      })
+    }
   }
 </script>
 
@@ -90,12 +102,12 @@
     <p class="enunciado">{batalla.pregunta.enunciado}</p>
   </div>
 
-  <div class="opciones">
-    {#each batalla.ordenOpciones as indiceOriginal, indiceVisible (indiceVisible)}
+  <div class="opciones" bind:this={opcionesEl}>
+    {#each batalla.ordenOpciones as indiceOriginal, indiceVisible (`${batalla.pregunta.id}-${indiceVisible}`)}
       <button
         class="opcion"
         disabled={bloqueado}
-        onclick={() => elegir(indiceVisible)}
+        onclick={(evento) => elegir(indiceVisible, evento.currentTarget)}
       >
         {batalla.pregunta.opciones[indiceOriginal].texto}
       </button>

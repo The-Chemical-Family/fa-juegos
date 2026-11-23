@@ -65,6 +65,18 @@ describe('Batalla', () => {
     expect(alResponder).toHaveBeenCalledTimes(1)
   })
 
+  it('al cambiar de pregunta las opciones son botones nuevos', async () => {
+    const { rerender } = render(Batalla, { props: props(crearBatalla([0, 1, 2, 3, 4])) })
+    const pulsado = screen.getByText('opción de efecto 2')
+
+    const siguiente = crearBatalla([0, 1, 2, 3, 4])
+    siguiente.pregunta = { ...siguiente.pregunta, id: 'q2', enunciado: 'otra pregunta' }
+    await rerender(props(siguiente))
+
+    expect(screen.getByText('otra pregunta')).toBeTruthy()
+    expect(screen.getByText('opción de efecto 2')).not.toBe(pulsado)
+  })
+
   it('muestra la situación cuando existe y la omite cuando no', () => {
     render(Batalla, { props: props(crearBatalla([0, 1, 2, 3, 4])) })
     expect(screen.queryByText('una situación de prueba')).toBeNull()

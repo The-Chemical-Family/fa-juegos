@@ -91,8 +91,12 @@ button {
   cursor: pointer;
 }
 
-button:hover:not(:disabled) {
-  background: var(--lima-claro);
+/* Solo donde hay puntero que señala: en pantallas táctiles el navegador deja
+   el último botón tocado en :hover y el color se quedaría pegado. */
+@media (hover: hover) {
+  button:hover:not(:disabled) {
+    background: var(--lima-claro);
+  }
 }
 
 button:focus-visible,
@@ -111,9 +115,11 @@ button.secundario {
   color: var(--lima);
 }
 
-button.secundario:hover:not(:disabled) {
-  background: var(--negro);
-  color: var(--blanco);
+@media (hover: hover) {
+  button.secundario:hover:not(:disabled) {
+    background: var(--negro);
+    color: var(--blanco);
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -276,12 +282,14 @@ button.secundario:hover:not(:disabled) {
   clip-path: polygon(0 25%, 58% 25%, 58% 0, 100% 50%, 58% 100%, 58% 75%, 0 75%);
 }
 
-.flecha:hover:not(:disabled) {
-  background: none;
-}
+@media (hover: hover) {
+  .flecha:hover:not(:disabled) {
+    background: none;
+  }
 
-.flecha:hover:not(:disabled)::before {
-  background: var(--lima-claro);
+  .flecha:hover:not(:disabled)::before {
+    background: var(--lima-claro);
+  }
 }
 
 .intro .flecha,
@@ -542,8 +550,10 @@ button.secundario:hover:not(:disabled) {
   min-height: 52px;
 }
 
-.batalla .opcion:hover:not(:disabled) {
-  background: var(--lima-claro);
+@media (hover: hover) {
+  .batalla .opcion:hover:not(:disabled) {
+    background: var(--lima-claro);
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -710,15 +720,6 @@ button.secundario:hover:not(:disabled) {
   text-transform: uppercase;
   padding: 4px 12px;
   background: var(--velo);
-}
-
-.campo-url {
-  width: 100%;
-  padding: 10px;
-  border: 0;
-  background: var(--negro);
-  color: var(--lima);
-  font: inherit;
 }
 
 .error {

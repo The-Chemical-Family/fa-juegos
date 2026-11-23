@@ -8,7 +8,7 @@ description: Añade al monorepo un juego de tipo estatico en juegos/<slug>/: un 
 Un juego `estatico` es un artefacto: la carpeta `juegos/<slug>/` **es** lo que se
 sirve en `/<slug>/`. No hay build, no hay `package.json`, no hay `node_modules`.
 El ensamblado (`tools/ensamblar.mjs`) la copia tal cual, inyecta la analítica en
-`index.html`, añade el botón de compartir antes de `</body>` y verifica cada
+`index.html`, añade los botones de atrás y compartir antes de `</body>` y verifica cada
 referencia. También exige dos imágenes por juego: `designs/og/<slug>.png`
 (1200 × 630) para las tarjetas al compartir el enlace y
 `designs/historias/<slug>.png` (1080 × 1920) para el botón de Instagram.
@@ -77,7 +77,7 @@ Esta es la parte que más falla. Reglas:
 - `README.md` y `juego.json` pueden quedarse: el ensamblado los excluye y no se
   sirven.
 - Un `index.html` con `</head>` y `</body>` es obligatorio: antes de `</head>` se
-  inyecta la analítica y antes de `</body>` el botón de compartir.
+  inyecta la analítica y antes de `</body>` los botones de atrás y compartir.
 - `designs/og/<slug>.png` con la captura del juego a 1200 × 630, que es la que
   declaran `og:image` y `twitter:image`.
 - `designs/historias/<slug>.png` (1080 × 1920) con el mensaje incrustado, que es
@@ -105,7 +105,7 @@ carpeta, necesita `index.html`.
 
 ```bash
 npm run check     # valida el manifiesto y verifica la carpeta del juego tal cual
-npm run build     # copia, inyecta analítica y botón de compartir, y verifica
+npm run build     # copia, inyecta analítica y botones, y verifica
 npm run dev:todo  # http://localhost:5173/<slug>/ (sirve la carpeta, sin recarga)
 ```
 

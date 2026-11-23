@@ -123,7 +123,7 @@ Añade entonces `"test": "vitest run"` al `package.json` del juego.
 
 ```bash
 npm run check     # manifiestos de todos los juegos + svelte-check de los workspaces
-npm run build     # construye, copia, inyecta analítica y botón de compartir, y verifica
+npm run build     # construye, copia, inyecta analítica y botones, y verifica
 npm run dev:todo  # http://localhost:5173/<slug>/ con recarga en caliente
 ```
 

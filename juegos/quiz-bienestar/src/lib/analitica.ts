@@ -18,8 +18,7 @@ export const EVENTOS = {
   partidaCompletada: 'partida_completada',
   mapaAbierto: 'mapa_abierto',
   finalVisto: 'final_visto',
-  partidaReiniciada: 'partida_reiniciada',
-  enlaceCompartido: 'enlace_compartido'
+  partidaReiniciada: 'partida_reiniciada'
 } as const
 
 type Gtag = (orden: 'event', nombre: string, parametros?: Parametros) => void
