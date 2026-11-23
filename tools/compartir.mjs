@@ -77,8 +77,17 @@ var aviso=raiz.querySelector('.fa-compartir__aviso');
 var temporizador;
 var archivo=null;
 
-function direccion(){return location.origin+location.pathname}
-function texto(){return datos.apertura+'\\n'+datos.primera+'\\n\\n'+datos.antes+datos.nombre+datos.despues+'\\n\\n'+direccion()+'\\n'+datos.cierre}
+function direccion(fuente){
+	// Sin new URL: el verificador confunde la llamada con una ruta CSS.
+	var parametros='utm_source='+encodeURIComponent(fuente)+'&utm_medium=social&utm_campaign=29n';
+	return location.origin+location.pathname+'?'+parametros;
+}
+function texto(fuente){return datos.apertura+'\\n'+datos.primera+'\\n\\n'+datos.antes+datos.nombre+datos.despues+'\\n\\n'+direccion(fuente)+'\\n'+datos.cierre}
+
+function registrar(metodo){
+	if(typeof window.gtag!=='function')return;
+	window.gtag('event','boton_compartir_interno',{metodo:metodo,juego:datos.nombre});
+}
 
 function avisar(mensaje,duracion){
 	aviso.textContent=mensaje;
@@ -102,8 +111,7 @@ function copiarAntiguo(contenido){
 	return copiado;
 }
 
-function copiarTexto(){
-	var contenido=texto();
+function copiarTexto(contenido){
 	if(navigator.clipboard&&navigator.clipboard.writeText){
 		return navigator.clipboard.writeText(contenido).then(function(){return true},function(){return copiarAntiguo(contenido)});
 	}
@@ -137,22 +145,25 @@ function prepararInstagram(){
 
 instagram.addEventListener('click',function(){
 	if(!archivo)return;
+	registrar('instagram');
 	// Instagram no admite enlaces prefijados: se copia la URL para que el
 	// usuario la pegue en el sticker de enlace de la historia.
 	if(navigator.clipboard&&navigator.clipboard.writeText){
-		navigator.clipboard.writeText(direccion()).then(function(){
+		navigator.clipboard.writeText(direccion('instagram')).then(function(){
 			avisar('Enlace copiado: añádelo con el sticker de enlace.',10000);
 		},function(){});
 	}
-	navigator.share({title:datos.nombre,text:texto(),files:[archivo]}).catch(function(){});
+	navigator.share({title:datos.nombre,text:texto('instagram'),files:[archivo]}).catch(function(){});
 });
 
 boton.addEventListener('click',function(){
 	if(typeof navigator.share==='function'){
-		navigator.share({title:datos.nombre,text:texto()}).catch(function(){});
+		registrar('nativo');
+		navigator.share({title:datos.nombre,text:texto('compartir')}).catch(function(){});
 		return;
 	}
-	copiarTexto().then(function(ok){
+	registrar('portapapeles');
+	copiarTexto(texto('compartir')).then(function(ok){
 		avisar(ok?'Texto copiado: pégalo donde quieras compartirlo.':'No se ha podido compartir este juego.');
 	});
 });

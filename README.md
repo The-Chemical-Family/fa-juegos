@@ -173,6 +173,8 @@ El mensaje sigue esta plantilla, con el nombre del juego en su sitio y la URL de
 
 La URL va dentro del texto y no se pasa además en el campo `url` de `navigator.share`: así WhatsApp y Telegram no la añaden dos veces.
 
+El enlace compartido lleva parámetros de campaña para saber de dónde llega la visita: `utm_source=compartir`, `utm_medium=social` y `utm_campaign=29n`. El botón de Instagram usa `utm_source=instagram`.
+
 ### Longitud del mensaje
 
 El mensaje mide entre 270 y 300 caracteres, contando emojis y URL. Cabe de sobra en los destinos que importan; solo recortarían los canales de límite corto, que no son el objetivo:
@@ -196,7 +198,7 @@ Instagram no acepta texto predefinido por ninguna vía: si solo recibe texto, la
 - El botón solo aparece si el navegador puede compartir ficheros (`navigator.canShare({ files })`: Chrome Android y Safari iOS). En escritorio no se muestra, porque la web de Instagram no publica historias.
 - La imagen se descarga al cargar la página y se guarda como `File`, porque `navigator.share()` exige activación transitoria y no admite un `fetch` entre el clic y la llamada.
 - En el editor de Instagram el usuario elige Historia o Publicación. El texto ya va en la imagen porque Instagram no rellena el pie de foto.
-- Al pulsar el botón se copia la **URL del juego** al portapapeles y se avisa de que se puede pegar en el **sticker de enlace** de la historia. Instagram no permite adjuntar enlaces de forma programática: el enlace escrito en la imagen no es clicable; el único enlace clicable es ese sticker, que añade el usuario.
+- Al pulsar el botón se copia la **URL del juego** al portapapeles y se avisa de que se puede pegar en el **sticker de enlace** de la historia. Instagram no permite adjuntar enlaces de forma programática: el enlace escrito en la imagen no es clicable; el único enlace clicable es ese sticker, que añade el usuario. La URL copiada lleva `utm_source=instagram`, `utm_medium=social` y `utm_campaign=29n`.
 
 ## Despliegue
 
@@ -232,6 +234,19 @@ Las visitas se miden con Google Analytics 4, flujo web con ID **`G-TP80CWS52D`**
 - **Desarrollo:** en `localhost`, `127.0.0.1` y `[::1]` el snippet no hace nada, así que las pruebas locales no ensucian las estadísticas.
 - **Consultas:** en GA4, *Informes → Compromiso → Páginas y pantallas*, con la dimensión *Ruta de la página*. El flujo web debe apuntar a `https://muchachadarcade.es`.
 - GA4 instala sus cookies propias (`_ga` y `_ga_<ID>`) en el navegador del visitante; el aviso de cookies del sitio debe mencionarlo. La analítica de Vercel que ya existía sigue funcionando en paralelo y no usa cookies.
+
+### Evento de compartir
+
+Los dos botones de compartir emiten el evento `boton_compartir_interno` en GA4:
+
+| Parámetro | Valores | Cuándo |
+| --- | --- | --- |
+| `metodo` | `nativo` | Botón principal con hoja nativa |
+| `metodo` | `portapapeles` | Botón principal sin Web Share: copia el texto |
+| `metodo` | `instagram` | Botón de Instagram |
+| `juego` | Nombre del juego, o `FrenteAmplio` en la portada y el 404 | Siempre |
+
+Se emite desde el widget inyectado en los juegos y desde `Compartir.svelte` en el contenedor. Si `gtag` no existe (desarrollo, `localhost`), no se envía nada.
 
 ### Eventos del quiz-bienestar
 

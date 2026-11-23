@@ -71,12 +71,23 @@
 		};
 	});
 
-	function direccion(): string {
-		return window.location.origin + window.location.pathname;
+	function direccion(fuente: string): string {
+		const url = new URL(window.location.href);
+		url.search = '';
+		url.hash = '';
+		url.searchParams.set('utm_source', fuente);
+		url.searchParams.set('utm_medium', 'social');
+		url.searchParams.set('utm_campaign', '29n');
+		return url.toString();
 	}
 
-	function texto(): string {
-		return `${APERTURA}\n${PRIMERA}\n\n${ANTES}${nombre}${DESPUES}\n\n${direccion()}\n${CIERRE}`;
+	function texto(fuente: string): string {
+		return `${APERTURA}\n${PRIMERA}\n\n${ANTES}${nombre}${DESPUES}\n\n${direccion(fuente)}\n${CIERRE}`;
+	}
+
+	function registrar(metodo: string): void {
+		const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+		gtag?.('event', 'boton_compartir_interno', { metodo, juego: nombre });
 	}
 
 	function avisar(mensaje: string, duracion = 5000): void {
@@ -90,15 +101,17 @@
 
 		const navegador = navigator as Navigator & { share?: (datos: DatosCompartir) => Promise<void> };
 
+		registrar('instagram');
+
 		// Instagram no admite enlaces prefijados: se copia la URL para que el
 		// usuario la pegue en el sticker de enlace de la historia.
-		navigator.clipboard?.writeText(direccion()).then(
+		navigator.clipboard?.writeText(direccion('instagram')).then(
 			() => avisar('Enlace copiado: añádelo con el sticker de enlace.', 10000),
 			() => {}
 		);
 
 		try {
-			await navegador.share?.({ title: nombre, text: texto(), files: [archivo] });
+			await navegador.share?.({ title: nombre, text: texto('instagram'), files: [archivo] });
 		} catch {
 			// El usuario ha cancelado la hoja de compartir: no hay nada que hacer.
 		}
@@ -108,15 +121,17 @@
 		const navegador = navigator as Navigator & { share?: (datos: DatosCompartir) => Promise<void> };
 
 		if (typeof navegador.share === 'function') {
+			registrar('nativo');
 			try {
-				await navegador.share({ title: nombre, text: texto() });
+				await navegador.share({ title: nombre, text: texto('compartir') });
 			} catch {
 				// El usuario ha cancelado la hoja de compartir: no hay nada que hacer.
 			}
 			return;
 		}
 
-		const copiado = await copiarTexto();
+		registrar('portapapeles');
+		const copiado = await copiarTexto(texto('compartir'));
 		avisar(
 			copiado
 				? 'Texto copiado: pégalo donde quieras compartirlo.'
@@ -124,9 +139,7 @@
 		);
 	}
 
-	function copiarTexto(): Promise<boolean> {
-		const contenido = texto();
-
+	function copiarTexto(contenido: string): Promise<boolean> {
 		if (navigator.clipboard?.writeText) {
 			return navigator.clipboard.writeText(contenido).then(
 				() => true,
