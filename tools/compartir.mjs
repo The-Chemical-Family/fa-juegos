@@ -56,7 +56,7 @@ export function bloqueCompartir(nombre, historia) {
 #fa-compartir .fa-compartir__boton:focus-visible{outline:2px solid #cce876;outline-offset:2px}
 #fa-compartir .fa-compartir__boton[hidden]{display:none}
 #fa-compartir .fa-compartir__instagram:disabled{cursor:progress;opacity:.55}
-#fa-compartir .fa-compartir__aviso{position:absolute;top:52px;left:0;width:max-content;max-width:min(272px,calc(100vw - 20px));margin:0;padding:8px 10px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:#160d11;font-size:13px;font-weight:600;color:#cce876;box-shadow:0 10px 26px rgba(0,0,0,.45)}
+#fa-compartir .fa-compartir__aviso{position:absolute;top:104px;left:0;width:max-content;max-width:min(272px,calc(100vw - 20px));margin:0;padding:8px 10px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:#160d11;font-size:13px;font-weight:600;color:#cce876;box-shadow:0 10px 26px rgba(0,0,0,.45)}
 #fa-compartir .fa-compartir__aviso[hidden]{display:none}
 </style>
 <div id="fa-compartir">
@@ -80,11 +80,11 @@ var archivo=null;
 function direccion(){return location.origin+location.pathname}
 function texto(){return datos.apertura+'\\n'+datos.primera+'\\n\\n'+datos.antes+datos.nombre+datos.despues+'\\n\\n'+direccion()+'\\n'+datos.cierre}
 
-function avisar(mensaje){
+function avisar(mensaje,duracion){
 	aviso.textContent=mensaje;
 	aviso.hidden=false;
 	clearTimeout(temporizador);
-	temporizador=setTimeout(function(){aviso.hidden=true},5000);
+	temporizador=setTimeout(function(){aviso.hidden=true},duracion||5000);
 }
 
 function copiarAntiguo(contenido){
@@ -137,6 +137,13 @@ function prepararInstagram(){
 
 instagram.addEventListener('click',function(){
 	if(!archivo)return;
+	// Instagram no admite enlaces prefijados: se copia la URL para que el
+	// usuario la pegue en el sticker de enlace de la historia.
+	if(navigator.clipboard&&navigator.clipboard.writeText){
+		navigator.clipboard.writeText(direccion()).then(function(){
+			avisar('Enlace copiado: añádelo con el sticker de enlace.',10000);
+		},function(){});
+	}
 	navigator.share({title:datos.nombre,text:texto(),files:[archivo]}).catch(function(){});
 });
 

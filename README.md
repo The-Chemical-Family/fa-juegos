@@ -196,6 +196,7 @@ Instagram no acepta texto predefinido por ninguna vía: si solo recibe texto, la
 - El botón solo aparece si el navegador puede compartir ficheros (`navigator.canShare({ files })`: Chrome Android y Safari iOS). En escritorio no se muestra, porque la web de Instagram no publica historias.
 - La imagen se descarga al cargar la página y se guarda como `File`, porque `navigator.share()` exige activación transitoria y no admite un `fetch` entre el clic y la llamada.
 - En el editor de Instagram el usuario elige Historia o Publicación. El texto ya va en la imagen porque Instagram no rellena el pie de foto.
+- Al pulsar el botón se copia la **URL del juego** al portapapeles y se avisa de que se puede pegar en el **sticker de enlace** de la historia. Instagram no permite adjuntar enlaces de forma programática: el enlace escrito en la imagen no es clicable; el único enlace clicable es ese sticker, que añade el usuario.
 
 ## Despliegue
 

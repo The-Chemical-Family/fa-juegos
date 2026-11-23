@@ -79,16 +79,23 @@
 		return `${APERTURA}\n${PRIMERA}\n\n${ANTES}${nombre}${DESPUES}\n\n${direccion()}\n${CIERRE}`;
 	}
 
-	function avisar(mensaje: string): void {
+	function avisar(mensaje: string, duracion = 5000): void {
 		aviso = mensaje;
 		clearTimeout(temporizador);
-		temporizador = setTimeout(() => (aviso = ''), 5000);
+		temporizador = setTimeout(() => (aviso = ''), duracion);
 	}
 
 	async function compartirInstagram(): Promise<void> {
 		if (!archivo) return;
 
 		const navegador = navigator as Navigator & { share?: (datos: DatosCompartir) => Promise<void> };
+
+		// Instagram no admite enlaces prefijados: se copia la URL para que el
+		// usuario la pegue en el sticker de enlace de la historia.
+		navigator.clipboard?.writeText(direccion()).then(
+			() => avisar('Enlace copiado: añádelo con el sticker de enlace.', 10000),
+			() => {}
+		);
 
 		try {
 			await navegador.share?.({ title: nombre, text: texto(), files: [archivo] });
@@ -263,7 +270,7 @@
 
 	.aviso {
 		position: absolute;
-		top: 52px;
+		top: 104px;
 		left: 0;
 		width: max-content;
 		max-width: min(272px, calc(100vw - 20px));
