@@ -24,7 +24,8 @@ const publicados = manifiestos.filter((juego) => juego.publicar);
 const ocultos = manifiestos.filter((juego) => !juego.publicar);
 
 limpiarPublicados();
-copiarImagenesOg();
+copiarImagen('og');
+copiarImagen('historias');
 
 for (const juego of publicados) {
 	const destino = join(estatico, juego.slug);
@@ -47,7 +48,7 @@ for (const juego of publicados) {
 	}
 
 	inyectarAnalitica(join(destino, 'index.html'));
-	inyectarCompartir(join(destino, 'index.html'), juego.nombre);
+	inyectarCompartir(join(destino, 'index.html'), juego.nombre, `/historias/${juego.slug}.png`);
 }
 
 const problemas = publicados.flatMap((juego) => [
@@ -56,7 +57,11 @@ const problemas = publicados.flatMap((juego) => [
 		distDir: join(estatico, juego.slug),
 		assets: juego.assets
 	}),
-	...comprobarImagenOg(juego)
+	...comprobarImagen(juego, 'og'),
+	...comprobarImagen(juego, 'historias'),
+	...(existsSync(join(raiz, 'designs', 'historias', 'portada.png'))
+		? []
+		: ['portada: falta designs/historias/portada.png, la imagen de Instagram de la portada'])
 ]);
 
 if (problemas.length > 0) {
@@ -92,14 +97,15 @@ function limpiarPublicados() {
 	}
 }
 
-// Las capturas de `og:image` viven en el repositorio (`designs/og/<slug>.png`)
-// porque `static/` se genera en cada ensamblado. Se sirven desde `/og/<slug>.png`
-// en la raíz del dominio, fuera de la carpeta de cada juego.
-function copiarImagenesOg() {
-	const origen = join(raiz, 'designs', 'og');
+// Las imágenes compartibles viven en el repositorio (`designs/og` y
+// `designs/historias`) porque `static/` se genera en cada ensamblado. Se sirven
+// en la raíz del dominio: `/og/<slug>.png` para `og:image` y
+// `/historias/<slug>.png` para compartir en Instagram.
+function copiarImagen(carpeta) {
+	const origen = join(raiz, 'designs', carpeta);
 	if (!existsSync(origen)) return;
 
-	const destino = join(estatico, 'og');
+	const destino = join(estatico, carpeta);
 	mkdirSync(destino, { recursive: true });
 
 	for (const entrada of readdirSync(origen, { withFileTypes: true })) {
@@ -109,14 +115,12 @@ function copiarImagenesOg() {
 	}
 }
 
-function comprobarImagenOg(juego) {
-	const ruta = join('designs', 'og', `${juego.slug}.png`);
-	return existsSync(join(raiz, ruta))
-		? []
-		: [`${juego.slug}: falta ${ruta}, la imagen que declara og:image`];
+function comprobarImagen(juego, carpeta) {
+	const ruta = join('designs', carpeta, `${juego.slug}.png`);
+	return existsSync(join(raiz, ruta)) ? [] : [`${juego.slug}: falta ${ruta}`];
 }
 
-function inyectarCompartir(ruta, nombre) {
+function inyectarCompartir(ruta, nombre, historia) {
 	const html = readFileSync(ruta, 'utf8');
 	const limpio = quitarBloque(html, INICIO_COMPARTIR, FIN_COMPARTIR);
 
@@ -124,7 +128,7 @@ function inyectarCompartir(ruta, nombre) {
 		throw new Error(`${ruta}: no hay </body> donde inyectar el botón de compartir`);
 	}
 
-	const bloque = bloqueCompartir(nombre);
+	const bloque = bloqueCompartir(nombre, historia);
 	const conBoton = limpio.replace(/<\/body>/i, `${bloque}\n</body>`);
 
 	if (conBoton.split(bloque).length - 1 !== 1) {

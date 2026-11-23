@@ -35,6 +35,7 @@ No hay un tercer tipo. Un juego construido con otra herramienta (React, Vue, un 
 apps/contenedor/     contenedor SvelteKit (adapter-vercel)
 juegos/<slug>/       un juego por carpeta, con juego.json
 designs/og/          captura 1200 × 630 de cada juego para og:image
+designs/historias/   historia 1080 × 1920 de cada juego para Instagram
 tools/               ensamblado, manifiestos, verificación y servidor estático
 tools/plantillas/    esqueletos de los dos tipos
 .github/skills/      skills de IA para crear y añadir juegos
@@ -152,7 +153,9 @@ Cada juego publica su propia imagen para `og:image` y `twitter:image`: `https://
 
 ## Compartir
 
-Todas las pantallas tienen un botón de compartir en la esquina superior izquierda. En los juegos lo inyecta el ensamblado (`tools/compartir.mjs`); en la portada y el 404 lo renderiza `apps/contenedor/src/lib/Compartir.svelte` desde el layout.
+Todas las pantallas tienen dos botones en la esquina superior izquierda: el de compartir y, debajo, el de Instagram. En los juegos los inyecta el ensamblado (`tools/compartir.mjs`); en la portada y el 404 los renderiza `apps/contenedor/src/lib/Compartir.svelte` desde el layout.
+
+### Compartir (texto)
 
 El botón abre directamente la hoja de compartir nativa del dispositivo (`navigator.share`), la misma que ofrece WhatsApp, Instagram, Telegram y el resto de aplicaciones instaladas. No hay desplegable propio ni lista de redes.
 
@@ -179,11 +182,20 @@ El mensaje mide entre 270 y 300 caracteres, contando emojis y URL. Cabe de sobra
 | Web Share API (`navigator.share`) | Sin límite propio de texto; Chromium solo limita los ficheros compartidos | Cabe |
 | WhatsApp | Muy por encima del mensaje: los textos admiten decenas de miles de caracteres | Cabe |
 | Telegram | 4.096 caracteres por mensaje | Cabe |
-| Instagram | No admite texto predefinido: la hoja nativa abre la app, pero no rellena el pie de foto | Ninguno |
+| Instagram | No admite texto predefinido: se comparte la historia con el mensaje incrustado | Se publica como imagen |
 | SMS (si aparece en la hoja) | 160 caracteres por segmento (70 con emojis o acentos) | Se parte en varios SMS |
 | X/Twitter | 280 caracteres | Recorta |
 
 Si el navegador no implementa `navigator.share` (por ejemplo, Firefox de escritorio), el botón copia ese texto al portapapeles y lo avisa con un mensaje breve junto al botón.
+
+### Instagram
+
+Instagram no acepta texto predefinido por ninguna vía: si solo recibe texto, la app únicamente ofrece **Direct** (mensaje privado). Por eso el botón de Instagram comparte una **imagen de historia 1080 × 1920** con el mensaje incrustado, servida desde `/historias/<slug>.png`.
+
+- La captura vive en `designs/historias/<slug>.png` (y `portada.png` para la portada y el 404). El ensamblado la copia a `static/historias/` y falla si falta la de algún juego publicado.
+- El botón solo aparece si el navegador puede compartir ficheros (`navigator.canShare({ files })`: Chrome Android y Safari iOS). En escritorio no se muestra, porque la web de Instagram no publica historias.
+- La imagen se descarga al cargar la página y se guarda como `File`, porque `navigator.share()` exige activación transitoria y no admite un `fetch` entre el clic y la llamada.
+- En el editor de Instagram el usuario elige Historia o Publicación. El texto ya va en la imagen porque Instagram no rellena el pie de foto.
 
 ## Despliegue
 

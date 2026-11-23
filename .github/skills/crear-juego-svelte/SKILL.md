@@ -137,6 +137,11 @@ Criterios de aceptación:
 
 ## Paso 5 — publicar
 
+Antes de publicar hacen falta las dos imágenes del juego:
+`designs/og/<slug>.png` (1200 × 630, tarjetas al compartir el enlace) y
+`designs/historias/<slug>.png` (1080 × 1920, botón de Instagram). El ensamblado
+falla si falta alguna.
+
 Cuando el usuario lo pida y el juego esté verificado, pon `"publicar": true` en
 `juegos/<slug>/juego.json`. Se aplica en el siguiente `npm run build`/despliegue;
 no hay interruptor en caliente.

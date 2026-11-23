@@ -9,8 +9,9 @@ Un juego `estatico` es un artefacto: la carpeta `juegos/<slug>/` **es** lo que s
 sirve en `/<slug>/`. No hay build, no hay `package.json`, no hay `node_modules`.
 El ensamblado (`tools/ensamblar.mjs`) la copia tal cual, inyecta la analítica en
 `index.html`, añade el botón de compartir antes de `</body>` y verifica cada
-referencia. También exige una captura `designs/og/<slug>.png` (1200 × 630) para
-la imagen que muestran WhatsApp y Telegram al compartir el enlace.
+referencia. También exige dos imágenes por juego: `designs/og/<slug>.png`
+(1200 × 630) para las tarjetas al compartir el enlace y
+`designs/historias/<slug>.png` (1080 × 1920) para el botón de Instagram.
 
 Si el material de origen necesita compilarse, compílalo fuera del monorepo y trae
 solo el resultado. Aquí no se construye nada.
@@ -79,6 +80,8 @@ Esta es la parte que más falla. Reglas:
   inyecta la analítica y antes de `</body>` el botón de compartir.
 - `designs/og/<slug>.png` con la captura del juego a 1200 × 630, que es la que
   declaran `og:image` y `twitter:image`.
+- `designs/historias/<slug>.png` (1080 × 1920) con el mensaje incrustado, que es
+  lo que se comparte como historia/imagen en Instagram.
 
 ## Paso 4 — declarar los recursos que carga el JavaScript
 
@@ -149,6 +152,7 @@ en la lista.
 | `"..." no existe en los archivos del juego` | Falta el archivo o está mal escrito; cópialo o corrige la ruta. |
 | `index.html no tiene </head>` | Añade `</head>` para que se pueda inyectar la analítica. |
 | `falta designs/og/<slug>.png` | Guarda la captura 1200 × 630 del juego con ese nombre. |
+| `falta designs/historias/<slug>.png` | Genera la historia 1080 × 1920 del juego. |
 | El juego se ve roto pero no hay errores en `check` | Recurso cargado desde JS: decláralo en `assets` y revisa la Red del navegador. |
 
 Para diagnosticar en detalle, usa la skill `verificar-juego`.

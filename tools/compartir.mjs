@@ -27,10 +27,10 @@ const APERTURA = '👾👾👾👾👾👾👾';
 const PRIMERA = '¡¡Muchachada, llegó el faquin momento!!';
 const ANTES = '💥 ¿A qué esperas para jugar a ';
 const DESPUES =
-	' ?. Mueve el culo y pásalo a los indecisos, que el 29N está al caer. O voto útil o nos comen vivos. ¡¡A reventar encuestas, a POR ELLOS!!';
+	' ? Mueve el culo y pásalo a los indecisos, que el 29N está al caer. O voto útil o nos comen vivos. ¡¡A reventar encuestas, a POR ELLOS!!';
 const CIERRE = '👾👾👾👾👾👾👾';
 
-export function bloqueCompartir(nombre) {
+export function bloqueCompartir(nombre, historia) {
 	// Los datos van en un JSON que es también un literal de JavaScript válido.
 	// `<` se escapa para que un nombre con `</script>` no cierre la etiqueta.
 	const datos = JSON.stringify({
@@ -39,7 +39,8 @@ export function bloqueCompartir(nombre) {
 		antes: ANTES,
 		despues: DESPUES,
 		cierre: CIERRE,
-		nombre
+		nombre,
+		historia
 	}).replace(
 		/</g,
 		'\\u003c'
@@ -49,14 +50,20 @@ export function bloqueCompartir(nombre) {
 <style>
 #fa-compartir{position:fixed;top:calc(10px + env(safe-area-inset-top, 0px));left:calc(10px + env(safe-area-inset-left, 0px));z-index:2147483647;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.3;color:#fff;text-align:left;-webkit-text-size-adjust:100%}
 #fa-compartir *{box-sizing:border-box}
+#fa-compartir .fa-compartir__acciones{display:flex;flex-direction:column;gap:8px}
 #fa-compartir .fa-compartir__boton{display:flex;align-items:center;justify-content:center;width:44px;height:44px;min-width:0;min-height:0;margin:0;padding:0;font:inherit;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(16,9,12,.75);color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.35)}
 #fa-compartir .fa-compartir__boton:hover{background:rgba(16,9,12,.92)}
 #fa-compartir .fa-compartir__boton:focus-visible{outline:2px solid #cce876;outline-offset:2px}
+#fa-compartir .fa-compartir__boton[hidden]{display:none}
+#fa-compartir .fa-compartir__instagram:disabled{cursor:progress;opacity:.55}
 #fa-compartir .fa-compartir__aviso{position:absolute;top:52px;left:0;width:max-content;max-width:min(272px,calc(100vw - 20px));margin:0;padding:8px 10px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:#160d11;font-size:13px;font-weight:600;color:#cce876;box-shadow:0 10px 26px rgba(0,0,0,.45)}
 #fa-compartir .fa-compartir__aviso[hidden]{display:none}
 </style>
 <div id="fa-compartir">
+<div class="fa-compartir__acciones">
 <button type="button" class="fa-compartir__boton" title="Compartir" aria-label="Compartir este juego"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+<button type="button" class="fa-compartir__boton fa-compartir__instagram" title="Compartir en Instagram" aria-label="Compartir en Instagram" hidden><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg></button>
+</div>
 <p class="fa-compartir__aviso" role="status" hidden></p>
 </div>
 <script>
@@ -65,8 +72,10 @@ var datos=${datos};
 var raiz=document.getElementById('fa-compartir');
 if(!raiz)return;
 var boton=raiz.querySelector('.fa-compartir__boton');
+var instagram=raiz.querySelector('.fa-compartir__instagram');
 var aviso=raiz.querySelector('.fa-compartir__aviso');
 var temporizador;
+var archivo=null;
 
 function direccion(){return location.origin+location.pathname}
 function texto(){return datos.apertura+'\\n'+datos.primera+'\\n\\n'+datos.antes+datos.nombre+datos.despues+'\\n\\n'+direccion()+'\\n'+datos.cierre}
@@ -101,6 +110,36 @@ function copiarTexto(){
 	return Promise.resolve(copiarAntiguo(contenido));
 }
 
+function prepararInstagram(){
+	if(!navigator.canShare||typeof File!=='function')return;
+	var prueba;
+	try{prueba=new File([new Blob([''],{type:'image/png'})],'prueba.png',{type:'image/png'});}catch(error){return;}
+	var valido=false;
+	try{valido=navigator.canShare({files:[prueba]});}catch(error){valido=false;}
+	if(!valido)return;
+	instagram.hidden=false;
+	instagram.disabled=true;
+	function cargar(){
+		fetch(datos.historia).then(function(respuesta){
+			if(!respuesta.ok)throw new Error('sin imagen');
+			return respuesta.blob();
+		}).then(function(blob){
+			archivo=new File([blob],datos.historia.split('/').pop(),{type:'image/png'});
+			instagram.disabled=false;
+		}).catch(function(){
+			instagram.hidden=true;
+		});
+	}
+	// La imagen solo se descarga cuando el navegador está libre: no retrasa el juego.
+	if('requestIdleCallback' in window)requestIdleCallback(cargar,{timeout:3000});
+	else setTimeout(cargar,1200);
+}
+
+instagram.addEventListener('click',function(){
+	if(!archivo)return;
+	navigator.share({title:datos.nombre,text:texto(),files:[archivo]}).catch(function(){});
+});
+
 boton.addEventListener('click',function(){
 	if(typeof navigator.share==='function'){
 		navigator.share({title:datos.nombre,text:texto()}).catch(function(){});
@@ -110,6 +149,8 @@ boton.addEventListener('click',function(){
 		avisar(ok?'Texto copiado: pégalo donde quieras compartirlo.':'No se ha podido compartir este juego.');
 	});
 });
+
+prepararInstagram();
 })();
 </script>
 ${FIN}`;

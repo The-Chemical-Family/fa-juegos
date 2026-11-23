@@ -10,17 +10,20 @@
 
 	// Los juegos son documentos independientes: este layout solo envuelve la
 	// portada y el 404. Cuando la ruta es la de un juego (un 404 suele serlo) se
-	// usa su nombre real; si no, el de la portada.
-	const nombre = $derived.by(() => {
+	// usa su nombre y su imagen de Instagram; si no, los de la portada.
+	const juego = $derived.by(() => {
 		const slug = page.url.pathname.split('/').filter(Boolean)[0];
-		if (!slug) return PORTADA;
+		if (!slug) return undefined;
 
 		const juegos = page.data.juegos as { slug: string; nombre: string }[] | undefined;
-		return juegos?.find((juego) => juego.slug === slug)?.nombre ?? PORTADA;
+		return juegos?.find((candidato) => candidato.slug === slug);
 	});
+
+	const nombre = $derived(juego?.nombre ?? PORTADA);
+	const historia = $derived(juego ? `/historias/${juego.slug}.png` : '/historias/portada.png');
 </script>
 
-<Compartir {nombre} />
+<Compartir {nombre} {historia} />
 
 {@render children()}
 

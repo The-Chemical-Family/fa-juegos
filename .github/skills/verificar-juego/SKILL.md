@@ -43,6 +43,7 @@ Qué exige la verificación:
 - `index.html` existe y tiene `</head>` (analítica) y `</body>` (botón de
   compartir).
 - Existe `designs/og/<slug>.png`, la captura de 1200 × 630 que declara `og:image`.
+- Existe `designs/historias/<slug>.png`, la historia de 1080 × 1920 para Instagram.
 - En el HTML, todo `src`/`href`/`poster` y todo `url()`/`@import` es absoluto y
   empieza por `/<slug>/`; no se admiten rutas protocolo-relativas (`//host`).
 - En el CSS se admiten rutas relativas, pero no pueden salir de la carpeta.
@@ -75,6 +76,7 @@ está en `oculto`, es porque tiene `publicar: false`.
 | `"assets" debe ser una lista de rutas` | `assets` no es un array de strings. | Usa `["video/x.mp4"]`. |
 | `index.html no tiene </head>` | No se puede inyectar la analítica. | Añade `</head>` al documento. |
 | `falta designs/og/<slug>.png` | No hay captura para `og:image`. | Guarda el juego a 1200 × 630 en `designs/og/<slug>.png`. |
+| `falta designs/historias/<slug>.png` | No hay imagen para Instagram. | Genera la historia 1080 × 1920 en `designs/historias/<slug>.png`. |
 | `"..." es una ruta relativa; usa /<slug>/...` | Ruta relativa en el HTML. | Prefija `/<slug>/`. |
 | `"..." no se sirve desde /<slug>/` | Ruta con otro prefijo (el `base` antiguo o la raíz). | Reescríbela a `/<slug>/...`. |
 | `"..." sale de la carpeta del juego` | Un `../` en el CSS escapa del artefacto. | Copia el recurso dentro del juego. |
