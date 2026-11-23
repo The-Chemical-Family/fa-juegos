@@ -1,8 +1,9 @@
 import { execFileSync } from 'node:child_process';
-import { cpSync, existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { leerManifiestos } from './manifiestos.mjs';
 import { snippetAnalitica } from './analitica.mjs';
+import { bloqueCompartir, FIN as FIN_COMPARTIR, INICIO as INICIO_COMPARTIR } from './compartir.mjs';
 import { verificarJuego } from './verificar-juego.mjs';
 import { prepararVercel } from './preparar-vercel.mjs';
 
@@ -23,6 +24,7 @@ const publicados = manifiestos.filter((juego) => juego.publicar);
 const ocultos = manifiestos.filter((juego) => !juego.publicar);
 
 limpiarPublicados();
+copiarImagenesOg();
 
 for (const juego of publicados) {
 	const destino = join(estatico, juego.slug);
@@ -45,15 +47,17 @@ for (const juego of publicados) {
 	}
 
 	inyectarAnalitica(join(destino, 'index.html'));
+	inyectarCompartir(join(destino, 'index.html'), juego.nombre);
 }
 
-const problemas = publicados.flatMap((juego) =>
-	verificarJuego({
+const problemas = publicados.flatMap((juego) => [
+	...verificarJuego({
 		slug: juego.slug,
 		distDir: join(estatico, juego.slug),
 		assets: juego.assets
-	})
-);
+	}),
+	...comprobarImagenOg(juego)
+]);
 
 if (problemas.length > 0) {
 	console.error('\n✖ La verificación ha fallado:\n');
@@ -88,9 +92,65 @@ function limpiarPublicados() {
 	}
 }
 
+// Las capturas de `og:image` viven en el repositorio (`designs/og/<slug>.png`)
+// porque `static/` se genera en cada ensamblado. Se sirven desde `/og/<slug>.png`
+// en la raíz del dominio, fuera de la carpeta de cada juego.
+function copiarImagenesOg() {
+	const origen = join(raiz, 'designs', 'og');
+	if (!existsSync(origen)) return;
+
+	const destino = join(estatico, 'og');
+	mkdirSync(destino, { recursive: true });
+
+	for (const entrada of readdirSync(origen, { withFileTypes: true })) {
+		if (entrada.isFile() && entrada.name.endsWith('.png')) {
+			cpSync(join(origen, entrada.name), join(destino, entrada.name));
+		}
+	}
+}
+
+function comprobarImagenOg(juego) {
+	const ruta = join('designs', 'og', `${juego.slug}.png`);
+	return existsSync(join(raiz, ruta))
+		? []
+		: [`${juego.slug}: falta ${ruta}, la imagen que declara og:image`];
+}
+
+function inyectarCompartir(ruta, nombre) {
+	const html = readFileSync(ruta, 'utf8');
+	const limpio = quitarBloque(html, INICIO_COMPARTIR, FIN_COMPARTIR);
+
+	if (!/<\/body>/i.test(limpio)) {
+		throw new Error(`${ruta}: no hay </body> donde inyectar el botón de compartir`);
+	}
+
+	const bloque = bloqueCompartir(nombre);
+	const conBoton = limpio.replace(/<\/body>/i, `${bloque}\n</body>`);
+
+	if (conBoton.split(bloque).length - 1 !== 1) {
+		throw new Error(`${ruta}: el botón de compartir se ha inyectado más de una vez`);
+	}
+
+	writeFileSync(ruta, conBoton);
+}
+
+function quitarBloque(html, inicio, fin) {
+	let resultado = html;
+	let desde = resultado.indexOf(inicio);
+
+	while (desde !== -1) {
+		const hasta = resultado.indexOf(fin, desde);
+		if (hasta === -1) break;
+		resultado = resultado.slice(0, desde) + resultado.slice(hasta + fin.length);
+		desde = resultado.indexOf(inicio);
+	}
+
+	return resultado;
+}
+
 function inyectarAnalitica(ruta) {
 	const html = readFileSync(ruta, 'utf8');
-	const limpio = quitarBloque(html);
+	const limpio = quitarBloque(html, INICIO, FIN);
 
 	if (!/<\/head>/i.test(limpio)) {
 		throw new Error(`${ruta}: no hay </head> donde inyectar la analítica`);
@@ -103,20 +163,6 @@ function inyectarAnalitica(ruta) {
 	}
 
 	writeFileSync(ruta, conSnippet);
-}
-
-function quitarBloque(html) {
-	let resultado = html;
-	let inicio = resultado.indexOf(INICIO);
-
-	while (inicio !== -1) {
-		const fin = resultado.indexOf(FIN, inicio);
-		if (fin === -1) break;
-		resultado = resultado.slice(0, inicio) + resultado.slice(fin + FIN.length);
-		inicio = resultado.indexOf(INICIO);
-	}
-
-	return resultado;
 }
 
 function ejecutar(comando, argumentos) {

@@ -34,6 +34,7 @@ No hay un tercer tipo. Un juego construido con otra herramienta (React, Vue, un 
 ```
 apps/contenedor/     contenedor SvelteKit (adapter-vercel)
 juegos/<slug>/       un juego por carpeta, con juego.json
+designs/og/          captura 1200 × 630 de cada juego para og:image
 tools/               ensamblado, manifiestos, verificación y servidor estático
 tools/plantillas/    esqueletos de los dos tipos
 .github/skills/      skills de IA para crear y añadir juegos
@@ -50,7 +51,7 @@ npm run dev     # servidor de desarrollo del contenedor
 npm run nuevo-juego -- --tipo svelte --slug <slug> --nombre "<Nombre>"   # crea un juego
 ```
 
-`npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos `svelte` con `publicar: true`, copia los `estatico`, inyecta la analítica y verifica cada artefacto.
+`npm run build` es el único paso necesario para publicar: limpia lo copiado, construye los juegos `svelte` con `publicar: true`, copia los `estatico`, inyecta la analítica y el botón de compartir, y verifica cada artefacto.
 
 `npm run check` comprueba los dos tipos: en los `svelte` valida el manifiesto y, si existe `dist/`, sus referencias; en los `estatico` valida el manifiesto y verifica la carpeta directamente. Después ejecuta el `check` de cada workspace que lo declare.
 
@@ -135,17 +136,54 @@ npm run nuevo-juego -- --tipo estatico --slug <slug> --nombre "<Nombre>" --orige
 
 Si el juego carga un recurso desde JavaScript, créalo en `static/` con `publicDir: 'static'` en `vite.config.ts` y declara la ruta en `assets`.
 
+Añadir la captura `designs/og/<slug>.png` (1200 × 630) antes de publicarlo: es la imagen que declaran `og:image` y `twitter:image` y el ensamblado no arranca sin ella.
+
 ## Añadir un juego estático ya construido
 
 1. Copiar dentro de `juegos/<slug>/` el resultado ya construido: `index.html`, CSS, JS y los assets que necesite. Con `npm run nuevo-juego -- --tipo estatico --slug <slug> --nombre "<Nombre>" --origen <ruta>` la copia descarta `package.json`, `node_modules` y los archivos ocultos.
 2. **No** añadir `package.json`, ni `node_modules`, ni un paso de compilación.
 3. Usar rutas absolutas `/<slug>/...` en `index.html` para los subrecursos, y relativas solo dentro del CSS. Si el juego se construyó para otro prefijo, `--prefijo-anterior <segmento>` lo reescribe.
 4. Crear `juego.json` con `"tipo": "estatico"`.
-5. El `index.html` debe tener `</head>`: ahí se inyecta la analítica.
+5. El `index.html` debe tener `</head>` y `</body>`: antes de `</head>` se inyecta la analítica y antes de `</body>` el botón de compartir.
 
 La plantilla mínima está en `tools/plantillas/estatico/`. La carpeta del juego es el artefacto: lo que hay en ella es lo que se sirve, salvo `juego.json`, `README.md` y los archivos ocultos.
 
-Las plantillas incluyen `og:image` y `twitter:image` apuntando a `https://muchachadarcade.es/splash.png`, la imagen que muestran WhatsApp y otras redes al compartir una URL. El fichero vive en `apps/contenedor/static/splash.png` y lo usan tanto la portada como los juegos. Si se sustituye, hay que actualizar también `og:image:width` y `og:image:height` en las plantillas y en `apps/contenedor/src/routes/+page.svelte`.
+Cada juego publica su propia imagen para `og:image` y `twitter:image`: `https://muchachadarcade.es/og/<slug>.png`. La captura vive en `designs/og/<slug>.png` (1200 × 630) y el ensamblado la copia a `apps/contenedor/static/og/`, que se sirve desde `/og/`. Si falta la captura de un juego publicado, `npm run build` falla con un mensaje que nombra el fichero. Para generarla, abre el juego a 1200 × 630, captura su pantalla inicial y guarda el resultado con ese nombre; las plantillas ya apuntan a esa ruta. La portada y el 404 siguen usando `apps/contenedor/static/splash.png` (1414 × 750), declarada en `apps/contenedor/src/routes/+page.svelte`.
+
+## Compartir
+
+Todas las pantallas tienen un botón de compartir en la esquina superior izquierda. En los juegos lo inyecta el ensamblado (`tools/compartir.mjs`); en la portada y el 404 lo renderiza `apps/contenedor/src/lib/Compartir.svelte` desde el layout.
+
+El botón abre directamente la hoja de compartir nativa del dispositivo (`navigator.share`), la misma que ofrece WhatsApp, Instagram, Telegram y el resto de aplicaciones instaladas. No hay desplegable propio ni lista de redes.
+
+El mensaje sigue esta plantilla, con el nombre del juego en su sitio y la URL del juego al final, como un párrafo más:
+
+```
+👾👾👾👾👾👾👾
+¡¡Muchachada, llegó el faquin momento!!
+
+💥 ¿A qué esperas para jugar a <nombre del juego> ?. Mueve el culo y pásalo a los indecisos, que el 29N está al caer. O voto útil o nos comen vivos. ¡¡A reventar encuestas, a POR ELLOS!!
+
+<url del juego>
+👾👾👾👾👾👾👾
+```
+
+La URL va dentro del texto y no se pasa además en el campo `url` de `navigator.share`: así WhatsApp y Telegram no la añaden dos veces.
+
+### Longitud del mensaje
+
+El mensaje mide entre 270 y 300 caracteres, contando emojis y URL. Cabe de sobra en los destinos que importan; solo recortarían los canales de límite corto, que no son el objetivo:
+
+| Canal | Límite | Resultado |
+| --- | --- | --- |
+| Web Share API (`navigator.share`) | Sin límite propio de texto; Chromium solo limita los ficheros compartidos | Cabe |
+| WhatsApp | Muy por encima del mensaje: los textos admiten decenas de miles de caracteres | Cabe |
+| Telegram | 4.096 caracteres por mensaje | Cabe |
+| Instagram | No admite texto predefinido: la hoja nativa abre la app, pero no rellena el pie de foto | Ninguno |
+| SMS (si aparece en la hoja) | 160 caracteres por segmento (70 con emojis o acentos) | Se parte en varios SMS |
+| X/Twitter | 280 caracteres | Recorta |
+
+Si el navegador no implementa `navigator.share` (por ejemplo, Firefox de escritorio), el botón copia ese texto al portapapeles y lo avisa con un mensaje breve junto al botón.
 
 ## Despliegue
 

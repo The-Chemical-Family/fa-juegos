@@ -40,7 +40,9 @@ node tools/verificar-juego.mjs juegos/<slug>
 
 Qué exige la verificación:
 
-- `index.html` existe y tiene `</head>` (donde se inyecta la analítica).
+- `index.html` existe y tiene `</head>` (analítica) y `</body>` (botón de
+  compartir).
+- Existe `designs/og/<slug>.png`, la captura de 1200 × 630 que declara `og:image`.
 - En el HTML, todo `src`/`href`/`poster` y todo `url()`/`@import` es absoluto y
   empieza por `/<slug>/`; no se admiten rutas protocolo-relativas (`//host`).
 - En el CSS se admiten rutas relativas, pero no pueden salir de la carpeta.
@@ -50,7 +52,8 @@ Qué exige la verificación:
 ## 3. El sitio ensamblado
 
 ```bash
-npm run build     # limpia static/, construye los svelte, copia los estatico, inyecta analítica y verifica
+npm run build     # limpia static/, construye los svelte, copia los estatico,
+                  # inyecta analítica y botón de compartir, y verifica
 npm run dev:todo  # servidores de desarrollo + contenedor en http://localhost:5173/
 npm run preview   # sirve exactamente lo construido en http://localhost:4173/
 ```
@@ -71,6 +74,7 @@ está en `oculto`, es porque tiene `publicar: false`.
 | `"orden" debe ser un número` | `orden` entre comillas. | Quita las comillas. |
 | `"assets" debe ser una lista de rutas` | `assets` no es un array de strings. | Usa `["video/x.mp4"]`. |
 | `index.html no tiene </head>` | No se puede inyectar la analítica. | Añade `</head>` al documento. |
+| `falta designs/og/<slug>.png` | No hay captura para `og:image`. | Guarda el juego a 1200 × 630 en `designs/og/<slug>.png`. |
 | `"..." es una ruta relativa; usa /<slug>/...` | Ruta relativa en el HTML. | Prefija `/<slug>/`. |
 | `"..." no se sirve desde /<slug>/` | Ruta con otro prefijo (el `base` antiguo o la raíz). | Reescríbela a `/<slug>/...`. |
 | `"..." sale de la carpeta del juego` | Un `../` en el CSS escapa del artefacto. | Copia el recurso dentro del juego. |

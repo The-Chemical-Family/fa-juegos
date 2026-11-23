@@ -8,7 +8,9 @@ description: Añade al monorepo un juego de tipo estatico en juegos/<slug>/: un 
 Un juego `estatico` es un artefacto: la carpeta `juegos/<slug>/` **es** lo que se
 sirve en `/<slug>/`. No hay build, no hay `package.json`, no hay `node_modules`.
 El ensamblado (`tools/ensamblar.mjs`) la copia tal cual, inyecta la analítica en
-`index.html` y verifica cada referencia.
+`index.html`, añade el botón de compartir antes de `</body>` y verifica cada
+referencia. También exige una captura `designs/og/<slug>.png` (1200 × 630) para
+la imagen que muestran WhatsApp y Telegram al compartir el enlace.
 
 Si el material de origen necesita compilarse, compílalo fuera del monorepo y trae
 solo el resultado. Aquí no se construye nada.
@@ -73,7 +75,10 @@ Esta es la parte que más falla. Reglas:
   creaste la carpeta a mano, bórralos.
 - `README.md` y `juego.json` pueden quedarse: el ensamblado los excluye y no se
   sirven.
-- Un `index.html` con `</head>` es obligatorio: ahí se inyecta la analítica.
+- Un `index.html` con `</head>` y `</body>` es obligatorio: antes de `</head>` se
+  inyecta la analítica y antes de `</body>` el botón de compartir.
+- `designs/og/<slug>.png` con la captura del juego a 1200 × 630, que es la que
+  declaran `og:image` y `twitter:image`.
 
 ## Paso 4 — declarar los recursos que carga el JavaScript
 
@@ -97,7 +102,7 @@ carpeta, necesita `index.html`.
 
 ```bash
 npm run check     # valida el manifiesto y verifica la carpeta del juego tal cual
-npm run build     # copia, inyecta analítica y verifica el artefacto publicado
+npm run build     # copia, inyecta analítica y botón de compartir, y verifica
 npm run dev:todo  # http://localhost:5173/<slug>/ (sirve la carpeta, sin recarga)
 ```
 
@@ -143,6 +148,7 @@ en la lista.
 | `"..." no se sirve desde /<slug>/` | La ruta apunta a otro prefijo (el antiguo `base`): reescríbela. |
 | `"..." no existe en los archivos del juego` | Falta el archivo o está mal escrito; cópialo o corrige la ruta. |
 | `index.html no tiene </head>` | Añade `</head>` para que se pueda inyectar la analítica. |
+| `falta designs/og/<slug>.png` | Guarda la captura 1200 × 630 del juego con ese nombre. |
 | El juego se ve roto pero no hay errores en `check` | Recurso cargado desde JS: decláralo en `assets` y revisa la Red del navegador. |
 
 Para diagnosticar en detalle, usa la skill `verificar-juego`.
