@@ -5,5 +5,5 @@ import type { Villano } from './tipos'
 const RETRATOS = ['el_rey_del_ladrillo', 'el_empresario_buitre', 'la_presidenta_del_miedo'] as const
 
 export function retratoDeVillano(id: Villano['id']): string {
-  return `${import.meta.env.BASE_URL}villanos/${RETRATOS[id]}.png`
+  return `${import.meta.env.BASE_URL}villanos/${RETRATOS[id]}.gif`
 }

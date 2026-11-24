@@ -123,9 +123,9 @@ describe('Mapa: retratos de los villanos', () => {
     const base = import.meta.env.BASE_URL
     expect(retratos).toHaveLength(3)
     expect(retratos.map((img) => img.getAttribute('src'))).toEqual([
-      `${base}villanos/el_rey_del_ladrillo.png`,
-      `${base}villanos/el_empresario_buitre.png`,
-      `${base}villanos/la_presidenta_del_miedo.png`
+      `${base}villanos/el_rey_del_ladrillo.gif`,
+      `${base}villanos/el_empresario_buitre.gif`,
+      `${base}villanos/la_presidenta_del_miedo.gif`
     ])
   })
 })

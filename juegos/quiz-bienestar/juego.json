@@ -4,8 +4,8 @@
   "publicar": true,
   "assets": [
     "video/video_meme.mp4",
-    "villanos/el_rey_del_ladrillo.png",
-    "villanos/el_empresario_buitre.png",
-    "villanos/la_presidenta_del_miedo.png"
+    "villanos/el_rey_del_ladrillo.gif",
+    "villanos/el_empresario_buitre.gif",
+    "villanos/la_presidenta_del_miedo.gif"
   ]
 }
