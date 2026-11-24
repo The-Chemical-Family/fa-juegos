@@ -73,7 +73,7 @@
 
 <section class="batalla">
   <header class="duelo">
-    <img class="retrato" src={retratoDeVillano(villano.id)} alt="" />
+    <img class="retrato" src={retratoDeVillano(villano.id)} alt="" style="width: 150px;"/>
     <div class="marcador">
       <div class="barras">
         <BarraEnergia
