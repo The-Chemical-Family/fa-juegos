@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Democratic Evolution</title>
-<meta name="description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta name="description" content="El juego que te hará reflexionar en estas elecciones del 29 de noviembre: desmonta bulos y haz evolucionar a cada especie política. Un juego de Muchachada Arcade.">
+<meta name="author" content="Muchachada Arcade">
 <meta property="og:title" content="Democratic Evolution">
 <meta property="og:description" content="Muchachada Arcade apoya a Frente Amplio">
 <meta property="og:type" content="website">
@@ -18,6 +19,7 @@
 <meta name="twitter:title" content="Democratic Evolution">
 <meta name="twitter:description" content="Muchachada Arcade apoya a Frente Amplio">
 <meta name="twitter:image" content="https://muchachadarcade.es/og/democratic-evolution.png">
+<meta name="theme-color" content="#170F2E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,500;0,700;0,800;1,700&family=Anton&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
 <style>
@@ -106,6 +108,15 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
 #moscas{position:absolute;inset:0;z-index:7;pointer-events:none}
 #fly{position:absolute;left:50%;top:330px;z-index:9;pointer-events:none;padding:14px 26px;border-radius:999px;background:#fff;color:var(--ink);font:400 38px Anton,sans-serif;letter-spacing:.5px;white-space:nowrap;text-transform:uppercase;opacity:0;transform:translate(-50%,0)}
 #fly.go{animation:flyAway 1.5s cubic-bezier(.3,.6,.4,1) forwards}
+#msg{position:absolute;left:50%;top:250px;z-index:9;pointer-events:none;width:max-content;max-width:600px;padding:16px 30px;border-radius:34px;background:var(--lime,#DDF542);color:var(--ink);font:400 40px/1.08 Anton,sans-serif;letter-spacing:.4px;text-transform:uppercase;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;transform:translate(-50%,0)}
+#msg.long{font-size:34px;max-width:620px}
+#msg.go{animation:msgPop 2.6s ease-out forwards}
+#msg.long.go{animation-duration:4.2s}
+@keyframes msgPop{0%{opacity:0;transform:translate(-50%,40px) scale(.6) rotate(0)}10%{opacity:1;transform:translate(-50%,0) scale(1.07) rotate(-2.5deg)}18%{transform:translate(-50%,0) scale(1) rotate(-2deg)}82%{opacity:1;transform:translate(-50%,-8px) scale(1) rotate(-2deg)}100%{opacity:0;transform:translate(-50%,-70px) scale(.9) rotate(-4deg)}}
+.props span.got{background:var(--or);color:#fff;box-shadow:0 0 0 2px #fff inset}
+.props span.pop{animation:chipIn .6s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes chipIn{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:scale(1)}}
+.props span.hint{background:none;color:#cfc3ea;font-style:italic;font-weight:600}
 @keyframes flyAway{0%{opacity:0;transform:translate(-50%,40px) scale(.6) rotate(0)}15%{opacity:1;transform:translate(-50%,0) scale(1.08) rotate(-3deg)}55%{opacity:1;transform:translate(-50%,-30px) scale(1) rotate(-4deg)}100%{opacity:0;transform:translate(60%,-260px) scale(.7) rotate(24deg)}}
 .props{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:14px 0 0;min-height:40px}
 .props span{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.1);font:800 21px Archivo,sans-serif;color:#fff}
@@ -128,11 +139,11 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
 #fb .btn{margin-top:26px}
 
 /* ---------- FIN DE NIVEL / FINAL ---------- */
-#lvup,#final{padding:calc(60px + var(--sat,0px)) 44px calc(50px + var(--sab,0px));align-items:center;text-align:center}
+#lvup,#final{padding:calc(60px + var(--sat,0px)) 44px calc(34px + var(--sab,0px));align-items:center;text-align:center}
 .big{font:400 92px/.9 Anton,sans-serif;text-transform:uppercase}
 .big b{font-weight:400;color:var(--lime)}
 .sub{margin:16px 0 0;font:700 28px/1.3 Archivo,sans-serif;color:#eadff7;text-wrap:balance}
-.port{width:330px;height:410px;margin:26px 0 0;border-radius:36px;overflow:hidden;box-shadow:0 0 0 8px var(--lime),0 26px 60px rgba(0,0,0,.55);position:relative;background:#7d8ea0}
+.port{width:calc(330px + var(--ex)*.4);height:calc(410px + var(--ex)*.5);margin:26px 0 0;border-radius:36px;overflow:hidden;box-shadow:0 0 0 8px var(--lime),0 26px 60px rgba(0,0,0,.55);position:relative;background:#7d8ea0}
 .port img,.port canvas{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
 .arrow{margin:18px 0 0;font:400 30px Anton,sans-serif;letter-spacing:2px;color:#b9b0d6;text-transform:uppercase}
 .arrow b{display:block;font-weight:400;font-size:62px;color:#fff;letter-spacing:1px}
@@ -147,7 +158,9 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
 @keyframes glow{50%{box-shadow:0 0 0 8px var(--lime),0 0 46px rgba(221,245,66,.55),0 26px 60px rgba(0,0,0,.55)}}
 #vitrina.corrupt canvas,.port.corrupt canvas{filter:grayscale(.55) sepia(.6) hue-rotate(35deg) contrast(1.15) brightness(.9)}
 .arrow{text-wrap:balance}
-#lvup #bEvo,#final .grid{margin-top:auto}
+#lvup #bEvo,#final .grid{margin-top:auto;padding-top:22px}
+#final .big{font-size:82px}
+#final .stats{margin-top:24px}
 .grid{display:grid;gap:18px;width:100%}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;margin:34px 0 0}
 .stats div{padding:20px 8px;border-radius:22px;background:rgba(255,255,255,.08)}
@@ -178,11 +191,14 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
 .dots{display:flex;gap:10px;justify-content:center;margin:22px 0 0}.dots i{width:12px;height:12px;border-radius:50%;background:rgba(241,223,180,.25)}.dots i.on{background:#f1dfb4}
 .papiro.mini{padding:24px 30px 20px;font-size:26px;line-height:1.32;margin:22px 0 0}
 .papiro.mini p{display:block;margin:0}.papiro.mini p:first-child::first-letter{font-size:56px;margin:4px 8px 0 0}
+.credit{display:block;margin-top:12px;white-space:nowrap;text-align:center;font:600 19px/1.2 Archivo,sans-serif;color:#cfc3ea;text-decoration:none}.credit b{color:var(--lime)}
 #rot{display:none;position:fixed;inset:0;z-index:99;background:#170F2E;color:#fff;place-items:center;text-align:center;padding:24px;font:800 20px/1.35 Archivo,sans-serif}
 #rot b{display:block;font:400 34px/1.1 Anton,sans-serif;text-transform:uppercase;color:#DDF542;margin-bottom:8px}
 @media (orientation:landscape) and (max-height:500px){#rot{display:grid}}
 #probe{position:fixed;top:0;left:0;width:0;height:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);visibility:hidden;pointer-events:none}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;transition-duration:.01s!important}}
+@media (prefers-reduced-motion:reduce){#msg.go{animation:msgStill 2.6s step-end forwards!important}#msg.long.go{animation-duration:4.2s!important}}
+@keyframes msgStill{0%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,0)}}
 </style>
 </head>
 <body>
@@ -222,7 +238,7 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
   <div class="props" id="gProps"></div>
   <div id="qbox"><div class="qk" id="qk">¿Verdad o bulo?</div><p id="qtext"></p><div id="tbar"><i></i></div></div>
   <div class="ans"><button class="btn" id="bTrue">Verdad</button><button class="btn" id="bFake">Bulo</button></div>
-  <div id="fly"></div>
+  <div id="msg" aria-live="polite"></div><div id="fly"></div>
   <canvas id="moscas" width="720" height="1280" aria-hidden="true"></canvas>
   <div id="fb" role="dialog" aria-live="polite"><div id="fbV"></div><div id="fbA"></div><p id="fbE"></p><a id="fbS" target="_blank" rel="noopener">Ver la fuente ↗</a><button class="btn" id="bNext">Seguir</button></div>
  </section>
@@ -247,15 +263,15 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
    <button class="btn alt" id="bShare">Copiar mensaje</button>
    <button class="btn" id="bAgain">↻ Volver a jugar</button>
   </div>
+  <a class="credit" href="https://muchachadarcade.es" target="_blank" rel="noopener">Hecho con IA por <b>Muchachada Arcade</b> · muchachadarcade.es</a>
  </section>
 </div></div>
 
 <script>
 {
-// Las imágenes se sirven desde /democratic-evolution/; en el código se nombran solo por fichero.
+const $=id=>document.getElementById(id);
 const DIR='/democratic-evolution/';
 const evImgs=el=>el.querySelectorAll('img[data-ev]').forEach(im=>{im.src=DIR+'ev'+im.dataset.ev+'.webp'});
-const $=id=>document.getElementById(id);
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
@@ -361,14 +377,26 @@ const CORR={name:'Corruptus',latin:'Homo Corruptus',col:'#5c6b1f',song:'noticiar
 const LEVELS=[
  {name:'Facha-francus',latin:'Homo Autoritarius',col:'#8a6d3b',song:'marchareal',qs:Q1,solo:'f1_solo.webp',
   props:[['bandera','la bandera','🇪🇸'],['barrote','el barrote','🪵'],['crucifijo','el crucifijo','✝️'],['estampa','la estampita','🖼️'],['gafas','las gafas de sol','🕶️'],['guardiacivil','el uniforme','🪖']].map(([k,l,e])=>({k,l,e,img:'f1_'+k+'.webp'}))},
- {name:'Fachalecus',latin:'Homo Nostalgicus',col:'#5BAE1F',song:'legion',qs:Q2,solo:'f2_solo.webp',
+ {name:'Fachalecus',latin:'Homo Nostalgicus',col:'#5BAE1F',song:'marchareal',qs:Q2,solo:'f2_solo.webp',
   props:[['barrote','el barrote'],['fachaleco','el fachaleco'],['maga','la gorra MAGA'],['motosierra','la motosierra'],['nostalgia','la bandera del aguilucho'],['ovnis','el kit cazaovnis'],['pulsera','la pulserita de España'],['terraplanista','la Tierra plana']].map(([k,l])=>({k,l,img:'f2_'+k+'.webp'}))},
- {name:'Neoliberalus',latin:'Homo Peperus',col:'#1D84CE',song:'hardstyle',qs:Q3,solo:'f3_solo.webp',
+ {name:'Neoliberalus',latin:'Homo Peperus',col:'#1D84CE',song:'cumbia',qs:Q3,solo:'f3_solo.webp',
   props:[['barrote','el barrote'],['buitres','los buitres'],['lacoste','el polo de Lacoste'],['mafia','el yate'],['okupas','la alarma antiokupas'],['padel','el pádel y el golf'],['toro','la fauna del partido']].map(([k,l])=>({k,l,img:'f3_'+k+'.webp'}))},
- {name:'Socialistus',latin:'Homo Sanxe',col:'#E30613',song:'rockhimno',qs:Q4,solo:'f4_solo.webp',
+ {name:'Socialistus',latin:'Homo Sanxe',col:'#E30613',song:'reggaeton',qs:Q4,solo:'f4_solo.webp',
   props:[['barrote','el barrote'],['goya','el Goya'],['lgtbi','el amigo del Orgullo'],['obama','el discurso de Obama'],['pana','la chaqueta de pana'],['perrito','el perrito'],['universidad','el título universitario']].map(([k,l])=>({k,l,img:'f4_'+k+'.webp'}))},
- {name:'Súperlistus',latin:'Frente-Amplius',col:'#EB4521',song:'fa',qs:Q5,solo:'f5_solo.webp', // ya tiene los ojos entornados: sin parpadeo
-  props:[['barrote','el barrote'],['bocata','el bocata'],['camisa','la camisa'],['kellys','las Kellys'],['lgtbi','la chapa del Orgullo'],['palestino','la kufiya'],['riders','el rider'],['workingclass','la pancarta Working Class']].map(([k,l])=>({k,l,img:'f5_'+k+'.webp'}))}];
+ // el último estadio funciona al revés: no suelta lastre, SUMA superpoderes (imágenes acumulativas, en orden). Ojos entornados: sin parpadeo
+ {name:'Súperlistus',latin:'Frente-Amplius',col:'#EB4521',song:'fa',qs:Q5,add:1,base:'f5_bocata.webp',solo:'f5_workingclass.webp',
+  props:[['pin','la chapa del Orgullo'],['kufiya','la kufiya'],['kellys','las Kellys'],['riders','los riders'],['workingclass','la Working Class']].map(([k,l])=>({k,l,img:'f5_'+k+'.webp'}))}];
+// mensajes que salen antes de cada pregunta, según el lastre que toca quitar (o el superpoder que toca ganar)
+const MSG={
+ bandera:'Suelta la bandera para liberarte',barrote:'Tira el barrote y piensa',crucifijo:'Cuelga el crucifijo y respira',estampa:'Rompe la estampita y sé libre',gafas:'Quítate las gafas y desfáchate',guardiacivil:'Quítate el uniforme y goza',
+ fachaleco:'Quítate el fachaleco y respira',maga:'Quítate la gorra MAGA y despierta',motosierra:'Apaga la motosierra y cuida lo público',nostalgia:'Arría el aguilucho y vive en 2026',ovnis:'Suelta el kit cazaovnis y aterriza',pulsera:'Quítate la pulserita y sé libre',terraplanista:'Suelta la Tierra plana: es redonda',
+ buitres:'Espanta a los buitres y libera tu casa',lacoste:'Quítate el polo y baja del pedestal',mafia:'Baja del yate y pisa tierra',okupas:'Desenchufa la alarma y relájate',padel:'Deja el pádel y sal a la calle',toro:'Despídete de la fauna del partido',
+ goya:'Devuelve el Goya y evoluciona',lgtbi:'Deja de posar con el Orgullo y lucha',obama:'Calla el discurso de Obama y actúa',pana:'Cuelga la pana y evoluciona',perrito:'Suelta el perrito y mira al futuro',universidad:'Suelta el título y aprende de verdad',
+ c0:'Devuelve el sobre y límpiate',c1:'Suelta el maletín y respira',c2:'Cierra la caja B y sé libre',c3:'Deja el «todos son iguales» y elige',
+ pin:'Gánate la chapa del Orgullo',kufiya:'Ponte la kufiya: solidaridad con Palestina',kellys:'Súmate a la lucha de las Kellys',riders:'Pedalea con los riders por un trabajo digno',workingclass:'Levanta la pancarta: Working Class'};
+const MSG_ALT=['Sé libre: desmonta este bulo','Piensa, goza y acierta','Vota bien el 29N: ¡acierta!','Un bulo menos, un paso más'];
+const MSG_ALT5=['Amplía el frente: ¡acierta!','A por el superpoder','Evoluciona y gana el 29N'];
+const MSG5_INTRO='¡Ahora a por los superpoderes! Ya no eres facha, pero te falta ampliar el frente y evolucionar';
 const PLACEHOLDER_N=5; // piezas para los niveles cuyo personaje aún no ha llegado
 const QTIME=20;
 
@@ -445,26 +473,33 @@ function mix1(list){const all=shuffle(list),tr=all.filter(q=>q.a),fa=all.filter(
     const q=(pt?tr:fa).shift();if(q.a===last)run++;else{run=1;last=q.a}out.push(q)}return out}
 
 function curL(){return S.corr?CORR:LEVELS[S.lvl]}
-function startLevel(i,corr){S.lvl=i;S.corr=!!corr;S.l4bad=0;S.toCorr=0;$('fly').classList.remove('go');const L=curL();setCol(L);S.queue=mixQs(L.qs);S.removed=0;
+function startLevel(i,corr){S.lvl=i;S.corr=!!corr;S.msgK=null;S.msgN=0;S.l4bad=0;S.toCorr=0;$('fly').classList.remove('go');const L=curL();setCol(L);S.queue=mixQs(L.qs);S.removed=0;
   $('vitrina').classList.toggle('corrupt',S.corr);
-  S.pieces=L.corr?L.props.slice():L.props?shuffle(L.props):Array.from({length:PLACEHOLDER_N},(_,k)=>({k:'p'+k,l:'pieza '+(k+1),e:'❔'}));
+  S.pieces=L.corr||L.add?L.props.slice():L.props?shuffle(L.props):Array.from({length:PLACEHOLDER_N},(_,k)=>({k:'p'+k,l:'pieza '+(k+1),e:'❔'}));
   $('gLv').textContent=S.corr?'Involución · Corruptus':`Nivel ${i+1} · ${L.name}`;$('gLatin').textContent=L.latin;
   $('gLadder').innerHTML=LEVELS.map((_,k)=>`<span class="${k<i?'done':k===i?'cur':''}"></span>`).join('');
   drawVitrina(false);drawProps();show('game');setSong(L.song);nextQ()}
 
-function curImg(){const L=curL();if(!L.props)return null;return S.removed<S.pieces.length?S.pieces[S.removed].img:L.solo}
+function showMsg(){const L=curL(),m=$('msg');let t;
+  if(S.cur.final)t='Última prueba: ¿son todos iguales?';
+  else if(L.add&&S.msgN===0)t=MSG5_INTRO;
+  else{const p=S.pieces[S.removed];if(!p)return;const alt=L.add?MSG_ALT5:MSG_ALT;t=S.msgK===p.k?alt[S.msgN%alt.length]:(MSG[p.k]||alt[0]);S.msgK=p.k}
+  S.msgN++;m.textContent=t;m.classList.toggle('long',t.length>44);m.classList.remove('go');void m.offsetWidth;m.classList.add('go')}
+function curImg(){const L=curL();if(!L.props)return null;if(L.add)return S.removed?S.pieces[S.removed-1].img:L.base;return S.removed<S.pieces.length?S.pieces[S.removed].img:L.solo}
 function drawVitrina(anim){const v=$('vitrina'),L=curL(),src=curImg();
-  const ficha=`<div class="ficha"><b>${esc(L.latin)}</b>${S.removed<S.pieces.length?'Lleva: '+esc(S.pieces[S.removed].l):'Sin lastre'}</div>`;
+  const left=S.removed<S.pieces.length,ficha=`<div class="ficha"><b>${esc(L.latin)}</b>${L.add?(left?'Se agrega'+(/^l[ao]s /.test(S.pieces[S.removed].l)?'n':'')+': '+esc(S.pieces[S.removed].l):'Todos los superpoderes'):left?'Lleva: '+esc(S.pieces[S.removed].l):'Sin lastre'}</div>`;
   if(!src){v.innerHTML=`<div class="soon">?<small>El ejemplar está en camino</small></div>`+ficha;return}
-  const old=v.querySelector('img,canvas');const img=makeFace(src,false);img.ariaLabel=`${L.name}: ${S.removed<S.pieces.length?'con '+S.pieces[S.removed].l:'sin lastre'}`;
+  const old=v.querySelector('img,canvas');const img=makeFace(src,false);img.ariaLabel=L.add?`${L.name} con ${S.removed} de ${S.pieces.length} superpoderes`:`${L.name}: ${left?'con '+S.pieces[S.removed].l:'sin lastre'}`;
   v.querySelectorAll('.ficha,.soon').forEach(n=>n.remove());
   if(anim&&old){old.classList.add('out');v.insertBefore(img,old);setTimeout(()=>old.remove(),720)}else{v.innerHTML='';v.appendChild(img)}
   v.insertAdjacentHTML('beforeend',ficha)}
 function drawProps(){try{$('song5').playbackRate=1+.3*prog()}catch(e){}
-$('gProps').innerHTML=S.pieces.map((p,k)=>`<span class="${k<S.removed?'gone':k===S.removed?'now':''}">${esc(p.l)}</span>`).join('')}
+const add=curL().add; // en el nivel de sumar, los superpoderes van apareciendo a medida que se agregan
+  $('gProps').innerHTML=add?(S.removed?S.pieces.slice(0,S.removed).map((p,k)=>`<span class="got${k===S.removed-1?' pop':''}">+ ${esc(p.l)}</span>`).join(''):'<span class="hint">Aquí irán apareciendo tus superpoderes</span>')
+   :S.pieces.map((p,k)=>`<span class="${k<S.removed?'gone':k===S.removed?'now':''}">${esc(p.l)}</span>`).join('')}
 
 function nextQ(){S.cur=S.corr&&S.removed===S.pieces.length-1?FINALQ:S.queue.shift();S.answered=false;$('fb').classList.remove('on');
-  $('qk').textContent=S.cur.final?'Prueba final para salir de Corruptus':`¿Verdad o bulo? · Quedan ${S.pieces.length-S.removed} piezas`;$('qtext').textContent=S.cur.q;
+  $('qk').textContent=S.cur.final?'Prueba final para salir de Corruptus':`¿Verdad o bulo? · ${curL().add?'Faltan '+(S.pieces.length-S.removed)+' superpoderes':'Quedan '+(S.pieces.length-S.removed)+' piezas'}`;$('qtext').textContent=S.cur.q;showMsg();
   ['bTrue','bFake'].forEach(b=>$(b).disabled=false);
   const bar=$('tbar').firstElementChild;bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition=`transform ${QTIME}s linear`;bar.style.transform='scaleX(0)';
   clearTimeout(S.timer);S.timer=setTimeout(()=>answer(null),QTIME*1000);S.qStart=performance.now()}
@@ -473,7 +508,7 @@ function answer(v){if(S.answered)return;S.answered=true;clearTimeout(S.timer);['
   const bar=$('tbar').firstElementChild,f=getComputedStyle(bar).transform;bar.style.transition='none';bar.style.transform=f;
   const q=S.cur,ok=v===q.a,vit=$('vitrina');vit.classList.remove('ok','bad');void vit.offsetWidth;
   if(ok){S.ok++;S.streak++;S.best=Math.max(S.best,S.streak);vit.classList.add('ok');sfx('ok');
-    const p=S.pieces[S.removed];S.removed++;const fly=$('fly');fly.textContent=`¡Fuera ${p.l}!`;fly.classList.remove('go');void fly.offsetWidth;fly.classList.add('go');
+    const p=S.pieces[S.removed];S.removed++;const fly=$('fly');fly.textContent=curL().add?`¡Se agrega${/^l[ao]s /.test(p.l)?'n':''} ${p.l}!`:`¡Fuera ${p.l}!`;fly.classList.remove('go');void fly.offsetWidth;fly.classList.add('go');
     drawVitrina(true);drawProps()}
   else{S.bad++;S.streak=0;vit.classList.add('bad');sfx('bad');if(!q.final)S.queue.push(q); // la fallada vuelve a salir
     if(S.lvl===3&&!S.corr&&S.removed===0&&++S.l4bad>=3)S.toCorr=1} // estadio Sanxe: tres fallos sin acertar ni una = involución
@@ -481,7 +516,7 @@ function answer(v){if(S.answered)return;S.answered=true;clearTimeout(S.timer);['
   $('fbA').textContent=q.a?'✔ Es verdad':'✖ Es bulo';$('fbA').style.background=q.a?'#22c55e':'#ef4444';
   $('fbE').textContent=q.e+(ok?'':' Volverá a salir más tarde.');
   const s=$('fbS');if(q.src){s.href=q.src;s.style.display=''}else s.style.display='none';
-  $('bNext').textContent=S.toCorr?'Uy…':S.removed>=S.pieces.length?(S.corr?'¡Sal de aquí!':'¡Evoluciona!'):'Seguir';
+  $('bNext').textContent=S.toCorr?'Uy…':S.removed>=S.pieces.length?(S.corr?'¡Sal de aquí!':curL().add?'¡A ganar el 29N!':'¡Evoluciona!'):'Seguir';
   setTimeout(()=>$('fb').classList.add('on'),ok?650:350)}
 
 $('bTrue').onclick=()=>answer(true);$('bFake').onclick=()=>answer(false);
@@ -495,7 +530,8 @@ function luShow(title,word,img,next,btn,act,alt,altAct,corrupt,chron){sfx('up');
   $('luN').innerHTML=next;$('bEvo').textContent=btn;S.luAct=act;
   $('bStay').style.display=alt?'':'none';if(alt){$('bStay').textContent=alt;S.luAlt=altAct}show('lvup')}
 function levelUp(){const L=LEVELS[S.lvl];
-  if(S.lvl===LEVELS.length-1)return finish(true);
+  // al completar el último estadio: Emilio con todos los superpoderes, y al premio
+  if(S.lvl===LEVELS.length-1)return luShow(L.name,'con superpoderes',L.solo,`Ya eres como<b>Emilio Delgado</b><i>Frente Amplio · Este 29N, vota a Ada Colau</i>`,'¡A ganar las elecciones!',()=>finish(true));
   const N=LEVELS[S.lvl+1];
   // al llegar al presente (Homo Sanxe) se puede elegir: quedarse o seguir hacia un futuro en el que la democracia avance
   if(S.lvl===3)return luShow(L.name,'desmontado',L.solo,`¿Te quedas o sigues?<i>Lo que viene es un pelín más difícil</i>`,'Seguir evolucionando',()=>startLevel(4),'Quedarme en el presente',()=>finish(false),0,CHRON[3]);
@@ -505,14 +541,14 @@ function involution(){luShow('¡Involución!','Corruptus','f4_solo.webp',`Para s
 function escapeCorr(){luShow('Corruptus','superado','f4_solo.webp',`Vuelves a<b>Socialistus</b><i>Homo Sanxe</i>`,'Volver a intentarlo',()=>startLevel(3),0,0,0,CHRON_OUT)}
 $('bEvo').onclick=()=>S.luAct&&S.luAct();$('bStay').onclick=()=>S.luAlt&&S.luAlt();
 
-function finish(top){S.top=top;setSong(top?'fa':'rockhimno');
+function finish(top){S.top=top;setSong(top?'fa':'reggaeton');
   $('fT').innerHTML=top?`${letters('Premio:',0)}<br><b>${letters('Ya eres un votante de Frente Amplio',9)}</b>`:`${letters('Te quedas en',0)}<br><b>${letters('el presente',14)}</b>`;
-  $('fSub').textContent=top?'Has soltado todo el lastre y has llegado al futuro. Lo que queda es criterio. El 29N, vota con la verdad.':'Homo Sanxe no está mal, pero la democracia puede avanzar más. ¿Te atreves con el último estadio?';
+  $('fSub').textContent=top?'Sin lastre y con todos los superpoderes: ya eres como Emilio Delgado, del Frente Amplio. Este 29N, ve a votar a Ada Colau y gana las elecciones.':'Homo Sanxe no está mal, pero la democracia puede avanzar más. ¿Te atreves con el último estadio?';
   $('bGoOn').style.display=top?'none':'';$('fC').innerHTML=para(CHRON_END[top?0:1]);
   $('fStats').innerHTML=`<div><b>${S.ok}</b><span>bulos desmontados</span></div><div><b>${S.bad}</b><span>fallos</span></div><div><b>${S.best}</b><span>mejor racha</span></div>`;show('final')}
 $('bGoOn').onclick=()=>startLevel(4);
 $('bAgain').onclick=()=>{$('song5').pause();$('song5').currentTime=0;S.ok=S.bad=S.streak=S.best=0;startLevel(0)};
-$('bShare').onclick=async()=>{const t=`En Democratic Evolution, el juego que te hará reflexionar en estas elecciones del 29 de noviembre, ${S.top?'he evolucionado de Facha-francus a Frente Amplio':'he llegado hasta Homo Sanxe'} desmontando ${S.ok} bulos. ¿Te atreves? El 29N, vota con la verdad.`;
+$('bShare').onclick=async()=>{const t=`En Democratic Evolution, el juego que te hará reflexionar en estas elecciones del 29 de noviembre, ${S.top?'he evolucionado de Facha-francus a Frente Amplio':'he llegado hasta Homo Sanxe'} desmontando ${S.ok} bulos. ¿Te atreves? El 29N, vota con la verdad. Un juego de Muchachada Arcade (muchachadarcade.es)`;
   try{await navigator.clipboard.writeText(t);$('bShare').textContent='¡Copiado!'}catch(e){$('bShare').textContent='No se pudo copiar'}setTimeout(()=>$('bShare').textContent='Copiar mensaje',2200)};
 // #nivel2 … #nivel5 en la dirección empieza directamente en ese nivel (para probar)
 $('bStart').onclick=()=>{initAudio();startMusic();S.ok=S.bad=S.streak=S.best=0;const m=location.hash.match(/^#nivel([1-5])$/);if(m)return startLevel(m[1]-1);story(()=>startLevel(0))};
@@ -610,6 +646,10 @@ const SONGS={
  noticiario:{mel:'D4 1,F#4 1,A4 1,D5 3,A4 1,D5 1|E5 1.5,D5 0.5,C#5 1,B4 1,A4 4|B4 1,G4 1,B4 1,D5 3,B4 1,D5 1|F#5 1.5,E5 0.5,D5 1,C#5 1,D5 4|A5 2,F#5 1,D5 1,A4 2,D5 2|G5 1.5,F#5 0.5,E5 1,D5 1,E5 4|D5 1,C#5 1,B4 1,A4 1,G4 1,F#4 1,E4 1,G4 1|D4 2,F#4 1,A4 1,D5 4',roots:['D3','A2','G2','D3','D3','A2','G2','D3'],qual:'MMMMMMMM'},
  // Hardstyle electoral original (compuesto para el juego): intro, subida con redoble y «drop», en la menor
  hardstyle:{mel:'A4 3,C5 1,E5 2,D5 2|C5 3,B4 1,G4 4|F4 3,A4 1,C5 2,E5 2|E5 6,r 2|A4 1,A4 1,C5 1,C5 1,E5 1,E5 1,A5 1,A5 1|G5 1,G5 1,E5 1,E5 1,D5 1,D5 1,B4 1,B4 1|F5 1,F5 1,E5 1,E5 1,C5 1,C5 1,A4 1,A4 1|B4 1,C5 1,D5 1,E5 1,G#5 4|A5 1.5,G5 0.5,E5 1,A5 1,C6 2,B5 1,G5 1|A5 1.5,G5 0.5,E5 1,D5 1,E5 4|F5 1.5,E5 0.5,C5 1,F5 1,A5 2,G5 1,E5 1|G5 1.5,F5 0.5,E5 1,D5 1,E5 2,G#5 2|A5 1.5,G5 0.5,E5 1,A5 1,C6 2,B5 1,G5 1|A5 1.5,G5 0.5,E5 1,D5 1,E5 2,C5 2|D5 1,F5 1,A5 1,D6 1,C6 2,B5 2|A5 6,r 2',roots:['A2','G2','F2','E2','A2','G2','F2','E2','A2','A2','F2','E2','A2','A2','D2','A2'],qual:'mMMMmMMMmmMMmmmm'},
+ // Cumbia original (compuesta para el juego): acordeón, güira, tumbadoras y bajo de cumbia, en la menor
+ cumbia:{mel:'E5 1,D5 1,C5 1,B4 1,A4 2,r 1,A4 1|C5 1,B4 1,A4 1,G#4 1,A4 3,r 1|E5 1,F5 1,E5 1,D5 1,C5 1,D5 1,E5 2|D5 1,C5 1,B4 1,A4 1,B4 4|E5 1,D5 1,C5 1,B4 1,A4 2,r 1,A4 1|C5 1,B4 1,A4 1,G4 1,F4 2,A4 2|G4 1,A4 1,B4 1,C5 1,D5 1,E5 1,F5 1,G#5 1|A5 4,E5 2,r 2',roots:['A2','A2','F2','E2','A2','F2','E2','A2'],qual:'mmMMmMMm'},
+ // Reggaetón original (compuesto para el juego): ritmo dembow, bajo sub y melodía pegadiza, en la menor
+ reggaeton:{mel:'E5 1,E5 1,r 1,E5 1,D5 1,C5 1,D5 2|C5 1,A4 1,r 1,A4 1,C5 2,r 2|A4 1,C5 1,r 1,C5 1,D5 1,E5 1,G5 2|G5 1,E5 1,D5 1,C5 1,D5 4|E5 1,E5 1,r 1,E5 1,D5 1,C5 1,D5 2|C5 1,A4 1,r 1,A4 1,F5 2,E5 2|E5 1,G5 1,r 1,G5 1,E5 1,D5 1,C5 1,D5 1|B4 2,C5 2,D5 4',roots:['A2','F2','C3','G2','A2','F2','C3','G2'],qual:'mMMMmMMM'},
  sintonia:{mel:'F4 1,A4 1,C5 1.5,A4 0.5,C5 1,D5 1,C5 2|A#4 1,A4 1,G4 1.5,F4 0.5,G4 4|A4 1,C5 1,F5 1.5,E5 0.5,D5 1,C5 1,D5 2|C5 6,r 2|D5 1,D5 1,C5 1,A#4 1,A4 2,G4 2|A4 1,A4 1,G4 1,F4 1,E4 2,C4 2|F4 1,G4 1,A4 1,C5 1,D5 1,E5 1,F5 2|F5 6,r 2',roots:['F2','C3','D3','C3','A#2','C3','F2','F2'],qual:'MMmMMMMM'},
  rockhimno:{mel:'E4 2,G4 1,A4 1,B4 2,B4 2|D5 1.5,B4 0.5,A4 1,G4 1,A4 4|E4 2,G4 1,A4 1,B4 2,E5 2|D5 1,D5 1,B4 1,A4 1,B4 4|G5 2,F#5 1,E5 1,D5 2,B4 2|C5 1.5,D5 0.5,E5 1,D5 1,C5 2,B4 2|A4 1,B4 1,C5 1,D5 1,E5 2,F#5 2|G5 6,r 2',roots:['E2','D3','E2','G2','G2','C3','D3','G2'],qual:'mMmMMMMM'},
  // «La Internacional» (De Geyter, 1888)
@@ -630,9 +670,11 @@ function screech(m,t,dur,vol,bend=1){const o=AC.createOscillator(),g=AC.createGa
 function acc(m,t,dur,vol){const g=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=2600;[-7,7].forEach(dt=>{const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.06)});g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+Math.max(.03,dur*.8));g.gain.exponentialRampToValueAtTime(.0001,t+dur+.05);f.connect(g);g.connect(master)}
 function prog(){return S.pieces.length?S.removed/S.pieces.length:0}
 // se acelera a medida que desmontas piezas: hasta un 40 % más rápido al final de cada nivel
-function bpm(){return ({legion:96,marchareal:112,noticiario:118,diva:114,sintonia:122,rockhimno:126,hardstyle:140}[curSong]||118)*(1+.4*prog())+S.lvl*3}
+function bpm(){return ({legion:96,marchareal:112,noticiario:118,diva:114,sintonia:122,rockhimno:126,hardstyle:140,cumbia:100,reggaeton:94}[curSong]||118)*(1+.4*prog())+S.lvl*3}
 function schedule(){if(!musicOn||!AC)return;while(nextT<AC.currentTime+.12){const SG=SONGS[curSong],sd=60/bpm()/4,s=step%SG.N,bar=s/16|0,b=s%16,root=SG.R[bar%SG.R.length],ch=[root,root+(SG.qual[bar]==='m'?3:4),root+7];
   if(curSong==='hardstyle'){hardStep(SG,s,bar,b,root,ch,sd);nextT+=sd;step++;continue}
+  if(curSong==='cumbia'){cumbiaStep(SG,s,b,root,ch,sd);nextT+=sd;step++;continue}
+  if(curSong==='reggaeton'){regStep(SG,s,bar,b,root,ch,sd);nextT+=sd;step++;continue}
   noise(nextT,b%2?.03:.05,b%4===2?.18:.09,'highpass',b%2?8000:6000);
   if(b%4===0)tone('sine',130,nextT,.24,.9,45);
   if(b===4||b===12)noise(nextT,.14,.28,'bandpass',1800);
@@ -654,6 +696,22 @@ function hardStep(SG,s,bar,b,root,ch,sd){const sec=bar<4?0:bar<8?1:2,n=SG.steps[
   if(sec===2){if(b%4===0)hsKick(nextT,.55);if(b%4===2){bass(root,nextT,sd*1.6);noise(nextT,.03,.12,'highpass',8000)}
     if(b===4||b===12)noise(nextT,.12,.22,'bandpass',1500);if(b%2)noise(nextT,.02,.05,'highpass',10000)}
   if(n){const v=[.035,.045,.06][sec];acc(n.m,nextT,sd*n.len*.9,v);if(sec===2)acc(n.m-12,nextT,sd*n.len*.9,.03)}}
+// cumbia: güira «chiki-chiki», tumbadoras, bajo 1-5, acordeón a contratiempo y melodía de acordeón
+function cumbiaStep(SG,s,b,root,ch,sd){const n=SG.steps[s];
+  noise(nextT,b%4===0?.1:.035,b%4===0?.09:.045,'highpass',b%4===0?5200:7000);                 // güira
+  if(b===0||b===8)tone('sine',95,nextT,.18,.55,50);                                              // bombo suave
+  if(b===6||b===14)tone('sine',330,nextT,.07,.22,300);if(b===7||b===15)tone('sine',220,nextT,.16,.3,190); // tumbadoras: golpe y abierto
+  if(b===0)bass(root,nextT,sd*3.5);if(b===4)bass(root+7,nextT,sd*3);if(b===8)bass(root,nextT,sd*3.5);if(b===12)bass(root+7,nextT,sd*1.6);if(b===14)bass(root+4+(SG.qual[s/16|0]==='m'?-1:0),nextT,sd*1.6);
+  if(b%4===2)ch.forEach(m=>acc(m+12,nextT,sd*.9,.022));                                          // «chucu» del acordeón
+  if(n){acc(n.m,nextT,sd*n.len*.92,.085);tone('triangle',mf(n.m+12),nextT,sd*n.len*.9,.035)}}
+// reggaetón: dembow (bombo en cada tiempo, caja 3+3+2), bajo sub, acordes de pad y pluck
+function regStep(SG,s,bar,b,root,ch,sd){const n=SG.steps[s];
+  if(b%4===0)tone('sine',120,nextT,.28,.85,42);                                                  // bombo
+  if(b===3||b===6||b===11||b===14)noise(nextT,.09,.2,'bandpass',2200);                           // caja dembow
+  if(b%2===0)noise(nextT,.025,b%4===2?.07:.04,'highpass',9000);                                  // charles
+  if(b===0)tone('sine',mf(root),nextT,sd*7,.32);if(b===8)tone('sine',mf(root),nextT,sd*5,.3);if(b===14)tone('sine',mf(root+7),nextT,sd*2,.22); // bajo sub
+  if(b===0)ch.forEach(m=>acc(m+12,nextT,sd*15,.009));                                              // pad
+  if(n){tone('triangle',mf(n.m),nextT,sd*n.len*.85,.08);tone('square',mf(n.m+12),nextT,Math.min(.12,sd*n.len*.6),.03)}}
 function siren(t,dur){const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.setValueAtTime(500,t);o.frequency.exponentialRampToValueAtTime(1600,t+dur*.5);o.frequency.exponentialRampToValueAtTime(600,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.045,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(distNode());o.start(t);o.stop(t+dur+.05)}
 function startMusic(){if(!AC||musicOn||muted)return;musicOn=true;step=0;nextT=AC.currentTime+.05;schedId=setInterval(schedule,25)}
 function stopMusic(){musicOn=false;clearInterval(schedId)}

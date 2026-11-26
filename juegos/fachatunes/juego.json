@@ -1,0 +1,15 @@
+{
+  "nombre": "FachaTunes",
+  "tipo": "estatico",
+  "publicar": true,
+  "assets": [
+    "ph0.webp",
+    "ph0m.png",
+    "ph1.webp",
+    "ph1m.png",
+    "ph2.webp",
+    "ph2m.png",
+    "ph3.webp",
+    "ph3m.png"
+  ]
+}
