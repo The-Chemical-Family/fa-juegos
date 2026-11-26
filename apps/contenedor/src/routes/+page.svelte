@@ -79,6 +79,9 @@
 		--negro: #10090c;
 		--naranja: #f03c01;
 		--verde: #cce876;
+		/* Amarillo de las pestañas de quiz-bienestar (allí se llama --lima). */
+		--amarillo: #d2ff42;
+		--amarillo-claro: #e4ff7a;
 		--blanco: #fff;
 		--display: 'Impact Web', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 	}
@@ -293,6 +296,63 @@
 		outline: 3px solid var(--verde);
 		outline-offset: 6px;
 		border-radius: 1rem;
+	}
+
+	/* En pantallas pequeñas el nombre dentro del lucero no se lee: cada juego
+	   pasa a ser una pestaña amarilla con el texto en rojo, como en
+	   quiz-bienestar. Las columnas salen solas según el ancho disponible. */
+	@media (max-width: 40rem), (max-height: 30rem) {
+		.juegos {
+			grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+			grid-auto-rows: auto;
+			align-content: safe center;
+			gap: clamp(0.3rem, 1.2vh, 0.8rem);
+			overflow-y: auto;
+		}
+
+		.juego {
+			container-type: normal;
+			padding: 0.3em 0.6em 0.35em;
+			background: var(--amarillo);
+			font-size: clamp(1rem, min(5.2vw, 3.4vh), 1.5rem);
+			transition: background 180ms ease;
+		}
+
+		.juego__estrella {
+			display: none;
+		}
+
+		/* Móviles verticales bajos: en una sola columna no caben todos. */
+		@media (max-height: 44rem) and (max-aspect-ratio: 1 / 1) {
+			.juegos {
+				grid-template-columns: repeat(auto-fill, minmax(min(100%, 8rem), 1fr));
+			}
+		}
+
+		.juego__nombre {
+			display: block;
+			width: auto;
+			color: var(--naranja);
+			font-size: inherit;
+			line-height: 1;
+			hyphens: manual;
+		}
+
+		.juego:hover {
+			transform: none;
+		}
+
+		/* Solo con ratón: en táctil el :hover se queda pegado tras tocar. */
+		@media (hover: hover) {
+			.juego:hover {
+				background: var(--amarillo-claro);
+			}
+		}
+
+		.juego:focus-visible {
+			outline: 3px solid var(--blanco);
+			outline-offset: 3px;
+		}
 	}
 
 	.vacio {
