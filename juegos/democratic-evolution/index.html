@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Democratic Evolution</title>
+<meta name="description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta property="og:title" content="Democratic Evolution">
+<meta property="og:description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://muchachadarcade.es/democratic-evolution/">
+<meta property="og:image" content="https://muchachadarcade.es/og/democratic-evolution.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Democratic Evolution">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Democratic Evolution">
+<meta name="twitter:description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta name="twitter:image" content="https://muchachadarcade.es/og/democratic-evolution.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@0,500;0,700;0,800;1,700&family=Anton&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+/* VOICE: museo de historia natural con guasa: la evolución se gana desmontando bulos
+   IDEA: cada especie llega cargada de lastre; cada bulo desmontado le quita una pieza
+   PICTURE: el ejemplar del nivel en una vitrina, con su ficha científica
+   COLOUR and TYPE: noche violeta, naranja y lima; Anton para rótulos, Archivo para leer
+   LAYOUT: escenario vertical 9:16, vitrina arriba, pregunta y mandos abajo */
+:root{--ex:0px;--or:#EB4521;--lime:#DDF542;--night:#170F2E;--ink:#170F2E;--lv:#8a7b5a}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:#0d0820;color:#fff;font:16px/1.4 "Archivo",Arial,sans-serif;overflow:hidden}
+#wrap{position:fixed;inset:0;display:grid;place-items:center;background:#0d0820}
+#stage{position:absolute;left:50%;top:50%;width:720px;height:1280px;transform-origin:center;overflow:hidden;overflow:clip;
+  background:radial-gradient(circle at 50% 28%,#3a1d7a 0,#170F2E 62%,#0e0a1f 100%)}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;overflow:clip}
+.scr.on{display:flex;animation:scrIn .4s cubic-bezier(.2,.9,.3,1)}
+@keyframes scrIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
+.btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:96px;border:0;border-radius:26px;
+  font:400 40px/1 Anton,"Archivo Black",sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--ink);background:var(--lime);box-shadow:0 9px 0 #8aa01c;text-decoration:none}
+.btn:active{transform:translateY(6px);box-shadow:0 3px 0 #8aa01c}
+.btn.alt{background:#fff;box-shadow:0 9px 0 #b9a9d6}
+.btn.or{background:var(--or);color:#fff;box-shadow:0 9px 0 #9c2a10}
+#mute{position:absolute;right:22px;top:calc(22px + var(--sat,0px));z-index:20;width:64px;height:64px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:30px}
+
+/* ---------- PORTADA ---------- */
+#home{padding:calc(28px + var(--sat,0px)) 34px calc(44px + var(--sab,0px));align-items:center;text-align:center;background:linear-gradient(#55697a 0,#748791 calc(560px + var(--ex)*.5),#748791 calc(620px + var(--ex)*.5),#80694f calc(980px + var(--ex)*.5),#6f5a42 100%)}
+#home h1{margin:0;font:400 128px/.88 Anton,"Archivo Black",sans-serif;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;color:#fff;text-shadow:0 6px 0 var(--ink),0 14px 30px rgba(0,0,0,.35)}
+#home h1 span{display:block;color:var(--lime)}
+#home .sub1{margin:18px 0 0;padding:10px 24px;border-radius:22px;max-width:620px;text-wrap:balance;background:var(--ink);font:400 30px/1.1 Anton,sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:#fff}
+#home .lema{margin:18px 0 0;font:800 26px/1.3 Archivo,sans-serif;color:#fff;max-width:600px;text-wrap:balance;text-shadow:0 2px 6px rgba(23,15,46,.6)}
+#scene{position:absolute;left:-20px;top:calc(522px + var(--ex)*.5);width:760px;height:424px;pointer-events:none}
+#scene::before{content:'';position:absolute;inset:0;background:url(/democratic-evolution/ev_base.webp) center/100% 100%;-webkit-mask-image:linear-gradient(transparent 0,#000 30%);mask-image:linear-gradient(transparent 0,#000 30%)}
+#scene img{position:absolute;transform-origin:50% 100%;animation:walk var(--d,1s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+@keyframes walk{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+#scene img.ape{animation-name:waddle}
+@keyframes waddle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.5px)}}
+#home .laurels{position:relative;display:flex;justify-content:center;gap:0;margin:0 0 30px;width:100%}
+.laurel{position:relative;width:226px;height:140px;flex:none}
+.laurel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.laurel div{position:absolute;inset:22px 62px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff8e6;text-shadow:0 2px 4px rgba(23,15,46,.55)}
+.laurel b{font:400 19px/1.02 Anton,sans-serif;letter-spacing:.5px;text-transform:uppercase}
+.laurel small{margin-top:5px;font:700 13px/1.15 Archivo,sans-serif;letter-spacing:.6px;text-transform:uppercase;opacity:.9}
+#home .banda{position:absolute;left:-60px;right:-60px;top:calc(508px + var(--ex)*.5);z-index:3;transform:rotate(-7deg);padding:9px 80px;background:var(--or);color:#fff;font:400 25px/1.15 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;text-align:center;box-shadow:0 10px 24px rgba(0,0,0,.35);animation:bandaIn 1s cubic-bezier(.2,1.4,.4,1) .4s both}
+#home .banda b{font-weight:400;color:var(--lime)}
+#slogan{display:inline-block}#slogan.flip{animation:sFlip .7s ease}
+@keyframes sFlip{0%{transform:scaleY(1)}45%{transform:scaleY(0)}55%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+@keyframes bandaIn{from{transform:rotate(-7deg) translateX(-120%)}to{transform:rotate(-7deg)}}
+#home .criticas{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1.35fr .8fr;gap:10px;width:100%;margin:0 0 14px;padding-right:62px;padding-left:var(--fa,0px);align-items:start}
+#home .criticas div{display:flex;flex-direction:column;align-items:center;text-align:center}
+#home .criticas q{font:400 22px/1.08 Anton,sans-serif;letter-spacing:.3px;text-transform:uppercase;color:#fff;text-shadow:0 2px 0 var(--ink),0 0 12px rgba(23,15,46,.5);text-wrap:balance}
+#home .criticas q::before{content:'«'}#home .criticas q::after{content:'»'}
+#home .criticas cite{margin-top:5px;font:italic 700 17px Archivo,sans-serif;color:var(--lime);text-shadow:0 1px 3px rgba(23,15,46,.8)}
+#home .criticas cite::before{content:'— '}
+#home .spacer{flex:1}
+#home .how{position:relative;margin:0 0 22px;padding:20px 24px;border-radius:24px;background:rgba(23,15,46,.82);font:700 25px/1.35 Archivo,sans-serif;color:#eadff7;text-align:center;text-wrap:balance}
+#home .how b{color:var(--lime)}
+#home .btn{position:relative}
+#bStart{animation:llama 1.8s ease-in-out infinite}
+@keyframes llama{0%,100%{transform:translateY(0) scale(1) rotate(0)}12%{transform:translateY(-8px) scale(1.04) rotate(-1.2deg)}24%{transform:translateY(0) scale(1) rotate(1deg)}32%{transform:translateY(-4px) scale(1.02) rotate(0)}44%{transform:none}}
+#bStart:active{animation:none}
+#home .fine{position:relative;margin-top:18px;font:700 15px Archivo,sans-serif;color:rgba(255,255,255,.7);letter-spacing:1px;text-transform:uppercase}
+
+/* ---------- JUEGO ---------- */
+#game{padding:calc(24px + var(--sat,0px)) 30px calc(30px + var(--sab,0px))}
+.top{display:flex;align-items:center;gap:14px;padding-right:76px;padding-left:var(--fa,0px)}
+.lvpill{padding:10px 18px;border-radius:999px;background:var(--lv);font:400 26px/1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.latin{font:italic 700 25px Archivo,sans-serif;color:#cfc3ea;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ladder{display:flex;gap:8px;margin:18px 0 0}
+.ladder span{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.14)}
+.ladder span.done{background:var(--lime)}.ladder span.cur{background:var(--lv);box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+#vitrina{position:relative;margin:18px auto 0;width:472px;height:calc(586px + var(--ex)*.4);border-radius:40px;overflow:hidden;background:#7d8ea0;
+  box-shadow:0 0 0 8px var(--lv),0 26px 60px rgba(0,0,0,.55)}
+#vitrina img,#vitrina canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;transform-origin:50% 90%;animation:breathe 3.2s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.018) translateY(-4px)}}
+#vitrina .out{animation:imgOut .7s ease-in forwards}
+@keyframes imgOut{to{opacity:0;filter:blur(6px) brightness(1.6)}}
+#vitrina.ok{animation:okFlash .6s}#vitrina.bad{animation:badShake .5s}
+@keyframes okFlash{0%{box-shadow:0 0 0 8px #22c55e,0 0 80px #22c55e}100%{box-shadow:0 0 0 8px var(--lv),0 26px 60px rgba(0,0,0,.55)}}
+@keyframes badShake{0%,100%{transform:none}20%{transform:translateX(-18px) rotate(-1deg)}40%{transform:translateX(16px) rotate(1deg)}60%{transform:translateX(-10px)}80%{transform:translateX(8px)}}
+.ficha{position:absolute;left:18px;bottom:18px;padding:8px 14px;border-radius:12px;background:rgba(23,15,46,.82);font:700 21px/1.2 Archivo,sans-serif;color:#eadff7;max-width:74%}
+.ficha b{display:block;font:400 26px/1.1 Anton,sans-serif;letter-spacing:.5px;color:#fff;text-transform:uppercase}
+.soon{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 40%,#4a3a7a,#1c1338);font:400 230px/1 Anton,sans-serif;color:rgba(255,255,255,.12)}
+.soon small{position:absolute;bottom:70px;left:0;right:0;font:800 22px Archivo,sans-serif;color:#cfc3ea;letter-spacing:1px}
+#moscas{position:absolute;inset:0;z-index:7;pointer-events:none}
+#fly{position:absolute;left:50%;top:330px;z-index:9;pointer-events:none;padding:14px 26px;border-radius:999px;background:#fff;color:var(--ink);font:400 38px Anton,sans-serif;letter-spacing:.5px;white-space:nowrap;text-transform:uppercase;opacity:0;transform:translate(-50%,0)}
+#fly.go{animation:flyAway 1.5s cubic-bezier(.3,.6,.4,1) forwards}
+@keyframes flyAway{0%{opacity:0;transform:translate(-50%,40px) scale(.6) rotate(0)}15%{opacity:1;transform:translate(-50%,0) scale(1.08) rotate(-3deg)}55%{opacity:1;transform:translate(-50%,-30px) scale(1) rotate(-4deg)}100%{opacity:0;transform:translate(60%,-260px) scale(.7) rotate(24deg)}}
+.props{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:14px 0 0;min-height:40px}
+.props span{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.1);font:800 21px Archivo,sans-serif;color:#fff}
+.props span.gone{text-decoration:line-through;opacity:.35}
+.props span.now{background:var(--lime);color:var(--ink)}
+#qbox{margin:14px 0 0;flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px;border-radius:30px;background:#FFF8EE;color:var(--ink);position:relative}
+#qbox .qk{font:400 23px Anton,sans-serif;letter-spacing:3px;color:var(--or);text-transform:uppercase}
+#qtext{margin:8px 0 0;font:800 33px/1.24 Archivo,sans-serif;text-wrap:pretty}
+#tbar{position:absolute;left:28px;right:28px;bottom:16px;height:8px;border-radius:4px;background:#eadfcd;overflow:hidden}
+#tbar i{display:block;height:100%;width:100%;background:var(--or);transform-origin:left}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0 0}
+.ans .btn{min-height:110px;font-size:46px}
+#bTrue{background:#22c55e;color:#fff;box-shadow:0 9px 0 #15803d}#bFake{background:#ef4444;color:#fff;box-shadow:0 9px 0 #991b1b}
+#fb{position:absolute;left:0;right:0;bottom:0;z-index:8;padding:34px 34px calc(40px + var(--sab,0px));border-radius:40px 40px 0 0;background:rgba(28,20,52,.96);backdrop-filter:blur(20px);box-shadow:0 -14px 40px rgba(0,0,0,.5);transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.3,1)}
+#fb.on{transform:none}
+#fbV{font:400 58px/1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase}
+#fbA{margin:10px 0 0;display:inline-block;padding:6px 16px;border-radius:999px;font:400 26px Anton,sans-serif;letter-spacing:1px}
+#fbE{margin:16px 0 0;font:700 29px/1.32 Archivo,sans-serif;color:#eadff7}
+#fbS{display:inline-block;margin:12px 0 0;font:800 24px Archivo,sans-serif;color:var(--lime)}
+#fb .btn{margin-top:26px}
+
+/* ---------- FIN DE NIVEL / FINAL ---------- */
+#lvup,#final{padding:calc(60px + var(--sat,0px)) 44px calc(50px + var(--sab,0px));align-items:center;text-align:center}
+.big{font:400 92px/.9 Anton,sans-serif;text-transform:uppercase}
+.big b{font-weight:400;color:var(--lime)}
+.sub{margin:16px 0 0;font:700 28px/1.3 Archivo,sans-serif;color:#eadff7;text-wrap:balance}
+.port{width:330px;height:410px;margin:26px 0 0;border-radius:36px;overflow:hidden;box-shadow:0 0 0 8px var(--lime),0 26px 60px rgba(0,0,0,.55);position:relative;background:#7d8ea0}
+.port img,.port canvas{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.arrow{margin:18px 0 0;font:400 30px Anton,sans-serif;letter-spacing:2px;color:#b9b0d6;text-transform:uppercase}
+.arrow b{display:block;font-weight:400;font-size:62px;color:#fff;letter-spacing:1px}
+.arrow i{display:block;font:italic 700 24px Archivo,sans-serif;color:#cfc3ea;letter-spacing:0;text-transform:none}
+.w{display:inline-block;white-space:nowrap}
+.lt{display:inline-block;animation:ltIn .7s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i)*45ms)}
+@keyframes ltIn{from{opacity:0;transform:translateY(-70px) rotate(-12deg) scale(.6)}to{opacity:1;transform:none}}
+.big b{display:inline-block;animation:sway 2.8s ease-in-out 1.4s infinite}
+@keyframes sway{0%,100%{transform:rotate(0) scale(1)}25%{transform:rotate(-1.5deg) scale(1.03)}75%{transform:rotate(1.5deg) scale(1.03)}}
+.pw{position:relative}
+.pw .port{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 8px var(--lime),0 0 46px rgba(221,245,66,.55),0 26px 60px rgba(0,0,0,.55)}}
+#vitrina.corrupt canvas,.port.corrupt canvas{filter:grayscale(.55) sepia(.6) hue-rotate(35deg) contrast(1.15) brightness(.9)}
+.arrow{text-wrap:balance}
+#lvup #bEvo,#final .grid{margin-top:auto}
+.grid{display:grid;gap:18px;width:100%}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;margin:34px 0 0}
+.stats div{padding:20px 8px;border-radius:22px;background:rgba(255,255,255,.08)}
+.stats b{display:block;font:400 56px/1 Anton,sans-serif}
+.stats span{font:700 21px Archivo,sans-serif;color:#cfc3ea}
+
+/* ---------- CRÓNICA: papiros cavernícolas que cuentan la historia ---------- */
+#story{padding:calc(70px + var(--sat,0px)) 40px calc(50px + var(--sab,0px));align-items:center;text-align:center;background:radial-gradient(ellipse at 50% 30%,#4a2c17 0,#22140b 55%,#0e0805 100%)}
+#story::before,#story::after{content:'';position:absolute;top:140px;width:130px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,170,60,.55),rgba(255,120,30,.12) 55%,transparent 70%);animation:torch 1.6s ease-in-out infinite alternate;pointer-events:none}
+#story::before{left:-30px}#story::after{right:-30px;animation-delay:-.7s}
+@keyframes torch{0%{opacity:.65;transform:scale(1)}40%{opacity:.9;transform:scale(1.06)}100%{opacity:.7;transform:scale(.97)}}
+.papiro{position:relative;width:100%;padding:50px 50px 44px;color:#3b2412;font:400 36px/1.4 "IM Fell English",Georgia,serif;text-align:left;
+  background:radial-gradient(ellipse at 20% 15%,rgba(255,255,255,.35),transparent 45%),radial-gradient(ellipse at 85% 90%,rgba(120,70,20,.28),transparent 50%),linear-gradient(170deg,#f1dfb4,#e3c78f 55%,#d6b277);
+  box-shadow:0 22px 50px rgba(0,0,0,.6),inset 0 0 50px rgba(110,60,20,.35);
+  clip-path:polygon(0 3%,4% 0,12% 2%,22% 0,35% 1.5%,48% 0,60% 2%,73% 0,86% 1.6%,96% 0,100% 3%,99% 20%,100% 40%,98.6% 60%,100% 80%,99% 97%,95% 100%,82% 98.5%,68% 100%,55% 98%,40% 100%,27% 98.4%,14% 100%,3% 98.5%,0 96%,1.2% 75%,0 55%,1.4% 35%,0 15%)}
+.papiro p{margin:0 0 18px;display:none}
+.papiro p.on{display:block;animation:pIn .8s ease-out}
+@keyframes pIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.papiro p::first-letter{float:left;font:400 92px/.8 "IM Fell English SC",Georgia,serif;color:#8c1d0f;margin:6px 10px 0 0}
+.papiro b{font-weight:400;color:#8c1d0f}
+.papiro i{color:#5e3a19}
+#story h2{margin:0 0 34px;text-wrap:balance;font:400 44px/1.08 "IM Fell English SC",Georgia,serif;color:#f1dfb4;letter-spacing:2px;text-shadow:0 3px 0 #000}
+#story .btn{margin-top:auto}
+#story .skip{margin-top:16px;border:0;background:none;color:#c9a46a;font:italic 400 24px "IM Fell English",Georgia,serif;min-height:44px}
+.rupestre{position:relative;width:100%;height:250px;margin:30px 0 0;display:flex;align-items:flex-end;justify-content:center;gap:6px}
+.rupestre img{height:100%;width:auto;max-width:19%;object-fit:contain;object-position:bottom;filter:sepia(1) saturate(1.6) hue-rotate(-12deg) brightness(.8) contrast(1.2);opacity:.12;transition:opacity .8s,transform .8s;transform:translateY(8px)}
+.rupestre img.on{opacity:.9;transform:none}
+.dots{display:flex;gap:10px;justify-content:center;margin:22px 0 0}.dots i{width:12px;height:12px;border-radius:50%;background:rgba(241,223,180,.25)}.dots i.on{background:#f1dfb4}
+.papiro.mini{padding:24px 30px 20px;font-size:26px;line-height:1.32;margin:22px 0 0}
+.papiro.mini p{display:block;margin:0}.papiro.mini p:first-child::first-letter{font-size:56px;margin:4px 8px 0 0}
+#rot{display:none;position:fixed;inset:0;z-index:99;background:#170F2E;color:#fff;place-items:center;text-align:center;padding:24px;font:800 20px/1.35 Archivo,sans-serif}
+#rot b{display:block;font:400 34px/1.1 Anton,sans-serif;text-transform:uppercase;color:#DDF542;margin-bottom:8px}
+@media (orientation:landscape) and (max-height:500px){#rot{display:grid}}
+#probe{position:fixed;top:0;left:0;width:0;height:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);visibility:hidden;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<audio id="song5" src="/democratic-evolution/fa_cancion.mp3" loop preload="auto"></audio>
+<div id="rot"><div><b>Gira el móvil</b>Democratic Evolution se juega en vertical.</div></div><div id="probe"></div>
+<div id="wrap"><div id="stage">
+ <button id="mute" aria-label="Silenciar música">🔊</button>
+
+ <section id="home" class="scr on">
+  <div id="scene" aria-hidden="true"></div>
+  <div class="criticas">
+   <div><q>Un juego que cambió las reglas</q><cite>Tu cuñado</cite></div>
+   <div><q>Alfabetización democrática en jornada de reflexión</q><cite>La profe de Historia</cite></div>
+   <div><q>Brillante</q><cite>Tu abuela</cite></div>
+  </div>
+  <h1>Democratic<span>Evolution</span></h1>
+  <div class="sub1">El juego que te hará reflexionar en estas elecciones del 29 de noviembre</div>
+  <div class="banda"><span id="slogan">La evolución no va de monos a humanos. <b>Va de bulos a criterio.</b></span></div>
+  <div class="spacer"></div>
+  <div class="laurels" id="laurels" aria-label="Premios"></div>
+  <button class="btn" id="bStart">Empezar a evolucionar</button>
+ </section>
+
+
+ <section id="story" class="scr">
+  <h2>Crónica de la Evolución Democrática española</h2>
+  <div class="papiro" id="stP"></div>
+  <div class="dots" id="stD"></div>
+  <div class="rupestre" id="stR" aria-hidden="true"></div>
+  <button class="btn" id="stNext">Seguir leyendo</button>
+  <button class="skip" id="stSkip">Saltarse la crónica</button>
+ </section>
+ <section id="game" class="scr">
+  <div class="top"><div class="lvpill" id="gLv"></div><div class="latin" id="gLatin"></div></div>
+  <div class="ladder" id="gLadder"></div>
+  <div id="vitrina"></div>
+  <div class="props" id="gProps"></div>
+  <div id="qbox"><div class="qk" id="qk">¿Verdad o bulo?</div><p id="qtext"></p><div id="tbar"><i></i></div></div>
+  <div class="ans"><button class="btn" id="bTrue">Verdad</button><button class="btn" id="bFake">Bulo</button></div>
+  <div id="fly"></div>
+  <canvas id="moscas" width="720" height="1280" aria-hidden="true"></canvas>
+  <div id="fb" role="dialog" aria-live="polite"><div id="fbV"></div><div id="fbA"></div><p id="fbE"></p><a id="fbS" target="_blank" rel="noopener">Ver la fuente ↗</a><button class="btn" id="bNext">Seguir</button></div>
+ </section>
+
+ <section id="lvup" class="scr">
+  <div class="big" id="luT"></div>
+  <div class="pw"><div class="port" id="luP"></div></div>
+  <div class="papiro mini" id="luC"></div>
+  <div class="arrow" id="luN"></div>
+  <button class="btn" id="bEvo">Evolucionar</button>
+  <button class="btn alt" id="bStay" style="display:none;margin-top:18px">Quedarme en el presente</button>
+ </section>
+
+ <section id="final" class="scr">
+  <div class="big" id="fT">Ya eres<br><b>Homo Democraticus</b></div>
+  <p class="sub" id="fSub"></p>
+  <div class="papiro mini" id="fC"></div>
+  <div class="stats" id="fStats"></div>
+  <div class="grid">
+   <a class="btn or" href="https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf" target="_blank" rel="noopener">Quiero saber más</a>
+   <button class="btn" id="bGoOn" style="display:none">Seguir evolucionando</button>
+   <button class="btn alt" id="bShare">Copiar mensaje</button>
+   <button class="btn" id="bAgain">↻ Volver a jugar</button>
+  </div>
+ </section>
+</div></div>
+
+<script>
+{
+// Las imágenes se sirven desde /democratic-evolution/; en el código se nombran solo por fichero.
+const DIR='/democratic-evolution/';
+const evImgs=el=>el.querySelectorAll('img[data-ev]').forEach(im=>{im.src=DIR+'ev'+im.dataset.ev+'.webp'});
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+// ---------- PREGUNTAS ----------
+// a: true = VERDAD, false = BULO
+const Q1=[ // Facha-francus · mitos del franquismo
+ {q:'Franco creó las pensiones de jubilación.',a:false,e:'El Retiro Obrero obligatorio llegó en 1919, con Alfonso XIII, y el Instituto Nacional de Previsión es de 1908.',src:'https://maldita.es/malditobulo/20220719/logros-franco-dictadura-seguridad-social-vacaciones-pagadas-pantanos-vpo/'},
+ {q:'Las vacaciones pagadas las inventó Franco.',a:false,e:'Los funcionarios ya las tenían en 1918, y la Ley de Contrato de Trabajo de 1931, de la República, las extendió.',src:'https://maldita.es/malditobulo/20201120/logros-franco-dictadura-seguridad-social-vacaciones-pagadas-pantanos-vpo/'},
+ {q:'Los pantanos fueron una idea original de Franco.',a:false,e:'Ya había un plan de pantanos en 1902, y el Plan Nacional de Obras Hidráulicas de 1933, de la República, es su precedente directo.',src:'https://www.publico.es/opinion/columnas/verdad-sobre-embalses-franco.html'},
+ {q:'Franco llegó al poder ganando unas elecciones.',a:false,e:'En febrero de 1936 ganó el Frente Popular. Franco se sumó al golpe de Estado de julio de 1936 y llegó al poder tras una guerra.'},
+ {q:'Las españolas votaron por primera vez gracias a Franco.',a:false,e:'La Constitución de 1931 reconoció el voto femenino, que defendió Clara Campoamor. Las mujeres votaron en 1933.'},
+ {q:'Con Franco había libertad de prensa.',a:false,e:'La Ley de Prensa de 1938 impuso la censura previa. La de 1966 la quitó, pero siguieron los secuestros de publicaciones y las multas.'},
+ {q:'Con Franco no había paro: nadie tuvo que emigrar para trabajar.',a:false,e:'En los años 60, cientos de miles de españoles emigraron a Alemania, Francia o Suiza para encontrar trabajo.'},
+ {q:'El Valle de Cuelgamuros lo levantaron solo obreros voluntarios y bien pagados.',a:false,e:'Trabajaron también presos políticos que redimían pena con trabajo forzado.'},
+ {q:'Hasta 1975, una mujer casada necesitaba el permiso de su marido para abrir una cuenta en el banco.',a:true,e:'Era la «licencia marital». La suprimió la Ley 14/1975, de 2 de mayo.',src:'https://clientebancario.bde.es/pcb/es/blog/dia-internacional-de-la-mujer--el-largo-camino-tambien-hacia-la-igualdad-financiera.html'},
+ {q:'Durante el franquismo el divorcio estaba prohibido.',a:true,e:'El régimen anuló la ley de divorcio de la República. No volvió hasta 1981.'},
+ {q:'En los cines, el NO-DO se proyectaba de forma obligatoria antes de la película.',a:true,e:'Desde 1943 y durante más de tres décadas, el noticiario del régimen era de proyección obligatoria.'},
+ {q:'Franco envió la División Azul a combatir junto al ejército de Hitler.',a:true,e:'Desde 1941, miles de españoles lucharon en el frente ruso al lado de la Alemania nazi.'},
+ {q:'La cartilla de racionamiento duró en España hasta 1952.',a:true,e:'Trece años de posguerra con hambre y estraperlo.'},
+ {q:'En 1954 el régimen reformó la Ley de Vagos y Maleantes para perseguir a los homosexuales.',a:true,e:'Y en 1970 llegó la Ley de Peligrosidad Social, que siguió persiguiéndolos.'},
+ {q:'En 1969 Franco eligió a Juan Carlos de Borbón como sucesor.',a:true,e:'Lo nombró «sucesor a título de Rey».'},
+ {q:'Franco murió el 20 de noviembre de 1975: en 2025 se cumplieron 50 años.',a:true,e:'Medio siglo después, algunos todavía dicen que «con Franco se vivía mejor».'}];
+// Cada estadio tiene sus propias verdades y bulos, pensados para que evolucione: ninguno deja bien al Fachalecus ni al Peperus,
+// y en el estadio Sanxe hay alguno que incomoda a los socialistas.
+const Q2=[ // Fachalecus · los bulos y las propuestas de la ultraderecha
+ {q:'Era cierto el cartel de Vox de 2021: cada menor migrante cobra 4.700 € al mes en Madrid.',a:false,e:'La propia Comunidad de Madrid lo desmintió. No existe ninguna ayuda de 4.700 euros: es el coste de la plaza en un centro.'},
+ {q:'El «síndrome post aborto» es un trastorno reconocido por la ciencia, como sostiene Vox.',a:false,e:'No tiene aval científico. Hasta Almeida lo admitió tras aprobar en Madrid la propuesta de Vox.'},
+ {q:'Los inmigrantes ilegales reciben más ayudas que los ciudadanos españoles.',a:false,d:1,e:'Las ayudas se dan por necesidad, no por nacionalidad, y una persona en situación irregular no puede cobrar el subsidio por desempleo.',src:'https://maldita.es/malditobulo/20190306/un-rastreo-de-las-ayudas-sociales-desmonta-el-discurso-de-que-los-inmigrantes-tienen-mas-facilidades-de-acceso-que-los-espanoles'},
+ {q:'Los inmigrantes ilegales cobran 1.000 € al mes nada más llegar a España.',a:false,d:1,e:'No reciben ayuda económica: solo cobertura de necesidades básicas como alojamiento, comida y atención sanitaria.',src:'https://maldita.es/malditobulo/20240608/inmigrantes-ilegales-ayudas-1000-euros/'},
+ {q:'Vox se financió en sus inicios con dinero de simpatizantes de un grupo del exilio iraní.',a:true,d:3,e:'Unos 800.000 € para las europeas de 2014, del entorno del CNRI. Abascal y Espinosa de los Monteros cobraron sueldos de esa caja.',src:'https://www.noticiasdenavarra.com/politica/2020/01/29/espinosa-admite-cobro-brevemente-exilio-2316515.html'},
+ {q:'Abascal es un patriota y por eso hizo la mili.',a:false,d:1,e:'Encadenó prórrogas por estudios hasta que la mili desapareció en 2001. Patria sí, cuartel no.'},
+ {q:'La Tierra es plana y la Antártida es un muro de hielo.',a:false,d:1,e:'En la Antártida hay sol de medianoche 24 horas seguidas: imposible en un disco plano.',src:'https://maldita.es/malditaciencia/20241223/terraplanistas-experimento-antartida/'},
+ {q:'Las estelas de los aviones son «chemtrails» para fumigarnos.',a:false,d:1,e:'Son contrails: vapor de agua que se congela a 10 km de altura.',src:'https://maldita.es/malditobulo/20250924/la-teoria-conspirativa-de-los-chemtrails-preguntas-y-respuestas/'},
+ {q:'Las vacunas de la COVID llevan grafeno y te vuelven magnético.',a:false,e:'Ninguna lleva grafeno. Las cucharas se pegan por el sudor y la grasa de la piel.',src:'https://maldita.es/malditobulo/20210602/video-luis-marcelo-martinez-grafeno-vacunas-magnetismo-iman/'},
+ {q:'Abascal llegó a pedir en 2025 que se hundiera el barco de Open Arms.',a:true,e:'Una ONG que ha salvado a más de 70.000 personas en el Mediterráneo.'},
+ {q:'Abascal llamó «invasión» a la llegada de migrantes a El Hierro en plena campaña.',a:true,e:'Palabras que señalan a personas que huyen jugándose la vida en el mar.'},
+ {q:'Vox propone deducciones por alquiler solo para inquilinos españoles.',a:true,e:'Está en su programa, dentro de lo que llama «prioridad nacional».'},
+ {q:'Un argumentario de Vox llama «tomadura de pelo» al cambio climático causado por el ser humano.',a:true,d:3,e:'Más del 99 % de los estudios científicos atribuyen el calentamiento a la acción humana.'},
+ {q:'El programa de Vox dice que quien entre de forma irregular no podrá regularizarse nunca.',a:true,d:3,e:'Y suprimir el arraigo: miles de personas que ya trabajan aquí quedarían en el limbo.'},
+ {q:'Vox propone un plan de «remigración» para que extranjeros vuelvan a sus países.',a:true,e:'Así lo llama en su programa, junto a deportaciones y retirada de ayudas.'},
+ {q:'Abascal cobró 82.491 € de dinero público en 2013 en una fundación de la Comunidad de Madrid.',a:true,e:'Más que el presidente del Gobierno de entonces, por cargos de libre designación.',src:'https://maldita.es/malditodato/20200218/abascal-cobraba-mas-que-presidente-gobierno-por-cargos-a-dedo-comunidad-madrid/'},
+ {q:'Según la ciencia, el calentamiento global actual lo causa sobre todo la actividad humana.',a:true,e:'Es la conclusión del IPCC, el panel de científicos de la ONU.',src:'https://maldita.es/clima/'}];
+const Q3=[ // Peperus · los bulos y las meteduras de pata de la derecha de siempre
+ {q:'Regularizar a personas migrantes sirve para inflar el censo de las generales, como insinúa Feijóo.',a:false,e:'Para votar en las generales hace falta la nacionalidad española. Un permiso de residencia no da voto.'},
+ {q:'Las personas migrantes en situación irregular pueden cobrar el Ingreso Mínimo Vital, como ha dicho Feijóo.',a:false,d:3,e:'El IMV exige al menos un año de residencia legal y efectiva en España.'},
+ {q:'El PP propone reforzar la Ley de Vivienda y ampliar las zonas tensionadas.',a:false,e:'Propone derogarla y eliminar las zonas tensionadas.'},
+ {q:'Si te okupan la casa mientras haces la compra, pasadas 48 horas la policía no puede echarlos.',a:false,d:1,e:'Entrar en tu vivienda habitual es allanamiento: la policía puede desalojar al momento. Lo de las 48 horas es un mito.'},
+ {q:'Los inmigrantes cobran 1.200 € al mes solo por llegar a España.',a:false,d:1,e:'No existe esa paga. El Ingreso Mínimo Vital exige residencia legal y vulnerabilidad, como a cualquiera.'},
+ {q:'El novio de Ayuso no sabía que tenía que pagar impuestos.',a:false,d:1,e:'La Fiscalía le acusa de defraudar 350.951 € con facturas falsas, y su propio abogado ofreció reconocer dos delitos fiscales. Irá a juicio; hasta la sentencia, rige la presunción de inocencia.',src:'https://www.diaridetarragona.com/espana/236290/justicia-confirma-juicio-novio-ayuso-fraude-fiscal.html'},
+ {q:'Durante la burbuja inmobiliaria, como se construyeron muchísimas viviendas, bajaron los precios.',a:false,d:3,e:'Se construían más de 400.000 viviendas al año y aun así el precio del metro cuadrado se duplicó entre 2000 y 2007. Construir sin más no abarata: hace falta vivienda pública y frenar la especulación.',src:'https://www.consumer.es/?p=209615'},
+ {q:'El Supremo confirmó que el PP se lucró de la trama de corrupción Gürtel.',a:true,d:3,e:'En 2020 lo confirmó como partícipe a título lucrativo. Aquella sentencia de 2018 precipitó la moción de censura contra Rajoy.',src:'https://www.publico.es/politica/supremo-confirma-condena-al-pp-guertel.html'},
+ {q:'Ayuso no pensaba en Sánchez cuando dijo «me gusta la fruta».',a:false,d:1,e:'Su propio equipo admitió que fue un insulto a Sánchez «dicho para sí misma».',src:'https://www.noticiasdenavarra.com/politica/2023/11/15/equipo-ayuso-admite-presidenta-madrilena-7521494.amp.html'},
+ {q:'La Agenda 2030 prohíbe tener coche y te encierra en «ciudades de 15 minutos».',a:false,e:'Es una declaración de la ONU sin fuerza de ley. La ciudad de 15 minutos busca tener el pan cerca, no encerrarte.'},
+ {q:'El PP propone derogar la Ley de Vivienda y eliminar las zonas tensionadas.',a:true,e:'Está en su programa. Con el alquiler en máximos.'},
+ {q:'Feijóo dijo que Orwell escribió «1984» «allá por el año 84».',a:true,e:'Fue en octubre de 2022. Orwell la publicó en 1949 y murió en 1950.',src:'https://www.infolibre.es/politica/feijoo-dice-orwell-escribio-1984-ano-1984_1_1350242.html'},
+ {q:'Feijóo justificó no saber a qué se dedicaba Marcial Dorado porque entonces «no había Google».',a:true,d:1,e:'Lo dijo en 2023. Dorado ya había salido en los periódicos por sus detenciones.',src:'https://maldita.es/malditahemeroteca/20230721/feijoo-marcial-dorado-relacion-cronologia/'},
+ {q:'El abogado de la pareja de Ayuso ofreció a la Fiscalía un pacto reconociendo dos delitos fiscales.',a:true,d:3,e:'Fue en febrero de 2024. Hasta que haya sentencia, rige la presunción de inocencia.',src:'https://www.eldiario.es/1_c09bcd'},
+ {q:'La reforma laboral de 2022 salió adelante gracias al voto por error de un diputado del PP.',a:true,e:'175 a 174: Alberto Casero (PP) votó «sí» sin querer.',src:'https://maldita.es/malditahemeroteca/20220721/errores-votaciones-congreso-senado/'}];
+const Q4=[ // Sanxe · el presente: también hay verdades que incomodan a los socialistas
+ {q:'El PSOE votó a favor de prohibir a los fondos de inversión comprar pisos para alquilar.',a:false,e:'Se abstuvo en septiembre de 2026 y la ley de Sumar decayó.'},
+ {q:'El PSOE apoyó que los ayuntamientos pudieran poner topes al alquiler declarando zonas tensionadas.',a:false,e:'Lo rechazó junto a PP y Vox. Lo proponía Sumar, hoy en el Frente Amplio.'},
+ {q:'Desde 2018 se ha construido un millón de viviendas, como dijo Sánchez.',a:false,e:'Se terminaron unas 719.602, y la mayoría son de promoción privada.',src:'https://www.newtral.es/afirmaciones-cara-a-cara-verificadas/20261120/'},
+ {q:'Las pensiones han subido 6.000 € cada año con Sánchez.',a:false,d:1,e:'La subida acumulada entre 2018 y 2026 fue de 6.145 € en total, no cada año.',src:'https://maldita.es/desinfo/20261120/verificacion-cara-a-cara-sanchez-feijoo-29n/'},
+ {q:'El exministro socialista José Luis Ábalos fue absuelto en el caso mascarillas.',a:false,e:'En junio de 2026 el Supremo lo condenó por unanimidad a 24 años y 3 meses de cárcel.',src:'https://www.eldiario.es/politica/jose-luis-abalos-condenado-carcel-tribunal-supremo_1_13301658.html'},
+ {q:'La mayor parte de los fondos europeos Next Generation hay que devolverlos.',a:false,d:3,e:'La mayoría son transferencias a fondo perdido, no préstamos.',src:'https://www.newtral.es/afirmaciones-cara-a-cara-verificadas/20261120/'},
+ {q:'Las papeletas ya marcadas que llegan por correo prueban un fraude el 29N.',a:false,e:'La Junta Electoral permite enviar propaganda con papeletas marcadas.',src:'https://www.newtral.es/bulos-elecciones-29n/20261121/'},
+ {q:'El PSOE votó con PP y Vox contra la ley que pedía ceder los pisos de la Sareb, apoyada por Sumar.',a:true,d:3,e:'Dijo que la ley estaba «desactualizada». Mientras, el alquiler sigue en máximos.'},
+ {q:'Pedro Sánchez confundió Kenia con Senegal en una rueda de prensa en Nairobi.',a:true,d:1,e:'Dos veces seguidas, y el presidente keniano le corrigió entre risas.'},
+ {q:'Un diputado del PSOE respondió «sí» por error en la votación de investidura de Feijóo.',a:true,e:'Herminio Sancho, en 2023. Luego aclaró que su voto era «no».',src:'https://theobjective.com/espana/politica/2023-09-27/diputados-pp-rajoy-rectificar-sancho/'},
+ {q:'Los pisos turísticos son de media el 1 % de las viviendas, pero en unos 60 municipios pasan del 10 %.',a:true,d:3,e:'La media esconde los sitios donde se comen el barrio.',src:'https://www.newtral.es/afirmaciones-cara-a-cara-verificadas/20261120/'},
+ {q:'El PSOE presume en su programa de haber subido el salario mínimo un 66 % desde 2018.',a:true,e:'Lo dice su programa. Pero sin socios a su izquierda empujando, no habría pasado.'}];
+const Q5=[ // Frente-Amplius · el futuro, con preguntas un pelín más difíciles
+ {q:'Antes de entrar en política, Ada Colau fue portavoz de la PAH contra los desahucios.',a:true,e:'De la PAH a la alcaldía de Barcelona en 2015, y ahora candidata del Frente Amplio.'},
+ {q:'Ada Colau ya fue ministra de Vivienda en el anterior Gobierno de coalición.',a:false,d:1,e:'Nunca ha sido ministra: en 2023 rechazó serlo.'},
+ {q:'El Frente Amplio propone reducir la jornada a 37,5 horas sin bajar el sueldo.',a:true,e:'Y avanzar después hacia las 32 horas, también sin perder salario.'},
+ {q:'El Frente Amplio propone pasar ya mismo a la semana de 32 horas.',a:false,e:'Primero 37,5 horas sin bajar sueldo, y después avanzar hacia las 32.'},
+ {q:'El Frente Amplio propone 200 € al mes por cada niño o niña menor de 18 años.',a:true,e:'Una prestación universal, empezando por los de 0 a 6 años.'},
+ {q:'La ayuda de 200 € del Frente Amplio sería solo para familias con ingresos bajos.',a:false,e:'Es universal: para todas las familias, sin importar ingresos.'},
+ {q:'El Frente Amplio propone 150.000 viviendas públicas en 12 años.',a:false,e:'Son 1,5 millones en 12 años: diez veces más.'},
+ {q:'El Frente Amplio quiere destinar el 5 % del PIB a gasto militar, como pide la OTAN.',a:false,e:'Lo rechaza: prioriza la diplomacia y el 0,7 % para cooperación.'},
+ {q:'El Frente Amplio quiere congelar el salario mínimo para no asustar a las empresas.',a:false,d:3,e:'Quiere vincularlo al 60 % del salario medio neto.'},
+ {q:'El Frente Amplio propone tres horas de luz gratis al día.',a:true,e:'En las horas de más sol, con una comercializadora pública de energía.'},
+ {q:'El nuevo impuesto estatal a las herencias del Frente Amplio solo afectaría a quien herede más de un millón de euros.',a:true,d:3,e:'Un millón neto por heredero. Las herencias normales no se tocan.'},
+ {q:'El Frente Amplio propone un abono de Rodalies y Cercanías de 50 € al mes.',a:false,e:'Son 20 € al mes, 10 € para menores de 26 y gratis para menores de 16.'},
+ {q:'El Frente Amplio propone devolver la edad de jubilación a los 65 años.',a:true,e:'Y sin penalizar a quien se jubile antes tras más de 40 años cotizados.'}];
+// Corruptus: la involución. Se sale acertando 3 sobre corrupción y respondiendo que no a «todos son iguales».
+const CQ=[
+ {q:'En junio de 2026 el Supremo condenó al exministro Ábalos a más de 24 años de cárcel por el caso mascarillas.',a:true,e:'24 años y 3 meses, por unanimidad. Su asesor Koldo García, a más de 19.',src:'https://www.eldiario.es/politica/jose-luis-abalos-condenado-carcel-tribunal-supremo_1_13301658.html'},
+ {q:'El Supremo confirmó en 2020 que el PP se lucró de la trama Gürtel.',a:true,e:'Lo condenó como partícipe a título lucrativo y mantuvo las penas de los 29 condenados.',src:'https://www.publico.es/politica/supremo-confirma-condena-al-pp-guertel.html'},
+ {q:'Rodrigo Rato, exvicepresidente del Gobierno del PP, fue condenado por las tarjetas black de Caja Madrid.',a:true,e:'A cuatro años y medio de prisión; Miguel Blesa, a seis.',src:'https://www.publico.es/economia/blesa-condenado-anos-carcel-y.html'},
+ {q:'En el escándalo de las tarjetas black solo había consejeros del PP.',a:false,e:'Había consejeros propuestos por PP, PSOE, IU y los sindicatos. IU expulsó a los suyos.'},
+ {q:'Santos Cerdán, ex número tres del PSOE, entró en prisión provisional en 2025.',a:true,e:'Investigado por presuntas mordidas en obra pública. Rige la presunción de inocencia hasta que haya sentencia.',src:'https://www.elindependiente.com/espana/2026/05/10/laberinto-caso-koldo-sigue-audiencia-nacional-foco-financiacion-psoe-santos-cerdan/amp/'},
+ {q:'En España nunca se condena a ningún político importante por corrupción.',a:false,d:1,e:'Ábalos, Rato o los condenados de la Gürtel dicen lo contrario. Cuesta, pero llega.'},
+ {q:'El Supremo dijo que lo de Ábalos fue un despiste administrativo sin importancia.',a:false,e:'Habló de corrupción «orgánica, organizada y continuada».',src:'https://es.ara.cat/politica/supremo-condena-exministro-abalos-24-anos-prision_1_5776792.html'}];
+const FINALQ={q:'Todos los políticos son iguales porque el poder siempre corrompe.',a:false,final:1,
+ e:'No. Hay muchísimos cargos públicos honrados, y la corrupción se combate con controles, transparencia y echando a quien la comete. En el Frente Amplio presumen de «ni un caso de corrupción del Ayuntamiento más pequeño al Gobierno del Estado» (Bustinduy, mayo de 2026).',
+ src:'https://www.ondavasca.com/urtasun-exige-al-psoe-que-ferraz-no-siga-siendo-un-lastre-para-la-mayoria-progresista/'};
+const CORR={name:'Corruptus',latin:'Homo Corruptus',col:'#5c6b1f',song:'noticiario',qs:CQ,corr:1,solo:'f4_solo.webp',
+ props:['el sobre','el maletín','la caja B','el «todos son iguales»'].map((l,k)=>({k:'c'+k,l,img:'f4_solo.webp'}))};
+
+// ---------- NIVELES ----------
+// Cada lastre es una imagen completa del personaje con ese objeto; «solo» es el personaje sin nada.
+const LEVELS=[
+ {name:'Facha-francus',latin:'Homo Autoritarius',col:'#8a6d3b',song:'marchareal',qs:Q1,solo:'f1_solo.webp',
+  props:[['bandera','la bandera','🇪🇸'],['barrote','el barrote','🪵'],['crucifijo','el crucifijo','✝️'],['estampa','la estampita','🖼️'],['gafas','las gafas de sol','🕶️'],['guardiacivil','el uniforme','🪖']].map(([k,l,e])=>({k,l,e,img:'f1_'+k+'.webp'}))},
+ {name:'Fachalecus',latin:'Homo Nostalgicus',col:'#5BAE1F',song:'legion',qs:Q2,solo:'f2_solo.webp',
+  props:[['barrote','el barrote'],['fachaleco','el fachaleco'],['maga','la gorra MAGA'],['motosierra','la motosierra'],['nostalgia','la bandera del aguilucho'],['ovnis','el kit cazaovnis'],['pulsera','la pulserita de España'],['terraplanista','la Tierra plana']].map(([k,l])=>({k,l,img:'f2_'+k+'.webp'}))},
+ {name:'Neoliberalus',latin:'Homo Peperus',col:'#1D84CE',song:'hardstyle',qs:Q3,solo:'f3_solo.webp',
+  props:[['barrote','el barrote'],['buitres','los buitres'],['lacoste','el polo de Lacoste'],['mafia','el yate'],['okupas','la alarma antiokupas'],['padel','el pádel y el golf'],['toro','la fauna del partido']].map(([k,l])=>({k,l,img:'f3_'+k+'.webp'}))},
+ {name:'Socialistus',latin:'Homo Sanxe',col:'#E30613',song:'rockhimno',qs:Q4,solo:'f4_solo.webp',
+  props:[['barrote','el barrote'],['goya','el Goya'],['lgtbi','el amigo del Orgullo'],['obama','el discurso de Obama'],['pana','la chaqueta de pana'],['perrito','el perrito'],['universidad','el título universitario']].map(([k,l])=>({k,l,img:'f4_'+k+'.webp'}))},
+ {name:'Súperlistus',latin:'Frente-Amplius',col:'#EB4521',song:'fa',qs:Q5,solo:'f5_solo.webp', // ya tiene los ojos entornados: sin parpadeo
+  props:[['barrote','el barrote'],['bocata','el bocata'],['camisa','la camisa'],['kellys','las Kellys'],['lgtbi','la chapa del Orgullo'],['palestino','la kufiya'],['riders','el rider'],['workingclass','la pancarta Working Class']].map(([k,l])=>({k,l,img:'f5_'+k+'.webp'}))}];
+const PLACEHOLDER_N=5; // piezas para los niveles cuyo personaje aún no ha llegado
+const QTIME=20;
+
+// precarga
+['ev_base.webp',0,1,2,3,4].forEach(k=>{const i=new Image();i.src=DIR+(typeof k==='number'?'ev'+k+'.webp':k)});
+LEVELS.forEach(L=>{(L.props||[]).forEach(p=>{const i=new Image();i.src=DIR+p.img});if(L.solo){const i=new Image();i.src=DIR+L.solo}});
+
+// ---------- ESCALA ----------
+const stage=$('stage');
+// escenario adaptativo: 720 px de ancho y alto variable (1280-1560) para llenar móviles alargados sin bandas negras
+function fit(){const vw=innerWidth,vh=(window.visualViewport&&visualViewport.height)||innerHeight,H=Math.round(Math.max(1280,Math.min(1560,720*vh/vw))),s=Math.min(vw/720,vh/H),
+  pr=getComputedStyle($('probe')),sat=parseFloat(pr.paddingTop)||0,sab=parseFloat(pr.paddingBottom)||0;
+  stage.style.height=H+'px';stage.style.setProperty('--ex',(H-1280)+'px');stage.style.setProperty('--sat',(sat/s)+'px');stage.style.setProperty('--sab',(sab/s)+'px');
+  // Hueco para los botones de atrás y compartir que el sitio fija arriba a la izquierda (10 + 44 px y algo de aire)
+  stage.style.setProperty('--fa',Math.max(0,(62-(vw-720*s)/2)/s).toFixed(1)+'px');
+  const cm=$('moscas');if(cm&&cm.height!==H)cm.height=H;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();
+
+
+// ---------- GESTOS: pestañean siempre y, al desmontarlos, se ríen moviendo la boca ----------
+// Coordenadas en píxeles de las imágenes (720 de ancho): ojos [x,y,rx,ry] y boca [x,y,semiancho,apertura máx.]
+const FACES={f1:{eyes:[[325,146,20,7],[405,146,20,7]],mouth:[375,223,30,12]},f2:{eyes:[[240,229,34,10],[400,226,34,10]],mouth:[320,420,62,17]},f3:{eyes:[[307,302,24,7],[412,302,24,7]],mouth:[365,486,44,12],fill:'#dcb39c'},f4:{eyes:[[316,330,30,10],[432,318,44,10]],mouth:[400,400,60,10],fill:'#e7b38f'}};
+const FTX={'f4_lgtbi.webp':[.56,280,290,-122,-127],'f3_mafia.webp':[.61,260,270,-130,-121],'f2_nostalgia.webp':[1.06,200,190,10,13],'f2_ovnis.webp':[1.06,200,190,10,13],'f2_terraplanista.webp':[1.06,200,190,10,13]}; // imágenes con la cara algo desplazada
+const NOBLINK={'f1_gafas.webp':1}; // con gafas de sol no se le ven los ojos
+function faceOf(src){const F=FACES[src.slice(0,2)];if(!F)return null;const t=FTX[src],s=t?t[0]:1,m=(x,y)=>t?[(x-t[1])*s+t[1]+t[3],(y-t[2])*s+t[2]+t[4]]:[x,y];
+  return {fill:F.fill,eyes:NOBLINK[src]?[]:F.eyes.map(([x,y,rx,ry])=>[...m(x,y),rx*s,ry*s]),mouth:[...m(F.mouth[0],F.mouth[1]),F.mouth[2]*s,F.mouth[3]*s]}}
+const LIVE=new Set();
+function makeFace(src,laugh){const cv=document.createElement('canvas');cv.setAttribute('role','img');const img=new Image();
+  img.onload=()=>{cv.width=img.naturalWidth;cv.height=img.naturalHeight;if(cv.width>cv.height)cv.style.objectFit='contain';const tmp=document.createElement('canvas');tmp.width=cv.width;tmp.height=cv.height;
+    const L={cv,img,tmp,face:faceOf(src),laugh,seed:Math.random()*3};drawFace(L,performance.now()/1000);if(L.face)LIVE.add(L)};img.src=DIR+src;return cv}
+function lid(g,img,ex,ey,rx,ry,k,fill){g.save();g.beginPath();g.ellipse(ex,ey,rx*1.1,ry*1.5,0,0,7);g.clip();const dh=ry*3.1*k;
+  if(fill){g.fillStyle=fill;g.fillRect(ex-rx*1.15,ey-ry*1.5,rx*2.3,dh)}else g.drawImage(img,ex-rx*1.15,ey-ry*2.6,rx*2.3,ry*.7,ex-rx*1.15,ey-ry*1.5,rx*2.3,dh);const ly=ey-ry*1.5+dh;
+  g.strokeStyle='rgba(30,15,10,.7)';g.lineWidth=Math.max(1.5,ry*.22);g.beginPath();g.moveTo(ex-rx,ly-ry*.25);g.quadraticCurveTo(ex,ly+ry*.3,ex+rx,ly-ry*.25);g.stroke();g.restore()}
+function drawFace(L,t){const {cv,img,face}=L,g=cv.getContext('2d');g.drawImage(img,0,0);if(!face)return;
+  let k=0;const ph=(t+L.seed)%3.9;if(ph<.17)k=Math.sin(ph/.17*Math.PI); // parpadeo
+  let open=0;if(L.laugh){const b=(t%2.8)/2.8;if(b>.3&&b<.85){const e=Math.sin((b-.3)/.55*Math.PI);open=e*(.35+.65*Math.abs(Math.sin(t*10)));k=Math.max(k,.45*e)}}
+  if(open>.03){const tg=L.tmp.getContext('2d');tg.drawImage(img,0,0);const [mx,my,hw,Dm]=face.mouth,D=open*Dm,H=hw*1.2,cs=2,W2=hw*1.3;
+    for(let y=my;y<my+H;y+=cs){const w=y<my+H*.3?1:1-(y-my-H*.3)/(H*.7);for(let x=mx-W2;x<mx+W2;x+=cs){const u=(x-mx)/W2,d=D*w*Math.max(0,1-u*u);if(d<.3)continue;g.drawImage(L.tmp,x,y-d,cs,cs,x,y,cs,cs)}}
+    // comisuras hacia arriba: sonrisa
+    tg.drawImage(cv,0,0);const lift=open*Dm*.55;for(let y=my-hw*.45;y<my+H*.6;y+=cs){const wy=1-Math.abs(y-my)/(hw*.9);if(wy<=0)continue;for(let x=mx-W2*1.1;x<mx+W2*1.1;x+=cs){const u=Math.abs(x-mx)/(W2*1.1);if(u<.35)continue;const d=lift*wy*Math.sin((u-.35)/.65*Math.PI);if(d<.3)continue;g.drawImage(L.tmp,x,y+d,cs,cs,x,y,cs,cs)}}
+    g.save();g.beginPath();g.ellipse(mx,my+D*.42,hw*.7,Math.max(.6,D*.5),0,0,7);g.fillStyle='#3a0d0d';g.fill();g.clip();g.fillStyle='#f1ebe0';g.fillRect(mx-hw*.6,my-D*.1,hw*1.2,D*.38);g.restore()}
+  if(k>.03)face.eyes.forEach(([ex,ey,rx,ry])=>lid(g,img,ex,ey,rx,ry,k,face.fill||0));
+  if(L.laugh)cv.style.transform=`translateY(${(-open*3).toFixed(1)}px)`}
+(function loop(){const t=performance.now()/1000;LIVE.forEach(L=>{if(!L.cv.isConnected)LIVE.delete(L);else drawFace(L,t)});requestAnimationFrame(loop)})();
+
+// ---------- ESTADO ----------
+const S={lvl:0,ok:0,bad:0,streak:0,best:0,queue:[],pieces:[],removed:0,cur:null,qStart:0,timer:null,answered:false};
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id))}
+function setCol(L){stage.style.setProperty('--lv',L.col)}
+
+// Portada: la marcha de la evolución, con cada especie caminando (recortes sobre la imagen de fondo, 1376×768)
+const EV=[[0,289,359,457],[342,194,295,538],[604,148,292,584],[862,78,247,657],[1038,34,310,698]],EVK=760/1376;
+$('scene').innerHTML=EV.map(([x,y,w,h],i)=>`<img data-ev="${i}" alt="" class="${i?'':'ape'}" style="left:${(x*EVK).toFixed(1)}px;top:${(y*EVK).toFixed(1)}px;width:${(w*EVK).toFixed(1)}px;height:${(h*EVK).toFixed(1)}px;--d:${[2.6,2.2,2.1,2,1.9][i]}s;--dl:-${(i*.37).toFixed(2)}s">`).join('');evImgs($('scene'));
+
+// Laureles de cartel de cine
+const AWARDS=[['Festival del Chándal Común','Selección oficial'],['Premio Bulo de Oro','Mejor desmentido'],['Certamen de la Pana','Mejor evolución']];
+function laurelSVG(){let g='';const cx=100,cy=58,R=60;
+  for(const sd of[-1,1]){g+=`<path d="M ${cx+sd*Math.sin(.35)*R} ${cy+Math.cos(.35)*R} A ${R} ${R} 0 0 ${sd<0?1:0} ${cx+sd*Math.sin(2.75)*R} ${cy+Math.cos(2.75)*R}" fill="none" stroke="#f3e2b0" stroke-width="2.2"/>`;
+    for(let k=0;k<8;k++){const t=.45+k*.29,x=cx+sd*Math.sin(t)*R,y=cy+Math.cos(t)*R,deg=-sd*(t*180/Math.PI+215);
+      g+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4.6" ry="11" fill="#f3e2b0" transform="rotate(${deg.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)}) translate(0 -9)"/>`}}
+  return `<svg viewBox="0 0 200 118" aria-hidden="true">${g}</svg>`}
+$('laurels').innerHTML=AWARDS.map(([a,b])=>`<div class="laurel">${laurelSVG()}<div><b>${esc(a)}</b><small>${esc(b)}</small></div></div>`).join('');
+// Lemas que van rotando en la banda
+const SLOGANS=[['La evolución no va de monos a humanos.','Va de bulos a criterio.'],['Del barrote a la pancarta.','Evoluciona el 29N.'],['Suelta lastre.','Que se le vea el bulo.'],['Un bulo no se comparte.','Se desmonta.'],['Ni fachaleco ni yate:','criterio.'],['Darwin lo tenía claro:','sobrevive quien se informa.'],['No todos son iguales.','Infórmate y elige.'],['El 29 de noviembre,','vota con la verdad.']];
+{let si=0;setInterval(()=>{if(!$('home').classList.contains('on'))return;const el=$('slogan');el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');
+  setTimeout(()=>{si=(si+1)%SLOGANS.length;el.innerHTML=`${esc(SLOGANS[si][0])} <b>${esc(SLOGANS[si][1])}</b>`},330)},3600)}
+function fitTitle(){const h=$('home').querySelector('h1');h.style.fontSize='';let f=128;while(h.scrollWidth>640&&f>60){f-=2;h.style.fontSize=f+'px'}}
+fitTitle();if(document.fonts)document.fonts.ready.then(fitTitle);
+
+// De lo más obvio (d:1) a lo que hace pensar (d:3); dentro de cada tramo, verdades y bulos mezclados (nunca más de 2 seguidas iguales)
+function mixQs(list){return [1,2,3].flatMap(d=>mix1(list.filter(q=>(q.d||2)===d)))}
+function mix1(list){const all=shuffle(list),tr=all.filter(q=>q.a),fa=all.filter(q=>!q.a),out=[];let run=0,last=null;
+  while(tr.length||fa.length){let pt;if(!tr.length)pt=false;else if(!fa.length)pt=true;else if(run>=2)pt=!last;else pt=Math.random()<.5;
+    const q=(pt?tr:fa).shift();if(q.a===last)run++;else{run=1;last=q.a}out.push(q)}return out}
+
+function curL(){return S.corr?CORR:LEVELS[S.lvl]}
+function startLevel(i,corr){S.lvl=i;S.corr=!!corr;S.l4bad=0;S.toCorr=0;$('fly').classList.remove('go');const L=curL();setCol(L);S.queue=mixQs(L.qs);S.removed=0;
+  $('vitrina').classList.toggle('corrupt',S.corr);
+  S.pieces=L.corr?L.props.slice():L.props?shuffle(L.props):Array.from({length:PLACEHOLDER_N},(_,k)=>({k:'p'+k,l:'pieza '+(k+1),e:'❔'}));
+  $('gLv').textContent=S.corr?'Involución · Corruptus':`Nivel ${i+1} · ${L.name}`;$('gLatin').textContent=L.latin;
+  $('gLadder').innerHTML=LEVELS.map((_,k)=>`<span class="${k<i?'done':k===i?'cur':''}"></span>`).join('');
+  drawVitrina(false);drawProps();show('game');setSong(L.song);nextQ()}
+
+function curImg(){const L=curL();if(!L.props)return null;return S.removed<S.pieces.length?S.pieces[S.removed].img:L.solo}
+function drawVitrina(anim){const v=$('vitrina'),L=curL(),src=curImg();
+  const ficha=`<div class="ficha"><b>${esc(L.latin)}</b>${S.removed<S.pieces.length?'Lleva: '+esc(S.pieces[S.removed].l):'Sin lastre'}</div>`;
+  if(!src){v.innerHTML=`<div class="soon">?<small>El ejemplar está en camino</small></div>`+ficha;return}
+  const old=v.querySelector('img,canvas');const img=makeFace(src,false);img.ariaLabel=`${L.name}: ${S.removed<S.pieces.length?'con '+S.pieces[S.removed].l:'sin lastre'}`;
+  v.querySelectorAll('.ficha,.soon').forEach(n=>n.remove());
+  if(anim&&old){old.classList.add('out');v.insertBefore(img,old);setTimeout(()=>old.remove(),720)}else{v.innerHTML='';v.appendChild(img)}
+  v.insertAdjacentHTML('beforeend',ficha)}
+function drawProps(){try{$('song5').playbackRate=1+.3*prog()}catch(e){}
+$('gProps').innerHTML=S.pieces.map((p,k)=>`<span class="${k<S.removed?'gone':k===S.removed?'now':''}">${esc(p.l)}</span>`).join('')}
+
+function nextQ(){S.cur=S.corr&&S.removed===S.pieces.length-1?FINALQ:S.queue.shift();S.answered=false;$('fb').classList.remove('on');
+  $('qk').textContent=S.cur.final?'Prueba final para salir de Corruptus':`¿Verdad o bulo? · Quedan ${S.pieces.length-S.removed} piezas`;$('qtext').textContent=S.cur.q;
+  ['bTrue','bFake'].forEach(b=>$(b).disabled=false);
+  const bar=$('tbar').firstElementChild;bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition=`transform ${QTIME}s linear`;bar.style.transform='scaleX(0)';
+  clearTimeout(S.timer);S.timer=setTimeout(()=>answer(null),QTIME*1000);S.qStart=performance.now()}
+
+function answer(v){if(S.answered)return;S.answered=true;clearTimeout(S.timer);['bTrue','bFake'].forEach(b=>$(b).disabled=true);
+  const bar=$('tbar').firstElementChild,f=getComputedStyle(bar).transform;bar.style.transition='none';bar.style.transform=f;
+  const q=S.cur,ok=v===q.a,vit=$('vitrina');vit.classList.remove('ok','bad');void vit.offsetWidth;
+  if(ok){S.ok++;S.streak++;S.best=Math.max(S.best,S.streak);vit.classList.add('ok');sfx('ok');
+    const p=S.pieces[S.removed];S.removed++;const fly=$('fly');fly.textContent=`¡Fuera ${p.l}!`;fly.classList.remove('go');void fly.offsetWidth;fly.classList.add('go');
+    drawVitrina(true);drawProps()}
+  else{S.bad++;S.streak=0;vit.classList.add('bad');sfx('bad');if(!q.final)S.queue.push(q); // la fallada vuelve a salir
+    if(S.lvl===3&&!S.corr&&S.removed===0&&++S.l4bad>=3)S.toCorr=1} // estadio Sanxe: tres fallos sin acertar ni una = involución
+  $('fbV').textContent=v===null?'¡Tiempo!':ok?'¡Bien!':'¡Te la han colado!';$('fbV').style.color=ok?'#22c55e':'#ef4444';
+  $('fbA').textContent=q.a?'✔ Es verdad':'✖ Es bulo';$('fbA').style.background=q.a?'#22c55e':'#ef4444';
+  $('fbE').textContent=q.e+(ok?'':' Volverá a salir más tarde.');
+  const s=$('fbS');if(q.src){s.href=q.src;s.style.display=''}else s.style.display='none';
+  $('bNext').textContent=S.toCorr?'Uy…':S.removed>=S.pieces.length?(S.corr?'¡Sal de aquí!':'¡Evoluciona!'):'Seguir';
+  setTimeout(()=>$('fb').classList.add('on'),ok?650:350)}
+
+$('bTrue').onclick=()=>answer(true);$('bFake').onclick=()=>answer(false);
+$('bNext').onclick=()=>{$('fb').classList.remove('on');if(S.toCorr){S.toCorr=0;return involution()}if(S.removed>=S.pieces.length)return S.corr?escapeCorr():levelUp();if(!S.queue.length)S.queue=mixQs(curL().qs);nextQ()};
+addEventListener('keydown',e=>{if(!$('game').classList.contains('on'))return;if(!S.answered){if(e.key==='ArrowLeft'||e.key==='v')answer(true);if(e.key==='ArrowRight'||e.key==='b')answer(false)}else if(e.key==='Enter'||e.key===' '){e.preventDefault();$('bNext').click()}});
+
+const letters=(t,o)=>{let n=o;return t.split(' ').map(w=>`<span class="w">${[...w].map(ch=>`<span class="lt" style="--i:${n++}">${esc(ch)}</span>`).join('')}</span>`).join(' ')};
+function luShow(title,word,img,next,btn,act,alt,altAct,corrupt,chron){sfx('up');$('luC').innerHTML=chron?para(chron):'';$('luC').style.display=chron?'':'none';
+  $('luT').innerHTML=`${letters(title,0)}<br><b>${letters(word,title.length+2)}</b>`;
+  $('luP').innerHTML='';if(img){const c=makeFace(img,false);c.ariaLabel=title;$('luP').appendChild(c)}$('luP').classList.toggle('corrupt',!!corrupt);
+  $('luN').innerHTML=next;$('bEvo').textContent=btn;S.luAct=act;
+  $('bStay').style.display=alt?'':'none';if(alt){$('bStay').textContent=alt;S.luAlt=altAct}show('lvup')}
+function levelUp(){const L=LEVELS[S.lvl];
+  if(S.lvl===LEVELS.length-1)return finish(true);
+  const N=LEVELS[S.lvl+1];
+  // al llegar al presente (Homo Sanxe) se puede elegir: quedarse o seguir hacia un futuro en el que la democracia avance
+  if(S.lvl===3)return luShow(L.name,'desmontado',L.solo,`¿Te quedas o sigues?<i>Lo que viene es un pelín más difícil</i>`,'Seguir evolucionando',()=>startLevel(4),'Quedarme en el presente',()=>finish(false),0,CHRON[3]);
+  luShow(L.name,'desmontado',L.solo,`Siguiente especie<b>${esc(N.name)}</b><i>${esc(N.latin)}</i>`,'Evolucionar',()=>startLevel(S.lvl+1),0,0,0,CHRON[S.lvl])}
+// involución: en el estadio Sanxe, sin acertar ni una, degeneras a Corruptus
+function involution(){luShow('¡Involución!','Corruptus','f4_solo.webp',`Para salir<i>Acierta 3 sobre corrupción y supera la prueba final</i>`,'Intentar salir',()=>startLevel(3,true),0,0,1,CHRON_INV)}
+function escapeCorr(){luShow('Corruptus','superado','f4_solo.webp',`Vuelves a<b>Socialistus</b><i>Homo Sanxe</i>`,'Volver a intentarlo',()=>startLevel(3),0,0,0,CHRON_OUT)}
+$('bEvo').onclick=()=>S.luAct&&S.luAct();$('bStay').onclick=()=>S.luAlt&&S.luAlt();
+
+function finish(top){S.top=top;setSong(top?'fa':'rockhimno');
+  $('fT').innerHTML=top?`${letters('Premio:',0)}<br><b>${letters('Ya eres un votante de Frente Amplio',9)}</b>`:`${letters('Te quedas en',0)}<br><b>${letters('el presente',14)}</b>`;
+  $('fSub').textContent=top?'Has soltado todo el lastre y has llegado al futuro. Lo que queda es criterio. El 29N, vota con la verdad.':'Homo Sanxe no está mal, pero la democracia puede avanzar más. ¿Te atreves con el último estadio?';
+  $('bGoOn').style.display=top?'none':'';$('fC').innerHTML=para(CHRON_END[top?0:1]);
+  $('fStats').innerHTML=`<div><b>${S.ok}</b><span>bulos desmontados</span></div><div><b>${S.bad}</b><span>fallos</span></div><div><b>${S.best}</b><span>mejor racha</span></div>`;show('final')}
+$('bGoOn').onclick=()=>startLevel(4);
+$('bAgain').onclick=()=>{$('song5').pause();$('song5').currentTime=0;S.ok=S.bad=S.streak=S.best=0;startLevel(0)};
+$('bShare').onclick=async()=>{const t=`En Democratic Evolution, el juego que te hará reflexionar en estas elecciones del 29 de noviembre, ${S.top?'he evolucionado de Facha-francus a Frente Amplio':'he llegado hasta Homo Sanxe'} desmontando ${S.ok} bulos. ¿Te atreves? El 29N, vota con la verdad.`;
+  try{await navigator.clipboard.writeText(t);$('bShare').textContent='¡Copiado!'}catch(e){$('bShare').textContent='No se pudo copiar'}setTimeout(()=>$('bShare').textContent='Copiar mensaje',2200)};
+// #nivel2 … #nivel5 en la dirección empieza directamente en ese nivel (para probar)
+$('bStart').onclick=()=>{initAudio();startMusic();S.ok=S.bad=S.streak=S.best=0;const m=location.hash.match(/^#nivel([1-5])$/);if(m)return startLevel(m[1]-1);story(()=>startLevel(0))};
+
+
+
+// ---------- CRÓNICA ----------
+const CRONICA=[
+ 'Hace mucho, muchísimo tiempo (o anteayer), en una cueva de la península, vivía el <b>Facha-francus</b>, <i>Homo Autoritarius</i>. Caminaba encorvado bajo el peso de su bandera, su crucifijo y su barrote.',
+ 'Cuentan los papiros que cada vez que alguien desmontaba un bulo, al Facha-francus se le caía un <b>lastre</b>: la bandera, el barrote, la estampita… Y sin lastre, la especie <b>evolucionaba</b>.',
+ 'Así llegaron el <b>Fachalecus</b>, nostálgico de lo que nunca fue; el <b>Neoliberalus</b>, de polo y yate; y el <b>Socialistus</b>, que habita el presente con su chaqueta de pana.',
+ 'Pero ojo: quien en el presente no acierta ni una, <b>involuciona</b> a una especie oscura que vive entre sobres y cajas B. Y quien se atreve a seguir, llega a un futuro en el que la democracia avanza.',
+ 'El 29 de noviembre la evolución está en tus manos. Desmonta bulos, hazles soltar lastre y <b>evoluciona</b>.'];
+const CHRON=[
+ 'Y el Facha-francus soltó la bandera, el barrote y la estampita. Por primera vez en cuarenta años, se irguió un poco.',
+ 'El Fachalecus colgó el fachaleco y apagó la motosierra. Resultó que la Tierra era redonda y no pasaba nada.',
+ 'El Neoliberalus bajó del yate, espantó a los buitres y descubrió que la vivienda no era un pelotazo, sino un derecho.',
+ 'Y llegaste al presente, la cueva del Homo Sanxe: se está calentito, hay pana y algún Goya. Pero las pinturas de la pared señalan un camino hacia adelante…'];
+const CHRON_INV='Ay. Quien en el presente no acierta ni una, retrocede. Los papiros hablan de una especie oscura que vive entre sobres y cajas B: el Corruptus.';
+const CHRON_OUT='Y el Corruptus, al descubrir que no todos son iguales, soltó el maletín y volvió a caminar erguido.';
+const CHRON_END=['Así termina la crónica: del barrote a la pancarta, de la cueva a la plaza. Ya no cargas lastre, solo criterio.','La crónica queda abierta: el futuro sigue pintado en la pared de la cueva, esperando a quien se atreva.'];
+const para=t=>`<p>${t}</p>`;
+let stI=0,stGo=null;
+function story(go){stGo=go;stI=0;$('stR').innerHTML=[0,1,2,3,4].map(i=>`<img data-ev="${i}" alt="">`).join('');evImgs($('stR'));$('stP').innerHTML=CRONICA.map(para).join('');$('stD').innerHTML=CRONICA.map(()=>'<i></i>').join('');show('story');stStep()}
+function stStep(){const ps=$('stP').querySelectorAll('p'),ds=$('stD').querySelectorAll('i');ps.forEach((p,k)=>p.classList.toggle('on',k===stI));ds.forEach((d,k)=>d.classList.toggle('on',k<=stI));
+  const RP=[[0],[0,1],[1,2,3],[3,4],[0,1,2,3,4]][stI];$('stR').querySelectorAll('img').forEach((im,k)=>im.classList.toggle('on',RP.includes(k)));
+  $('stNext').textContent=stI>=CRONICA.length-1?'Empezar la evolución':'Seguir leyendo'}
+$('stNext').onclick=()=>{if(stI>=CRONICA.length-1)return stGo();stI++;stStep()};
+$('stSkip').onclick=()=>stGo();
+
+// ---------- MOSCAS: unas pocas, pesadas, que rondan al personaje y se escapan por la pantalla ----------
+{const cvm=$('moscas'),g=cvm.getContext('2d'),VX=[280,440],VY=[110,580];
+ const F=Array.from({length:3},(_,i)=>({x:200+i*160,y:300+i*90,a:Math.random()*6.28,v:3,st:'fly',t:0,ph:Math.random()*9}));
+ function target(f){const out=Math.random()<.35;return out?{x:Math.random()<.5?-40:760,y:Math.random()*cvm.height}:{x:VX[0]+Math.random()*(VX[1]-VX[0])+(Math.random()-.5)*200,y:VY[0]+Math.random()*(VY[1]-VY[0])}}
+ F.forEach(f=>{f.tg=target(f)});
+ function drawFly(f,now){g.save();g.translate(f.x,f.y);g.rotate(f.a+Math.PI/2);g.scale(1.3,1.3);
+   g.fillStyle='rgba(0,0,0,.22)';g.beginPath();g.ellipse(4,6,4,7,0,0,7);g.fill(); // sombra
+   const fl=f.st==='fly';g.fillStyle=fl?'rgba(220,230,240,.35)':'rgba(220,230,240,.55)';
+   const wa=fl?(.5+.5*Math.sin(now*.09)):0.15;[-1,1].forEach(sd=>{g.save();g.rotate(sd*(.35+wa*.5));g.beginPath();g.ellipse(sd*5,3,3.2,7.5,sd*.3,0,7);g.fill();g.strokeStyle='rgba(60,60,60,.35)';g.lineWidth=.6;g.stroke();g.restore()});
+   g.fillStyle='#1b1d1f';g.beginPath();g.ellipse(0,5,3.6,6,0,0,7);g.fill(); // abdomen
+   g.fillStyle='#3a3d36';g.beginPath();g.ellipse(0,-1,3.4,3.6,0,0,7);g.fill(); // tórax
+   g.strokeStyle='rgba(150,150,150,.5)';g.lineWidth=.7;g.beginPath();g.moveTo(-2,3);g.lineTo(2,3);g.moveTo(-2.5,6);g.lineTo(2.5,6);g.stroke();
+   g.fillStyle='#6b1f14';g.beginPath();g.arc(-1.8,-5,1.9,0,7);g.arc(1.8,-5,1.9,0,7);g.fill(); // ojos
+   if(!fl){g.strokeStyle='#111';g.lineWidth=.7;for(const sd of[-1,1])for(const yy of[-2,1,4]){g.beginPath();g.moveTo(sd*2.5,yy);g.lineTo(sd*6,yy+2);g.stroke()}}
+   g.restore()}
+ const P=[],B=[],LEMAS=['¡Stop desahucios!','¡No a la guerra!','¡Ni una menos!','¡Vivienda digna!','¡Tax the rich!','¡Sanidad pública!','¡Palestina libre!','¡37,5 horas ya!','¡Bajemos los alquileres!','¡Orgullo!'];let li=Math.random()*10|0;
+ function drawLema(q,now){g.save();g.translate(q.x,q.y+Math.sin(now*.002+q.ph)*10);g.rotate(Math.sin(now*.0013+q.ph)*.07-.04);g.font='400 30px Anton,"Archivo Black",sans-serif';
+   const w=g.measureText(q.t).width+44,h=54;g.fillStyle='rgba(0,0,0,.3)';rr(-w/2+4,-h/2+6,w,h);g.fill();g.fillStyle=q.c?'#EB4521':'#DDF542';rr(-w/2,-h/2,w,h);g.fill();
+   g.fillStyle=q.c?'#fff':'#170F2E';g.textAlign='center';g.textBaseline='middle';g.fillText(q.t.toUpperCase(),0,2);g.restore()}
+ function rr(x,y,w,h){g.beginPath();g.roundRect?g.roundRect(x,y,w,h,h/2):g.rect(x,y,w,h)}
+ function drawPetal(q,now){g.save();g.translate(q.x,q.y);g.rotate(q.a);const fl=.55+.45*Math.cos(now*.004+q.ph);g.scale(q.s,q.s*fl);
+   const gr=g.createLinearGradient(0,-14,0,14);gr.addColorStop(0,'#ff5a74');gr.addColorStop(1,'#a3102e');g.fillStyle=gr;
+   g.beginPath();g.moveTo(0,15);g.bezierCurveTo(-16,6,-13,-12,-3,-14);g.quadraticCurveTo(0,-9,3,-14);g.bezierCurveTo(13,-12,16,6,0,15);g.fill();
+   g.strokeStyle='rgba(255,255,255,.25)';g.lineWidth=1;g.beginPath();g.moveTo(0,12);g.quadraticCurveTo(-2,0,0,-10);g.stroke();g.restore()}
+ let last=performance.now();
+ (function loop(now){const dt=Math.min(50,now-last)/16.7;last=now;g.clearRect(0,0,720,cvm.height);
+   const petalos=S.lvl===3&&!S.corr; // en el estadio Sanxe no hay moscas: caen pétalos de rosa de vez en cuando
+   if($('game').classList.contains('on')&&petalos){
+     if(Math.random()<.012*dt&&P.length<7)P.push({x:60+Math.random()*600,y:-30,vx:(Math.random()-.5)*.6,vy:1+Math.random()*.9,a:Math.random()*6.3,va:(Math.random()-.5)*.06,ph:Math.random()*9,s:.8+Math.random()*.6});
+     for(let i=P.length-1;i>=0;i--){const q=P[i];q.y+=q.vy*dt;q.x+=(q.vx+Math.sin(now*.0016+q.ph)*.9)*dt;q.a+=q.va*dt;if(q.y>1320){P.splice(i,1);continue}drawPetal(q,now)}}
+   else if(!petalos)P.length=0;
+   const lemas=S.lvl===4&&!S.corr; // en el estadio Frente-Amplius, en vez de moscas pasan lemas
+   if($('game').classList.contains('on')&&lemas){
+     if(Math.random()<.008*dt&&B.length<2){const dir=Math.random()<.5?1:-1;B.push({t:LEMAS[(li++)%LEMAS.length],x:dir>0?-260:980,y:140+Math.random()*900,vx:dir*(1.1+Math.random()*.5),ph:Math.random()*9,c:li%2})}
+     for(let i=B.length-1;i>=0;i--){const q=B[i];q.x+=q.vx*dt;if(q.x<-320||q.x>1040){B.splice(i,1);continue}drawLema(q,now)}}
+   else if(!lemas)B.length=0;
+   if($('game').classList.contains('on')&&!petalos&&!lemas){F.forEach(f=>{
+     if(f.st==='land'){f.t-=dt;f.a+=Math.sin(now*.01+f.ph)*.02;if(f.t<=0){f.st='fly';f.tg=target(f)}}
+     else{const dx=f.tg.x-f.x,dy=f.tg.y-f.y,d=Math.hypot(dx,dy),want=Math.atan2(dy,dx);
+       let da=want-f.a;while(da>Math.PI)da-=6.28;while(da<-Math.PI)da+=6.28;
+       f.a+=da*.08+(Math.random()-.5)*.7; // zigzag nervioso
+       f.v=Math.min(9,Math.max(2.5,f.v+(Math.random()-.5)*1.2));
+       f.x+=Math.cos(f.a)*f.v*dt;f.y+=Math.sin(f.a)*f.v*dt;
+       if(f.x<-60||f.x>780||f.y<-60||f.y>1340){f.x=Math.random()<.5?-30:750;f.y=200+Math.random()*700;f.tg=target(f)}
+       if(d<18){if(f.tg.x>0&&f.tg.x<720&&Math.random()<.5){f.st='land';f.t=40+Math.random()*120}else f.tg=target(f)}}
+     drawFly(f,now)})}
+   requestAnimationFrame(loop)})(last)}
+
+// ---------- MÚSICA (cumbia sintetizada; melodías de dominio público u originales) ----------
+let AC=null,master=null,musicOn=false,muted=false,nextT=0,step=0,noiseBuf=null,schedId=null,curSong='marchareal',DIST=null;
+function initAudio(){if(AC){AC.resume&&AC.resume();return}try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
+  master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
+  noiseBuf=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+const mf=m=>440*2**((m-69)/12),NM={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const nm=s=>{const m=s.match(/^([A-G])(#?)(\d)$/);return 12*(+m[3]+1)+NM[m[1]]+(m[2]?1:0)};
+function parseMel(str){const st=[];str.split('|').forEach(bar=>bar.split(',').forEach(ev=>{const [n,l]=ev.trim().split(' '),len=Math.round(+l*2);st.push(n==='r'?null:{m:nm(n),len});for(let i=1;i<len;i++)st.push(undefined)}));return st}
+const SONGS={
+ himno:{mel:'D4 1.5,D4 0.5,F#4 1,A4 1,D5 3,r 1|C#5 1.5,B4 0.5,A4 1,G4 1,F#4 3,r 1|G4 1.5,G4 0.5,B4 1,D5 1,E5 2,D5 1,B4 1|A4 6,r 2|D5 1.5,D5 0.5,C#5 1,B4 1,A4 2,F#4 2|G4 1.5,A4 0.5,B4 1,G4 1,E4 3,r 1|A4 1.5,A4 0.5,C#5 1,E5 1,D5 1,C#5 1,B4 1,C#5 1|D5 6,r 2',roots:['D3','A2','G2','A2','D3','G2','A2','D3'],qual:'MMMMMMMM'},
+ diva:{mel:'E4 1,A4 1,C5 1,E5 3,D5 1,C5 1|B4 1,C5 1,D5 2,G4 4|F4 1,A4 1,C5 1,F5 3,E5 1,D5 1|E5 6,r 1,E4 1|A4 1,B4 1,C5 1,D5 1,E5 2,A5 2|G5 1,F5 1,E5 1,D5 1,C5 2,B4 2|A4 1,C5 1,E5 1,A5 1,G#5 2,B4 2|A4 6,r 2',roots:['A2','G2','F2','E2','A2','C3','E2','A2'],qual:'mMMMmMMm'},
+ // «Marcha Real» (Espinosa de los Monteros, 1761, dominio público): solo la melodía, a partir del MIDI de flutetunes.com
+ marchareal:{mel:'A#4 2,F4 2,D5 2,A#4 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,A#4 1,A4 1,G4 1,F4 1|A#4 2,C5 2,D5 2,r 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,F5 2,r 2|A#4 2,F4 2,D5 2,A#4 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,A#4 1,A4 1,G4 1,F4 1|A#4 2,C5 2,D5 2,r 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,F5 4|F5 2,D5 1.5,F5 0.5,D#5 2,C5 1.5,D#5 0.5|D5 2,A#4 1.5,D5 0.5,C5 1,F4 1,G4 1,A4 1|A#4 2,C5 2,D5 1.5,D#5 0.5,F5 1,D#5 1|D5 2,C5 2,A#4 2,r 2|F5 2,D5 1.5,F5 0.5,D#5 2,C5 1.5,D#5 0.5|D5 2,A#4 1.5,D5 0.5,C5 1,F4 1,G4 1,A4 1|A#4 2,C5 2,D5 1.5,D#5 0.5,F5 1,D#5 1|D5 2,C5 2,A#4 2,r 2',roots:['A#2', 'F2', 'A#2', 'F2', 'A#2', 'F2', 'A#2', 'F2', 'A#2', 'F2', 'D#2', 'A#2', 'A#2', 'F2', 'D#2', 'A#2'],qual:'MMMMMMMMMMMMMMMM'},
+ // Marcha original de aire legionario (compuesta para el juego): paso lento y solemne, en re menor
+ legion:{mel:'D4 1.5,D4 0.5,D4 1,F4 1,A4 3,r 1|G4 1.5,F4 0.5,E4 1,F4 1,D4 4|A4 1.5,A4 0.5,A4 1,C5 1,D5 3,C5 1|A#4 1.5,A4 0.5,G4 1,A4 1,F4 3,r 1|D5 2,C5 1,A#4 1,A4 2,G4 2|F4 1.5,G4 0.5,A4 1,F4 1,E4 3,r 1|D4 1,F4 1,A4 1,D5 1,C#5 2,E5 2|D5 6,r 2',roots:['D3','D3','F2','A#2','G2','A2','A2','D3'],qual:'mmMMmMMm'},
+ // Melodías originales (compuestas para el juego): fanfarria de noticiario, sintonía electoral pop e himno rockero
+ noticiario:{mel:'D4 1,F#4 1,A4 1,D5 3,A4 1,D5 1|E5 1.5,D5 0.5,C#5 1,B4 1,A4 4|B4 1,G4 1,B4 1,D5 3,B4 1,D5 1|F#5 1.5,E5 0.5,D5 1,C#5 1,D5 4|A5 2,F#5 1,D5 1,A4 2,D5 2|G5 1.5,F#5 0.5,E5 1,D5 1,E5 4|D5 1,C#5 1,B4 1,A4 1,G4 1,F#4 1,E4 1,G4 1|D4 2,F#4 1,A4 1,D5 4',roots:['D3','A2','G2','D3','D3','A2','G2','D3'],qual:'MMMMMMMM'},
+ // Hardstyle electoral original (compuesto para el juego): intro, subida con redoble y «drop», en la menor
+ hardstyle:{mel:'A4 3,C5 1,E5 2,D5 2|C5 3,B4 1,G4 4|F4 3,A4 1,C5 2,E5 2|E5 6,r 2|A4 1,A4 1,C5 1,C5 1,E5 1,E5 1,A5 1,A5 1|G5 1,G5 1,E5 1,E5 1,D5 1,D5 1,B4 1,B4 1|F5 1,F5 1,E5 1,E5 1,C5 1,C5 1,A4 1,A4 1|B4 1,C5 1,D5 1,E5 1,G#5 4|A5 1.5,G5 0.5,E5 1,A5 1,C6 2,B5 1,G5 1|A5 1.5,G5 0.5,E5 1,D5 1,E5 4|F5 1.5,E5 0.5,C5 1,F5 1,A5 2,G5 1,E5 1|G5 1.5,F5 0.5,E5 1,D5 1,E5 2,G#5 2|A5 1.5,G5 0.5,E5 1,A5 1,C6 2,B5 1,G5 1|A5 1.5,G5 0.5,E5 1,D5 1,E5 2,C5 2|D5 1,F5 1,A5 1,D6 1,C6 2,B5 2|A5 6,r 2',roots:['A2','G2','F2','E2','A2','G2','F2','E2','A2','A2','F2','E2','A2','A2','D2','A2'],qual:'mMMMmMMMmmMMmmmm'},
+ sintonia:{mel:'F4 1,A4 1,C5 1.5,A4 0.5,C5 1,D5 1,C5 2|A#4 1,A4 1,G4 1.5,F4 0.5,G4 4|A4 1,C5 1,F5 1.5,E5 0.5,D5 1,C5 1,D5 2|C5 6,r 2|D5 1,D5 1,C5 1,A#4 1,A4 2,G4 2|A4 1,A4 1,G4 1,F4 1,E4 2,C4 2|F4 1,G4 1,A4 1,C5 1,D5 1,E5 1,F5 2|F5 6,r 2',roots:['F2','C3','D3','C3','A#2','C3','F2','F2'],qual:'MMmMMMMM'},
+ rockhimno:{mel:'E4 2,G4 1,A4 1,B4 2,B4 2|D5 1.5,B4 0.5,A4 1,G4 1,A4 4|E4 2,G4 1,A4 1,B4 2,E5 2|D5 1,D5 1,B4 1,A4 1,B4 4|G5 2,F#5 1,E5 1,D5 2,B4 2|C5 1.5,D5 0.5,E5 1,D5 1,C5 2,B4 2|A4 1,B4 1,C5 1,D5 1,E5 2,F#5 2|G5 6,r 2',roots:['E2','D3','E2','G2','G2','C3','D3','G2'],qual:'mMmMMMMM'},
+ // «La Internacional» (De Geyter, 1888)
+ internacional:{mel:'A4 3,G#4 1,B4 1,A4 1,E4 1,C#4 1|F#4 4,D4 2,r 1,F#4 1|B4 3,A4 1,G#4 1,F#4 1,E4 1,D4 1|C#4 6,r 1,E4 1|A4 3,G#4 1,B4 1,A4 1,E4 1,C#4 1|F#4 4,D4 2,B4 1,A4 1|G#4 2,G#4 1,B4 1,D5 3,G#4 1|A4 6,C#5 1,B4 1|G#4 3,G#4 1,F#4 1,G#4 1,A4 1,F#4 1|G#4 4,E4 1,D#4 1,E4 1,F#4 1|F#4 1,F#4 2,F#4 1,B4 3,A4 1|G#4 6,r 1,B4 1|B4 3,G#4 1,E4 1,E4 1,D#4 1,E4 1|C#5 4,E4 1,F#4 1,G#4 1,A4 1|G#4 2,B4 2,A4 2,F#4 2|E4 6,C#5 1.5,B4 0.5|A4 4,E4 3,F#4 1|F#4 4,D4 2,B4 1.5,A4 0.5|G#4 2,G#4 2,F#4 2,E4 2|E4 6,E4 2|C#5 3,C#5 1,B4 2,E4 2|A4 4,G#4 3,G#4 1|F#4 3,F4 1,F#4 2,B4 2|B4 6,C#5 1.5,B4 0.5|A4 4,E4 3,F#4 1|F#4 4,D4 2,B4 1.5,A4 0.5|G#4 2,G#4 2,G#4 3,E4 1|C#5 6,r 1,C#5 1|E5 3,E5 1,D5 2,C#5 2|B4 2,C#5 2,D5 2,r 1,D5 1|C#5 3,C#5 1,B4 3,A4 1|A4 6,r 1,E4 1',
+  roots:['A2','D3','B2','A2','A2','D3','E2','A2','E2','E2','B2','E2','E2','A2','E2','E2','A2','D3','E2','A2','A2','F#2','B2','E2','A2','D3','E2','A2','F#2','B2','A2','A2'],qual:'MMmMMMMMMMMMMMMMMMMMMmmMMMMMMmMM'},
+ // «A las barricadas» (Warszawianka, 1883)
+ barricadas:{mel:'A4 2,A4 1,G4 1,F4 2,F4 1,E4 1|D4 2,D4 1,C4 1,D4 1,F4 1,E4 2|A4 2,A4 1,A4 1,G4 1,F4 1,E4 1,D4 1|E4 1,F4 1,G4 2,A4 4|A4 1,A4 1,D5 2,A4 1,G4 1,F4 1,F4 1|E4 1,D4 1,F4 2,E4 4|A4 2,A4 1,G4 1,F4 1,E4 1,D4 1,F4 1|E4 1,D4 1,C4 2,D4 4|F4 2,F4 1,F4 1,C4 1,F4 1,G4 2|G4 2,G4 1,C4 1,G4 4|G4 2,G4 1,C#5 1,A#4 1,A4 1,G4 1,A4 1|A4 8|A4 1,A4 1,D5 2,A4 1,G4 1,F4 1,F4 1|E4 1,D4 1,F4 2,E4 4|A4 2,A4 1,G4 1,F4 1,E4 1,D4 1,F4 1|E4 1,D4 1,C#4 2,D4 4',
+  roots:['D3','D3','A2','D3','D3','A2','A2','D3','F2','C3','G2','A2','D3','A2','A2','D3'],qual:'mmMmmMMmMMmMmMMm'},
+ // «Bella ciao» (popular italiana)
+ bellaciao:{mel:'r 5,D4 1,G4 1,A4 1|A#4 1,G4 4,D4 1,G4 1,A4 1|A#4 1,G4 4,D4 1,G4 1,A4 1|A#4 2,A4 1,G4 1,A#4 2,A4 1,G4 1|D5 2,D5 2,D5 1,D5 1,C5 1,D5 1|D#5 1,D#5 4,D#5 1,D5 1,C5 1|D#5 1,D5 4,D5 1,C5 1,A#4 1|A4 2,D5 2,A#4 2,A4 2|G4 8',roots:['G2','G2','G2','G2','D3','C3','G2','D3','G2'],qual:'mmmmMmmMm'}};
+for(const k in SONGS){const g=SONGS[k];g.steps=parseMel(g.mel);g.R=g.roots.map(nm);g.N=g.steps.length}
+function env(g,t,a,peak,dec){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+dec)}
+function tone(type,f,t,dur,vol,f2){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);env(g,t,.005,vol,dur);o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05)}
+function noise(t,dur,vol,ft,fq){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noiseBuf;f.type=ft;f.frequency.value=fq;env(g,t,.002,vol,dur);s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+dur+.05)}
+function bass(m,t,dur){const o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=mf(m);f.type='lowpass';f.frequency.setValueAtTime(1400,t);f.frequency.exponentialRampToValueAtTime(220,t+dur);env(g,t,.004,.3,dur);o.connect(f);f.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05)}
+function distNode(){if(DIST)return DIST;const w=AC.createWaveShaper(),n=1024,cv=new Float32Array(n);for(let i=0;i<n;i++)cv[i]=Math.tanh((i/n*2-1)*6);w.curve=cv;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=3800;const g=AC.createGain();g.gain.value=.45;w.connect(f);f.connect(g);g.connect(master);return DIST=w}
+function screech(m,t,dur,vol,bend=1){const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.setValueAtTime(mf(m-bend),t);o.frequency.exponentialRampToValueAtTime(mf(m),t+.05);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.01);g.gain.setValueAtTime(vol,t+Math.max(.02,dur*.8));g.gain.exponentialRampToValueAtTime(.0001,t+dur+.04);o.connect(g);g.connect(distNode());o.start(t);o.stop(t+dur+.06)}
+function acc(m,t,dur,vol){const g=AC.createGain(),f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=2600;[-7,7].forEach(dt=>{const o=AC.createOscillator();o.type='sawtooth';o.frequency.value=mf(m);o.detune.value=dt;o.connect(f);o.start(t);o.stop(t+dur+.06)});g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.02);g.gain.setValueAtTime(vol,t+Math.max(.03,dur*.8));g.gain.exponentialRampToValueAtTime(.0001,t+dur+.05);f.connect(g);g.connect(master)}
+function prog(){return S.pieces.length?S.removed/S.pieces.length:0}
+// se acelera a medida que desmontas piezas: hasta un 40 % más rápido al final de cada nivel
+function bpm(){return ({legion:96,marchareal:112,noticiario:118,diva:114,sintonia:122,rockhimno:126,hardstyle:140}[curSong]||118)*(1+.4*prog())+S.lvl*3}
+function schedule(){if(!musicOn||!AC)return;while(nextT<AC.currentTime+.12){const SG=SONGS[curSong],sd=60/bpm()/4,s=step%SG.N,bar=s/16|0,b=s%16,root=SG.R[bar%SG.R.length],ch=[root,root+(SG.qual[bar]==='m'?3:4),root+7];
+  if(curSong==='hardstyle'){hardStep(SG,s,bar,b,root,ch,sd);nextT+=sd;step++;continue}
+  noise(nextT,b%2?.03:.05,b%4===2?.18:.09,'highpass',b%2?8000:6000);
+  if(b%4===0)tone('sine',130,nextT,.24,.9,45);
+  if(b===4||b===12)noise(nextT,.14,.28,'bandpass',1800);
+  if(curSong==='noticiario'&&b>=12)noise(nextT,.05,.22,'bandpass',2300); // redoble de tambor
+  if(curSong==='legion'){if(b%2===1)noise(nextT,.04,.16,'bandpass',2100);if(b===0)tone('sine',70,nextT,.5,.8,40)} // caja marcial y bombo grave
+  if(curSong==='rockhimno'&&b%2===0)bass(root-12,nextT,sd*.9);              // bajo galopante
+  if(curSong==='sintonia'&&b%4===3)tone('triangle',mf(ch[2]+24),nextT,sd*.5,.05); // campanita pop
+  if(b===6||b===14)tone('sine',190,nextT,.16,.4,120);
+  if(b===0||b===8)bass(root,nextT,sd*3);if(b===6||b===14)bass(root-5,nextT,sd*1.8);
+  if(b%4===2)ch.forEach(n=>tone('square',mf(n+12),nextT,sd*.7,.025));
+  const n=SG.steps[s];if(n){tone('square',mf(n.m+12),nextT,sd*n.len*.9,.045);tone('triangle',mf(n.m),nextT,sd*n.len*.9,.07)} // melodía limpia, sonido MIDI
+  nextT+=sd;step++}}
+function hsKick(t,vol){const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.setValueAtTime(190,t);o.frequency.exponentialRampToValueAtTime(48,t+.22);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(distNode());o.start(t);o.stop(t+.35)}
+// hardstyle: 4 compases de intro, 4 de subida con redoble y 8 de «drop» con bombo saturado y bajo a contratiempo
+function hardStep(SG,s,bar,b,root,ch,sd){const sec=bar<4?0:bar<8?1:2,n=SG.steps[s];
+  if(sec===0){if(b===0){ch.forEach(m=>acc(m+12,nextT,sd*15,.012));tone('sine',60,nextT,.6,.5,40)}if(b%4===2)noise(nextT,.03,.05,'highpass',9000)}
+  if(sec===1){const k=bar-4,every=[4,4,2,1][k];if(b%every===0)noise(nextT,.06,.06+.03*k+.002*b,'bandpass',1700+150*k);if(b%4===0)tone('sine',120,nextT,.2,.6,45);
+    if(bar===7&&b>=12)tone('sawtooth',mf(root+12+(b-12)*3),nextT,sd*.9,.02)}
+  if(sec===2){if(b%4===0)hsKick(nextT,.55);if(b%4===2){bass(root,nextT,sd*1.6);noise(nextT,.03,.12,'highpass',8000)}
+    if(b===4||b===12)noise(nextT,.12,.22,'bandpass',1500);if(b%2)noise(nextT,.02,.05,'highpass',10000)}
+  if(n){const v=[.035,.045,.06][sec];acc(n.m,nextT,sd*n.len*.9,v);if(sec===2)acc(n.m-12,nextT,sd*n.len*.9,.03)}}
+function siren(t,dur){const o=AC.createOscillator(),g=AC.createGain();o.type='sawtooth';o.frequency.setValueAtTime(500,t);o.frequency.exponentialRampToValueAtTime(1600,t+dur*.5);o.frequency.exponentialRampToValueAtTime(600,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.045,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(distNode());o.start(t);o.stop(t+dur+.05)}
+function startMusic(){if(!AC||musicOn||muted)return;musicOn=true;step=0;nextT=AC.currentTime+.05;schedId=setInterval(schedule,25)}
+function stopMusic(){musicOn=false;clearInterval(schedId)}
+// Nivel 5 y final: la canción de la campaña (audio), en lugar del sinte
+function setSong(k){const a=$('song5');
+  if(k==='fa'){curSong=k;stopMusic();if(!muted)a.play().catch(()=>{});return}
+  a.pause();if(SONGS[k]&&k!==curSong){curSong=k;step=0}if(!muted&&AC&&!musicOn)startMusic()}
+function sfx(k){if(!AC||muted)return;const t=AC.currentTime;
+  if(k==='ok')[72,76,79,84].forEach((m,i)=>tone('square',mf(m),t+i*.07,.14,.15));
+  if(k==='bad'){tone('sawtooth',220,t,.45,.2,70);tone('square',110,t+.05,.4,.12,55)}
+  if(k==='up')[60,64,67,72,76,79,84].forEach((m,i)=>tone('triangle',mf(m),t+i*.08,.3,.16))}
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'🔇':'🔊';$('mute').setAttribute('aria-label',muted?'Activar música':'Silenciar música');if(muted){stopMusic();$('song5').pause()}else if(curSong==='fa')$('song5').play().catch(()=>{});else{initAudio();startMusic()}};
+document.addEventListener('visibilitychange',()=>{const a=$('song5');if(document.hidden){a.pause();if(AC)AC.suspend()}else{if(AC)AC.resume();if(curSong==='fa'&&!muted)a.play().catch(()=>{})}});
+}
+</script>
+</body>
+</html>
