@@ -53,6 +53,8 @@
 		<img class="logo" src={estrella} alt="Frente Amplio" width="276" height="214" />
 	</header>
 
+	<p class="presenta">Muchachada Arcade presenta:</p>
+
 	<h1 class="banda">Juega FrenteAmplio</h1>
 
 	{#if data.juegos.length === 0}
@@ -160,6 +162,21 @@
 		display: block;
 		width: min(64vw, 32vh, 29rem);
 		height: auto;
+	}
+
+	/* Rótulo pequeño sobre la banda verde. Comparte el color y la tipografía de
+	   la casa para no competir con el titular. */
+	.presenta {
+		flex: none;
+		margin: 0;
+		padding: 0 1rem 0.35em;
+		color: var(--verde);
+		font-family: var(--display);
+		font-size: clamp(0.7rem, 3.2vw, 1.05rem);
+		line-height: 1;
+		letter-spacing: 0.14em;
+		text-align: center;
+		text-transform: uppercase;
 	}
 
 	.banda {
