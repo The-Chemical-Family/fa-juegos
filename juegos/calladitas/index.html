@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Calladitas</title>
+<meta name="description" content="El juego para dejar de estar calladitas en estas elecciones del 29N: desmonta los bulos del debate y libera a Ada Colau. Un juego de Muchachada Arcade.">
+<meta property="og:title" content="Calladitas">
+<meta property="og:description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://muchachadarcade.es/calladitas/">
+<meta property="og:image" content="https://muchachadarcade.es/og/calladitas.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Calladitas">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Calladitas">
+<meta name="twitter:description" content="Muchachada Arcade apoya a Frente Amplio">
+<meta name="twitter:image" content="https://muchachadarcade.es/og/calladitas.png">
+<meta name="theme-color" content="#24103b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,500;0,700;0,800;1,700&family=Anton&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+/* VOICE: fanzine feminista de campaña: rabia con alegría, nunca solemne
+   IDEA: una cinta americana tapa la boca; cada bulo desmontado la va arrancando
+   PICTURE: la caricatura del nivel en una vitrina, que pierde lastre (y Ada gana compañía)
+   COLOUR and TYPE: morado 8M, lima y naranja; Anton para rótulos, Permanent Marker para pancartas, Archivo para leer
+   LAYOUT: escenario vertical 9:16, vitrina arriba, pregunta y mandos abajo */
+:root{--ex:0px;--or:#EB4521;--lime:#DDF542;--mo:#9b4dca;--ink:#1d0f2e;--lv:#8E44AD}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;height:100%;background:#12081f;color:#fff;font:16px/1.4 "Archivo",Arial,sans-serif;overflow:hidden}
+#wrap{position:fixed;inset:0;display:grid;place-items:center;background:#12081f}
+#stage{position:absolute;left:50%;top:50%;width:720px;height:1280px;transform-origin:center;overflow:hidden;overflow:clip;
+  background:radial-gradient(circle at 50% 28%,#5a2a8a 0,#2a1145 62%,#160a26 100%)}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;overflow:clip}
+.scr.on{display:flex;animation:scrIn .4s cubic-bezier(.2,.9,.3,1)}
+@keyframes scrIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
+.btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:96px;border:0;border-radius:26px;
+  font:400 40px/1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;color:var(--ink);background:var(--lime);box-shadow:0 9px 0 #8aa01c;text-decoration:none}
+.btn:active{transform:translateY(6px);box-shadow:0 3px 0 #8aa01c}
+.btn.alt{background:#fff;box-shadow:0 9px 0 #b9a9d6}
+.btn.or{background:var(--or);color:#fff;box-shadow:0 9px 0 #9c2a10}
+#mute{position:absolute;right:22px;top:calc(22px + var(--sat,0px));z-index:20;width:64px;height:64px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:30px}
+
+/* ---------- PORTADA ---------- */
+#home{padding:calc(26px + var(--sat,0px)) 34px calc(44px + var(--sab,0px));align-items:center;text-align:center;
+  background:#24103b;isolation:isolate}
+#spit{position:absolute!important;z-index:-1;left:50%;top:calc(300px + var(--ex)*.4);height:calc(940px + var(--ex)*.6);aspect-ratio:9/16;transform:translateX(-50%);pointer-events:none}
+#homeBg{position:absolute!important;z-index:-2;left:50%;top:calc(300px + var(--ex)*.4);height:calc(940px + var(--ex)*.6);aspect-ratio:9/16;transform:translateX(-50%)}
+#home::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(30,12,52,.88) 0,rgba(30,12,52,.7) 16%,rgba(30,12,52,.25) 27%,rgba(30,12,52,0) 34%,rgba(30,12,52,0) 70%,rgba(22,9,38,.85) 80%,rgba(22,9,38,.95) 100%)}
+#home>*{position:relative}
+#home .criticas q,#home .medios,.creadores{text-shadow:0 2px 6px #000,0 0 2px #000}
+#home .criticas{display:grid;grid-template-columns:1fr 1.25fr .9fr;gap:10px;width:100%;padding-right:66px;align-items:start}
+#home .criticas div{display:flex;flex-direction:column;align-items:center}
+#home .criticas q{font:400 22px/1.08 Anton,sans-serif;text-transform:uppercase;color:#fff;text-shadow:0 2px 0 var(--ink);text-wrap:balance}
+#home .criticas q::before{content:'«'}#home .criticas q::after{content:'»'}
+#home .criticas cite{margin-top:5px;font:italic 700 16px Archivo,sans-serif;color:var(--lime)}
+#home .criticas cite::before{content:'— '}
+.creadores{margin:18px 0 0;font:700 18px/1.2 Archivo,sans-serif;letter-spacing:1.5px;text-transform:uppercase;color:#d9c6ef}
+.creadores b{font-weight:800;color:#fff}
+.tit{position:relative;margin:14px 0 0}
+#home h1{margin:0;font:400 176px/.86 Anton,sans-serif;text-transform:uppercase;letter-spacing:0;white-space:nowrap;color:#fff;text-shadow:0 7px 0 var(--ink),0 16px 34px rgba(0,0,0,.4)}
+.fallw{position:relative;cursor:pointer}
+.fallw.go{animation:fall 1.25s both}
+@keyframes fall{0%{transform:translateY(-2600px) scaleY(1.5);animation-timing-function:cubic-bezier(.6,0,1,.5)}
+ 50%{transform:translateY(0) scaleY(1.25);animation-timing-function:ease-out}58%{transform:translateY(14px) scale(1.3,.55)}
+ 72%{transform:translateY(-70px) scale(.9,1.15) rotate(-2deg);animation-timing-function:ease-in}82%{transform:translateY(0) scale(1.12,.82)}
+ 91%{transform:translateY(-14px) scale(.98,1.03) rotate(.8deg)}100%{transform:none}}
+#home.shake{animation:shake .7s linear}
+@keyframes shake{8%{transform:translate(-18px,14px) rotate(-1deg)}18%{transform:translate(16px,-12px) rotate(1deg)}30%{transform:translate(-13px,9px)}44%{transform:translate(10px,-7px)}58%{transform:translate(-6px,5px)}74%{transform:translate(4px,-3px)}88%{transform:translate(-2px,1px)}}
+#home .sub1{margin:6px 0 0;max-width:640px;text-wrap:balance;font:400 22px/1.1 Anton,sans-serif;letter-spacing:1.2px;text-transform:uppercase;text-shadow:0 2px 6px #000,0 0 3px #000,0 0 14px rgba(0,0,0,.8)}
+.poster{flex:1 1 0;min-height:0;aspect-ratio:9/16;width:auto;max-width:100%;margin:16px 0 20px;padding:8px;background:#fff8ee;border-radius:8px;transform:rotate(-1.2deg);box-shadow:0 18px 40px rgba(0,0,0,.5);animation:posterIn .9s cubic-bezier(.3,1.4,.5,1) 1.2s both}
+.poster img{display:block;width:100%;height:100%;object-fit:contain;border-radius:4px}
+@keyframes posterIn{from{opacity:0;transform:rotate(-8deg) scale(.85)}}
+#cards{position:relative;display:flex;justify-content:center;align-items:center;gap:0;margin:26px 0 0;height:340px;width:100%}
+#cards figure{margin:0 -26px;width:214px;height:290px;padding:9px 9px 38px;background:#fff8ee;border-radius:6px;box-shadow:0 14px 26px rgba(0,0,0,.45);transform:rotate(var(--r)) translateY(var(--y));position:relative;animation:bob 3s ease-in-out infinite;animation-delay:var(--dl)}
+#cards img,#cards canvas{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%;border-radius:3px}
+#cards figcaption{position:absolute;left:0;right:0;bottom:6px;font:400 22px "Permanent Marker",cursive;color:var(--ink)}
+#cards figure:last-child figcaption{color:var(--mo)}
+@keyframes bob{25%{transform:rotate(calc(var(--r) - 2deg)) translate(-6px,calc(var(--y) - 5px))}50%{transform:rotate(var(--r)) translate(0,calc(var(--y) - 9px))}75%{transform:rotate(calc(var(--r) + 2deg)) translate(6px,calc(var(--y) - 4px))}}
+#cards figure{filter:grayscale(.85) brightness(.6);transition:filter .6s,scale .6s}
+#cards figure.on{filter:none;scale:1.1;z-index:8!important}
+#story #cards{flex:1;height:auto;margin:10px 0}
+#story #cards figure{width:228px;height:306px;margin:0 -32px}
+#home .banda{position:relative;margin:0 -60px 18px;width:calc(100% + 120px);transform:rotate(-1.5deg);padding:8px 80px;background:var(--or);font:400 23px/1.15 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+#home .banda b{font-weight:400;color:var(--lime)}
+#slogan{display:inline-block}#slogan.flip{animation:sFlip .7s ease}
+@keyframes sFlip{45%,55%{transform:scaleY(0)}}
+#home .spacer{flex:1}
+#home .medios{margin:6px 0 44px;font:400 22px/1.15 Anton,sans-serif;letter-spacing:.8px;text-transform:uppercase;color:#fff;text-wrap:balance;max-width:600px}
+#home .medios b{font-weight:400;color:var(--lime)}
+#home .laurels{display:flex;justify-content:center;margin:0 0 38px;width:100%}
+.laurel{position:relative;width:226px;height:140px;flex:none}
+.laurel svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.laurel div{position:absolute;inset:22px 58px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff8e6}
+.laurel b{font:400 19px/1.02 Anton,sans-serif;text-transform:uppercase}
+.laurel div.flip{animation:sFlip .7s ease}
+.laurel small{margin-top:5px;font:700 13px/1.15 Archivo,sans-serif;letter-spacing:.6px;text-transform:uppercase;opacity:.85}
+#bStart{font-size:52px;animation:llama 1.8s ease-in-out infinite}
+@keyframes llama{0%,100%{transform:none}12%{transform:translateY(-8px) scale(1.04) rotate(-1.2deg)}24%{transform:rotate(1deg)}32%{transform:translateY(-4px) scale(1.02)}44%{transform:none}}
+#bStart:active{animation:none}
+.firma{margin:14px 0 0;font:700 17px Archivo,sans-serif;letter-spacing:1px;text-transform:uppercase;color:#d9c6ef}
+.firma a{color:var(--lime);text-decoration:none}
+.stats+.grid+.firma{margin-top:12px}
+
+/* ---------- JUEGO ---------- */
+#game{padding:calc(24px + var(--sat,0px)) 30px calc(30px + var(--sab,0px))}
+.top{display:flex;align-items:center;gap:14px;padding-right:76px}
+.lvpill{padding:10px 18px;border-radius:999px;background:var(--lv);font:400 26px/1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.latin{font:italic 700 23px Archivo,sans-serif;color:#d9c6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ladder{display:flex;gap:8px;margin:18px 0 0}
+.ladder span{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.14)}
+.ladder span.done{background:var(--lime)}.ladder span.cur{background:var(--lv);box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+#vitrina{position:relative;margin:18px auto 0;width:472px;height:calc(586px + var(--ex)*.4);border-radius:40px;overflow:hidden;background:#7d8ea0;box-shadow:0 0 0 8px var(--lv),0 26px 60px rgba(0,0,0,.55)}
+#vitrina canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;transform-origin:50% 90%;animation:breathe 4.6s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:none}25%{transform:scale(1.012) translateY(-3px) rotate(-.6deg)}50%{transform:scale(1.022) translateY(-6px)}75%{transform:scale(1.012) translateY(-3px) rotate(.6deg)}}
+#vitrina .out{animation:imgOut .7s ease-in forwards}
+@keyframes imgOut{to{opacity:0;filter:blur(6px) brightness(1.6)}}
+#vitrina.ok{animation:okFlash .6s}#vitrina.bad{animation:badShake .5s}
+@keyframes okFlash{0%{box-shadow:0 0 0 8px #22c55e,0 0 80px #22c55e}}
+@keyframes badShake{20%{transform:translateX(-18px) rotate(-1deg)}40%{transform:translateX(16px) rotate(1deg)}60%{transform:translateX(-10px)}80%{transform:translateX(8px)}}
+.ficha{position:absolute;left:18px;bottom:18px;z-index:3;max-width:64%!important;padding:8px 14px;border-radius:12px;background:rgba(29,15,46,.85);font:700 21px/1.2 Archivo,sans-serif;color:#eadff7;max-width:80%}
+.ficha b{display:block;font:400 26px/1.1 Anton,sans-serif;letter-spacing:.5px;color:#fff;text-transform:uppercase}
+#moscas{position:absolute;inset:0;z-index:7;pointer-events:none}
+.florero{position:absolute;right:8px;bottom:4px;z-index:2;width:156px;height:247px;pointer-events:none;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+.florero g.fl{transform-origin:60px 128px;animation:mece 5s ease-in-out infinite}
+@keyframes mece{50%{transform:rotate(1.5deg)}}
+#fly{position:absolute;left:50%;top:330px;z-index:9;pointer-events:none;padding:14px 26px;border-radius:999px;background:#fff;color:var(--ink);font:400 36px Anton,sans-serif;white-space:nowrap;text-transform:uppercase;opacity:0;transform:translate(-50%,0)}
+#fly.add{background:var(--lime)}
+#fly.go{animation:flyAway 1.5s cubic-bezier(.3,.6,.4,1) forwards}
+@keyframes flyAway{0%{opacity:0;transform:translate(-50%,40px) scale(.6)}15%{opacity:1;transform:translate(-50%,0) scale(1.08) rotate(-3deg)}55%{opacity:1;transform:translate(-50%,-30px) rotate(-4deg)}100%{opacity:0;transform:translate(60%,-260px) scale(.7) rotate(24deg)}}
+.props{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:14px 0 0;min-height:40px}
+.props span{padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.1);font:800 21px Archivo,sans-serif}
+.props span.gone{text-decoration:line-through;opacity:.35}
+.props span.got{background:var(--mo)}
+.props span.now{background:var(--lime);color:var(--ink)}
+#qbox{margin:14px 0 0;flex:1;display:flex;flex-direction:column;justify-content:center;padding:24px 28px;border-radius:30px;background:#FFF8EE;color:var(--ink);position:relative}
+#qbox .qk{font:400 22px Anton,sans-serif;letter-spacing:2px;color:var(--mo);text-transform:uppercase}
+#qbox .ctx{margin:6px 0 0;font:800 19px/1.2 Archivo,sans-serif;color:#6b5a7e}#qbox .ctx:empty{display:none}
+#qtext{margin:8px 0 0;font:800 31px/1.24 Archivo,sans-serif;text-wrap:pretty}
+#tbar{position:absolute;left:28px;right:28px;bottom:16px;height:8px;border-radius:4px;background:#eadfcd;overflow:hidden}
+#tbar i{display:block;height:100%;width:100%;background:var(--mo);transform-origin:left}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:20px 0 0}
+.ans .btn{min-height:110px;font-size:46px}
+#bTrue{background:#22c55e;color:#fff;box-shadow:0 9px 0 #15803d}#bFake{background:#ef4444;color:#fff;box-shadow:0 9px 0 #991b1b}
+#fb{position:absolute;left:0;right:0;bottom:0;z-index:8;padding:34px 34px calc(40px + var(--sab,0px));border-radius:40px 40px 0 0;background:rgba(36,16,59,.97);box-shadow:0 -14px 40px rgba(0,0,0,.5);transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.3,1)}
+#fb.on{transform:none}
+#fbV{font:400 54px/1 Anton,sans-serif;text-transform:uppercase}
+#fbA{margin:10px 0 0;display:inline-block;padding:6px 16px;border-radius:999px;font:400 26px Anton,sans-serif;letter-spacing:1px}
+#fbE{margin:16px 0 0;font:700 28px/1.32 Archivo,sans-serif;color:#eadff7}
+#fbS{display:inline-block;margin:6px 0 0;font:800 24px Archivo,sans-serif;color:var(--lime)}
+#fb .btn{margin-top:26px}
+
+/* ---------- PRESENTACIÓN DE CADA NIVEL ---------- */
+#intro{padding:calc(70px + var(--sat,0px)) 40px calc(44px + var(--sab,0px));align-items:center;text-align:center;background:radial-gradient(circle at 50% 38%,var(--lv) 0,#2a1145 58%,#160a26 100%)}
+.inN{font:400 26px Anton,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--lime)}
+#intro .big{margin-top:8px;font-size:96px}
+.inL{margin-top:6px;font:italic 700 30px Archivo,sans-serif;color:#eadff7}
+.inP{width:380px;height:calc(470px + var(--ex)*.4);margin:24px 0 0;border-radius:36px;overflow:hidden;box-shadow:0 0 0 8px #fff,0 26px 60px rgba(0,0,0,.55);animation:inPop .7s cubic-bezier(.3,1.6,.5,1) .15s both}
+.inP canvas{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%;transform-origin:50% 95%;animation:breathe 4.6s ease-in-out infinite}
+@keyframes inPop{from{opacity:0;transform:scale(.6) rotate(-6deg)}}
+.inK{margin-top:24px;font:400 24px Anton,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#d9c6ef}
+.inChips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px}
+.inChips span{padding:7px 16px;border-radius:999px;background:#fff8ee;color:var(--ink);font:800 22px Archivo,sans-serif}
+.inH{margin:22px 0 0;font:700 27px/1.32 Archivo,sans-serif;color:#fff;text-wrap:balance}
+.inH b{color:var(--lime);font-weight:800}
+#intro .btn{margin-top:auto}
+
+/* ---------- FIN DE NIVEL / FINAL ---------- */
+#lvup,#final{padding:calc(56px + var(--sat,0px)) 44px calc(50px + var(--sab,0px));align-items:center;text-align:center}
+.big{font:400 88px/.92 Anton,sans-serif;text-transform:uppercase;white-space:nowrap}
+.big b{font-weight:400;color:var(--lime);display:inline-block;animation:sway 2.8s ease-in-out 1.4s infinite}
+@keyframes sway{25%{transform:rotate(-1.5deg) scale(1.03)}75%{transform:rotate(1.5deg) scale(1.03)}}
+.sub{margin:16px 0 0;font:700 28px/1.3 Archivo,sans-serif;color:#eadff7;text-wrap:balance}
+.pw{position:relative;z-index:4;margin:26px 0 0;--a:1;transform:scale(calc(1 + (var(--a) - 1) * .08));transform-origin:50% 45%;transition:transform .35s cubic-bezier(.3,1.7,.5,1)} /* cada toque la hace más grande, hasta el nivel 10 de aura */
+.aura{position:absolute;left:50%;top:50%;width:calc(380px + var(--a)*40px);height:calc(440px + var(--a)*44px);transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 0deg,#DDF542,#9b4dca,#ff5ac8,#EB4521,#DDF542,#5ad7ff,#9b4dca,#DDF542);filter:blur(calc(22px + var(--a)*2px));opacity:calc(.45 + var(--a)*.05);animation:spin 3.5s linear infinite}
+.aura::before,.aura::after{content:'';position:absolute;top:10%;bottom:10%;width:40%;border-radius:50%;background:radial-gradient(closest-side,#fff,#DDF542 40%,transparent);animation:flame .5s ease-in-out infinite alternate}
+.aura::before{left:-14%}.aura::after{right:-14%;animation-delay:-.25s}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes flame{from{transform:scaleY(.85) translateY(10px);opacity:.6}to{transform:scaleY(1.15) translateY(-14px);opacity:1}}
+.port{position:relative;width:300px;height:380px;border-radius:36px;overflow:hidden;background:#7d8ea0;box-shadow:0 0 0 8px var(--lime),0 26px 60px rgba(0,0,0,.55)}
+.port canvas,.port img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%;transform-origin:50% 95%;animation:breathe 4.6s ease-in-out infinite}
+.pw.hype .port{animation:hype .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes hype{30%{transform:translateY(-22px) scale(1.06) rotate(-3deg)}60%{transform:translateY(4px) rotate(2deg)}}
+.pop{position:absolute;z-index:6;left:50%;top:40%;white-space:nowrap;pointer-events:none;font:400 40px Anton,sans-serif;letter-spacing:1px;color:var(--lime);text-shadow:0 3px 0 #1d0f2e,0 0 18px #9b4dca;animation:pop 1.3s ease-out forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,0) scale(.5)}15%{opacity:1;transform:translate(calc(-50% + var(--dx)),-30px) scale(1.15) rotate(var(--r))}100%{opacity:0;transform:translate(calc(-50% + var(--dx)*2.4),-230px) scale(.9) rotate(var(--r))}}
+.auraN{margin:16px 0 0;font:400 30px Anton,sans-serif;letter-spacing:2px;text-transform:uppercase;color:#fff}
+.auraN b{font-weight:400;color:var(--lime)}
+.btns{display:grid;gap:16px;width:100%;margin-top:auto}
+.btn.farm{background:linear-gradient(90deg,#9b4dca,#ff5ac8,#9b4dca);background-size:200% 100%;color:#fff;box-shadow:0 9px 0 #5b2380;animation:shine 2s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
+.arrow{margin:18px 0 0;font:400 30px Anton,sans-serif;letter-spacing:2px;color:#cdb8e6;text-transform:uppercase;text-wrap:balance}
+.arrow b{display:block;font-weight:400;font-size:58px;color:#fff;letter-spacing:1px}
+.arrow i{display:block;font:italic 700 24px Archivo,sans-serif;color:#d9c6ef;letter-spacing:0;text-transform:none}
+.lt{display:inline-block;animation:ltIn .7s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i)*45ms)}
+@keyframes ltIn{from{opacity:0;transform:translateY(-70px) rotate(-12deg) scale(.6)}}
+.w{display:inline-block;white-space:nowrap}
+.nota{margin:30px 0 0;padding:20px 26px;border-radius:6px;background:#fff8ee;color:var(--ink);font:400 26px/1.3 "Permanent Marker",cursive;transform:rotate(-1.2deg);box-shadow:0 14px 30px rgba(0,0,0,.4);text-wrap:pretty}
+.grid{display:grid;gap:14px;width:100%;margin-top:auto}
+.grid .btn{min-height:calc(74px + var(--ex)*.03);font-size:31px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;margin:18px 0}
+.stats div{padding:18px 8px;border-radius:22px;background:rgba(255,255,255,.08)}
+.stats b{display:block;font:400 54px/1 Anton,sans-serif}
+.stats span{font:700 20px Archivo,sans-serif;color:#d9c6ef}
+#final .port{width:calc(210px + var(--ex)*.15);height:calc(270px + var(--ex)*.2)}
+#final{padding-top:calc(40px + var(--sat,0px))!important}#final .stats{margin:14px 0}#final .stats div{padding:12px 6px}#final .stats b{font-size:46px}#final .pw{margin-top:18px}
+.lemaFA{margin:12px 0 0;padding:8px 22px;border-radius:999px;background:var(--or);font:400 30px/1.1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;box-shadow:0 6px 0 #9c2a10}
+#fLema{display:inline-block}#fLema.flip{animation:sFlip .7s ease}
+.zoom{width:100%;height:100%;transform-origin:94% 73%}
+#final .port canvas{object-position:50% 85%}#final .nota{font-size:20px;padding:12px 18px;margin-top:20px}#final .big{font-size:70px}
+
+/* ---------- CRÓNICA: el fanzine que cuenta la historia ---------- */
+#story{padding:calc(110px + var(--sat,0px)) 40px calc(50px + var(--sab,0px));align-items:center;text-align:center;background:radial-gradient(ellipse at 50% 30%,#6a2f9e 0,#341552 55%,#170a27 100%)}
+#story h2{margin:0 0 30px;text-wrap:balance;font:400 50px/1.05 Anton,sans-serif;text-transform:uppercase;letter-spacing:1px;color:#fff}
+#story h2 b{font-weight:400;color:var(--lime)}
+.zine{position:relative;width:100%;padding:44px 46px 40px;background:#fff8ee;color:var(--ink);font:700 33px/1.38 Archivo,sans-serif;text-align:left;transform:rotate(-1deg);box-shadow:0 22px 50px rgba(0,0,0,.6)}
+.zine::before,.zine::after{content:'';position:absolute;top:-18px;width:130px;height:40px;background:rgba(205,198,184,.88);transform:rotate(-8deg)}
+.zine::before{left:-20px}.zine::after{right:-20px;transform:rotate(9deg)}
+.zine p{margin:0;display:none}.zine p.on{display:block;animation:pIn .7s ease-out}
+@keyframes pIn{from{opacity:0;transform:translateY(14px)}}
+.zine b{color:var(--mo)}.zine b.verde{color:#3f8f2b}.zine b.azul{color:#1D84CE}.zine b.negro{color:#000}
+.dots{display:flex;gap:10px;justify-content:center;margin:26px 0 0}.dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.25)}.dots i.on{background:var(--lime)}
+.row4{display:flex;justify-content:center;gap:14px;margin:30px 0 0;width:100%}
+.row4 img{width:23%;aspect-ratio:3/4;object-fit:cover;object-position:50% 18%;border-radius:12px;opacity:.18;filter:grayscale(1);transition:.7s;transform:translateY(8px)}
+.row4 img.on{opacity:1;filter:none;transform:none;box-shadow:0 0 0 4px var(--lime)}
+#story .btn{margin-top:auto}
+#story .skip{margin-top:14px;border:0;background:none;color:#d9c6ef;font:700 24px Archivo,sans-serif;text-decoration:underline;min-height:44px}
+#rot{display:none;position:fixed;inset:0;z-index:99;background:#24103b;place-items:center;text-align:center;padding:24px;font:800 20px/1.35 Archivo,sans-serif}
+#rot b{display:block;font:400 34px/1.1 Anton,sans-serif;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+@media (orientation:landscape) and (max-height:500px){#rot{display:grid}}
+#probe{position:fixed;top:0;left:0;width:0;height:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);visibility:hidden;pointer-events:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<audio id="a_nodo" src="/calladitas/nodo.mp3" loop preload="auto"></audio><audio id="a_cayetana" src="/calladitas/cayetana.mp3" loop preload="auto"></audio><audio id="a_finalpower" src="/calladitas/final.mp3" loop preload="auto"></audio>
+<div id="rot"><div><b>Gira el móvil</b>Calladitas se juega en vertical.</div></div><div id="probe"></div>
+<div id="wrap"><div id="stage">
+ <button id="mute" aria-label="Silenciar música">🔊</button>
+
+ <section id="home" class="scr on">
+  <canvas id="spit" width="720" height="1280" aria-hidden="true"></canvas>
+  <canvas id="homeBg" role="img" aria-label="Ada Colau, sonriente, delante de Carmen, Vóxica, Cayetánica y Feijóo en el Congreso"></canvas>
+  <div class="criticas">
+   <div><q>Jugarás mientras reflexionas sin parar</q></div>
+   <div><q>Un antes y un después en la contienda electoral</q></div>
+   <div><q>Liberador de principio a fin</q></div>
+  </div>
+  <div class="creadores">De lxs creadores de <b>Democratic Evolution</b></div>
+  <div class="tit"><div class="fallw go" id="fallw" title="Otra vez"><h1>Calladitas</h1></div></div>
+  <div class="sub1">El juego para dejar de estar calladitas en estas elecciones del 29 de noviembre</div>
+  <div class="spacer" role="img" aria-label="Ada Colau, sonriente, delante de Carmen, Vóxica, Cayetánica y Feijóo en el Congreso"></div>
+  <div class="medios">Qué dicen los medios de <b>Ada Colau</b> en el debate a 4 del 26 de noviembre</div>
+  <div class="laurels" id="laurels" aria-label="Valoraciones de la prensa"></div>
+  <button class="btn" id="bStart">Libérate</button>
+ </section>
+
+ <section id="story" class="scr">
+  <div class="zine" id="stP"></div>
+  <div class="dots" id="stD"></div>
+  <div id="cards" aria-hidden="true"></div>
+  <button class="btn" id="stNext">Seguir leyendo</button>
+  <button class="skip" id="stSkip">Saltarse la crónica</button>
+ </section>
+
+ <section id="intro" class="scr">
+  <div class="inN" id="inN"></div>
+  <div class="big" id="inT"></div>
+  <div class="inL" id="inL"></div>
+  <div class="inP" id="inP"></div>
+  <div class="inK" id="inK"></div>
+  <div class="inChips" id="inC"></div>
+  <p class="inH" id="inH"></p>
+  <button class="btn" id="bGo">¡A liberarla!</button>
+ </section>
+
+ <section id="game" class="scr">
+  <div class="top"><div class="lvpill" id="gLv"></div><div class="latin" id="gLatin"></div></div>
+  <div class="ladder" id="gLadder"></div>
+  <div id="vitrina"></div>
+  <div class="props" id="gProps"></div>
+  <div id="qbox"><div class="qk" id="qk">¿Verdad o bulo?</div><div class="ctx" id="qctx"></div><p id="qtext"></p><div id="tbar"><i></i></div></div>
+  <div class="ans"><button class="btn" id="bTrue">Verdad</button><button class="btn" id="bFake">Bulo</button></div>
+  <div id="fly"></div>
+  <canvas id="moscas" width="720" height="1280" aria-hidden="true"></canvas>
+  <div id="fb" role="dialog" aria-live="polite"><div id="fbV"></div><div id="fbA"></div><p id="fbE"></p><a id="fbS" target="_blank" rel="noopener">Ver la fuente ↗</a><button class="btn" id="bNext">Seguir</button></div>
+ </section>
+
+ <section id="lvup" class="scr">
+  <div class="big" id="luT"></div>
+  <div class="pw" id="luW"><div class="aura"></div><div class="port" id="luP"></div></div>
+  <div class="auraN" id="luA"></div>
+  <div class="nota" id="luC"></div>
+  <div class="arrow" id="luN"></div>
+  <div class="btns"><button class="btn farm" id="bFarm">Libérate aún más ✨</button><button class="btn" id="bEvo">Siguiente nivel</button></div>
+ </section>
+
+ <section id="final" class="scr">
+  <div class="big" id="fT"></div>
+  <div class="lemaFA"><span id="fLema">Un voto como una casa</span></div>
+  <div class="pw" id="fW"><div class="aura"></div><div class="port" id="fP"></div></div>
+  <div class="nota" id="fC"></div>
+  <div class="stats" id="fStats"></div>
+  <div class="grid">
+   <button class="btn farm" id="bFarm2">Libérate aún más ✨</button>
+   <a class="btn or" href="https://frenteamplio.info/pdf/ProgramaFrenteAmplio.pdf" target="_blank" rel="noopener">Quiero saber más</a>
+   <button class="btn alt" id="bShare">Copiar mensaje</button>
+   <button class="btn" id="bAgain">↻ Volver a jugar</button>
+  </div>
+  <div class="firma">Un juego de <a href="https://muchachadarcade.es" target="_blank" rel="noopener">Muchachadarcade.es</a></div>
+ </section>
+</div></div>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+// Los datos nombran las imágenes sin prefijo; se sirven bajo /calladitas/.
+const RAIZ='/calladitas/';
+const ruta=r=>/^(\/|[a-z]+:)/i.test(r)?r:RAIZ+r;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const pick=a=>a[Math.random()*a.length|0];
+
+// ---------- PREGUNTAS: los bulos y verdades del debate del 29N (a: true = VERDAD) ----------
+const QS=[[{"q": "Feijóo: «Con la ley del solo sí es sí, Sánchez sacó de la cárcel a 1.400 violadores»", "a": false, "e": "Hubo 126 excarcelaciones; el resto fueron rebajas de condena.", "f": "Newtral", "src": "https://www.newtral.es/afirmaciones-cara-a-cara-verificadas/20261120/", "ctx": "cc"}, {"q": "Abascal: «Las agresiones sexuales se han triplicado»", "a": false, "e": "Han subido un 64 %, y lo que se cuenta son denuncias.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Abascal: «España tiene la peor educación»", "a": false, "e": "En el informe PISA, España está en el puesto 27 de 43 países.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Feijóo: «El ministro Carlos Cuerpo ha dicho que las pensiones van a petar»", "a": false, "e": "No hay ninguna declaración del ministro en ese sentido.", "f": "The Objective", "src": "https://theobjective.com/economia/2026-11-27/presupuestos-salarios-vivienda-mentiras-medias-verdades-economicas-debate/", "ctx": "d4"}, {"q": "Abascal: «Vox siempre ha apoyado a las familias numerosas»", "a": false, "e": "Vox votó en contra de un decreto sobre familias numerosas.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Colau: «PP y Vox votaron contra subir las pensiones con el IPC».", "a": true, "e": "Los dos votaron en contra de la reforma de 2021 que sube las pensiones según el IPC.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "En el debate a 4, Feijóo le dijo a Colau: «Usted, calladita».", "a": true, "e": "Es cierto: se lo dijo tal cual.", "f": "Noticias de Navarra", "src": "https://www.noticiasdenavarra.com/politica/2026/11/27/frases-reproches-cruzados-debate-cuatro-11801305.html", "ctx": "d4"}, {"q": "Abascal se negó en el debate a 4 a condenar la violencia machista.", "a": true, "e": "Cuando se lo pidieron, respondió que él no admite órdenes.", "f": "COPE", "src": "https://www.cope.es/programas/la-linterna/al-minuto/contamos-debate-cuatro-sanchez-feijoo-abascal-colau-elecciones-generales-29n-20261126_3483264.html", "ctx": "d4"}, {"q": "Colau abrió el debate a 4 condenando la violencia machista.", "a": true, "e": "Fue lo primero que dijo.", "f": "Infobae (EFE)", "src": "https://www.infobae.com/espana/agencias/2026/11/27/el-debate-a-cuatro-escenifica-los-dos-bloques-enfrentados-el-29n/", "ctx": "d4"}, {"q": "Colau respondió en el debate a 4: «No vamos a estar calladitas».", "a": true, "e": "Es una frase real del debate a 4.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}, {"q": "Colau cerró el debate a 4 con el lema «Un voto como una casa».", "a": true, "e": "Fue su lema de cierre.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}], [{"q": "Abascal: «Los sueldos están estancados»", "a": false, "e": "Entre 2018 y 2024 los sueldos subieron un 23 %, por encima de la inflación (19,3 %).", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Abascal: «Hoy hay más gente buscando trabajo»", "a": false, "e": "El paro bajó de 3,49 a 2,49 millones de personas.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Abascal: «Nos prohibieron buscar tierras raras en España»", "a": false, "e": "La Ley de Cambio Climático permite buscarlas.", "f": "The Objective", "src": "https://theobjective.com/economia/2026-11-27/presupuestos-salarios-vivienda-mentiras-medias-verdades-economicas-debate/", "ctx": "d4"}, {"q": "Abascal: «Las políticas verdes ponen en peligro dos millones de empleos del automóvil»", "a": false, "e": "No hay datos que lo respalden: que un empleo esté ligado al coche no significa que esté en riesgo.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Vox: «La subida del salario mínimo ha destruido 150.000 empleos»", "a": false, "e": "Habla de empleos que no se crearon, no de empleos destruidos. En 2025 la afiliación a la Seguridad Social creció en 506.451 personas.", "f": "Politicheck", "src": "https://politicheck.es/29n-verificaciones-campana"}, {"q": "Abascal: «El PSOE está detrás de las amenazas a una jueza»", "a": false, "e": "No hay ninguna prueba de esa acusación.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Abascal: «Amnistía Internacional vive de dinero público y de Soros»", "a": false, "e": "Se financia sobre todo con pequeñas donaciones.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Abascal: «Han entrado seis millones de inmigrantes»", "a": false, "e": "El aumento neto de población inmigrante es de 2 a 2,1 millones.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Abascal: «Han entrado cinco millones de inmigrantes en cinco años»", "a": false, "e": "No hay ningún dato que confirme esa cifra.", "f": "Politicheck", "src": "https://politicheck.es/29n-verificaciones-campana"}, {"q": "Abascal: «La mitad de los inmigrantes no trabaja ni cotiza»", "a": false, "e": "Es un cálculo del diario ABC que los expertos no consideran fiable.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}, {"q": "PP y Vox: «Más inmigrantes, más delincuencia»", "a": false, "e": "La población extranjera ha subido y la criminalidad ha bajado.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}, {"q": "Feijóo y Abascal: «Los ceutíes viven encerrados en sus casas»", "a": false, "e": "No se corresponde con la vida diaria de Ceuta.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Abascal: «Marruecos ha promovido la invasión de Ceuta»", "a": false, "e": "El CNI no encontró pruebas de que el Estado marroquí lo instigara.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}, {"q": "Colau: «La mujer de Abascal cobra el bono social para familias vulnerables»", "a": true, "e": "Cobró 210,71 € del bono social térmico.", "f": "Maldita.es", "src": "https://maldita.es/desinfo/20261118/la-mujer-de-santiago-abascal-cobra-el-bono-social-de-calefaccion-para-familias-vulnerables/", "ctx": "d4"}, {"q": "Colau: «Vox votó en contra de subir las pensiones».", "a": true, "e": "Votó en contra en las dos últimas votaciones para subirlas.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Colau: «Netanyahu, el primer ministro de Israel, recibió a Abascal»", "a": true, "e": "En Jerusalén, durante más de una hora, en mayo de 2024.", "f": "Público", "src": "https://www.publico.es/internacional/abascal-reune-netanyahu-elogiar-firmeza-israel-dar-espalda-gobierno-espanol.html", "ctx": "d4"}, {"q": "Colau: «Israel me detuvo cuando iba a Gaza con la Flotilla»", "a": true, "e": "La llevaron a una cárcel israelí.", "f": "Ara", "src": "https://es.ara.cat/politica/colau-coronas-aterrizan-barcelona-deportados-israel_1_5519239.html", "ctx": "d4"}, {"q": "La Corte Penal Internacional ha ordenado detener a Netanyahu, primer ministro de Israel.", "a": true, "e": "Por crímenes de guerra y de lesa humanidad.", "f": "Noticias ONU", "src": "https://news.un.org/es/story/2024/11/1534566"}, {"q": "Colau a Abascal en el debate a 4: «No nos va a instrumentalizar al colectivo LGTBI para justificar su racismo».", "a": true, "e": "Es una frase real del debate a 4.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/ultima-hora-ultimo-debate-electoral-sanchez-feijoo-colau-abascal_6_13696999.html", "ctx": "d4"}], [{"q": "Feijóo: «Se han perdido 400.000 pisos de alquiler»", "a": false, "e": "Esa cifra es la caída de anuncios en Idealista. Según Hacienda, hay unos 500.000 alquileres más que en 2018.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Feijóo: «Comprar una casa cuesta hoy un 75 % más»", "a": false, "e": "Según los notarios, ha subido un 37 %.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Feijóo: «El alquiler ha subido un 45%»", "a": false, "e": "Son precios de anuncios; según Hacienda, ha subido entre un 20 % y un 39 %.", "f": "elDiario.es", "src": "https://www.eldiario.es/politica/mentiras-debate-cuatro_1_13697433.html", "ctx": "d4"}, {"q": "Feijóo: «Todas esas subidas de la vivienda han sido en esta legislatura»", "a": false, "e": "Son subidas acumuladas desde 2018. Desde noviembre de 2023, el alquiler subió un 24,8 %.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Feijóo: «En Barcelona la oferta de alquiler cayó un 69%»", "a": false, "e": "Son solo datos de Idealista; según el Ayuntamiento cayó un 17 % en dos años.", "f": "The Objective", "src": "https://theobjective.com/economia/2026-11-27/presupuestos-salarios-vivienda-mentiras-medias-verdades-economicas-debate/", "ctx": "d4"}, {"q": "Abascal: «En Barcelona los contratos de alquiler se han reducido a la mitad»", "a": false, "e": "Los contratos activos han subido en 29.083.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Abascal: «La vivienda ha subido un 74% y el alquiler un 50%»", "a": false, "e": "Es impreciso: el valor tasado de la vivienda libre subió un 48 %.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Feijóo: «Los jóvenes españoles son los últimos de Europa en emanciparse»", "a": false, "e": "En Croacia, Grecia y Eslovaquia los jóvenes se emancipan aún más tarde.", "f": "Politicheck", "src": "https://politicheck.es/29n-verificaciones-campana"}, {"q": "Colau: «La vivienda es lo que más preocupa a la gente»", "a": true, "e": "Según el CIS de octubre de 2026, es el primer problema para el 55,7 %.", "f": "Politicheck", "src": "https://politicheck.es/29n-verificaciones-campana", "ctx": "d4"}, {"q": "El Frente Amplio propone construir 1,5 millones de viviendas públicas.", "a": true, "e": "En 12 años, invirtiendo el 1 % del PIB.", "f": "Programa Frente Amplio, pág. 10 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone alquileres públicos de unos 600 € al mes.", "a": true, "e": "Como máximo orientativo para un piso de 80 m².", "f": "Programa Frente Amplio, pág. 10 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que el alquiler no pase del 25 % de lo que se gana.", "a": true, "e": "Calculado sobre la renta media del barrio.", "f": "Programa Frente Amplio, pág. 13 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone prohibir que los fondos buitre compren viviendas.", "a": true, "e": "Prohíbe la compra especulativa por empresas con ánimo de lucro.", "f": "Programa Frente Amplio, pág. 12 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio quiere expropiarte tu piso.", "a": false, "e": "Solo plantea expropiar a grandes tenedores corporativos, nunca a particulares.", "f": "Programa Frente Amplio, pág. 10 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que los contratos de alquiler sean indefinidos.", "a": true, "e": "Pasarían a ser la norma.", "f": "Programa Frente Amplio, pág. 14 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que no haya ni un desahucio sin alternativa de vivienda.", "a": true, "e": "Para las personas vulnerables.", "f": "Programa Frente Amplio, pág. 15 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone acabar con los pisos turísticos en las zonas tensionadas.", "a": true, "e": "Con la extinción progresiva de las licencias en esas zonas.", "f": "Programa Frente Amplio, pág. 12 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "Feijóo: «Sánchez no ha presentado ni un solo presupuesto»", "a": false, "e": "Presentó los de 2020, 2021 y 2022.", "f": "Newtral", "src": "https://www.newtral.es/verificacion-directo-debate-a-cuatro-elecciones-29n/20261126/", "ctx": "d4"}, {"q": "Feijóo: «Las legumbres han subido un 110%»", "a": false, "e": "Según el INE, han subido un 24,3 %.", "f": "Politicheck", "src": "https://politicheck.es/29n-verificaciones-campana"}, {"q": "Feijóo: «Sánchez se comprometió con la OTAN a gastar el 5 % del PIB en defensa»", "a": false, "e": "España firmó con flexibilidad sobre ese objetivo.", "f": "El Folio", "src": "https://elfolio.es/bulos-debate-a-cuatro-sanchez-feijoo-abascal-colau/", "ctx": "d4"}, {"q": "Colau: «El PP fue condenado por la trama de corrupción Gürtel»", "a": true, "e": "Fue el primer partido condenado en democracia, por lucrarse de la trama.", "f": "Diario de Cuyo", "src": "https://www.diariodecuyo.com.ar/noticias/que-es-el-caso-gurtel-el-escandalo-de-corrupcion-que-le-costo-la-presidencia-a-rajoy-322970.html", "ctx": "d4"}, {"q": "En el debate a 4, Feijóo dijo de Gaza «es una masacre» y Sánchez le corrigió: «Es un genocidio».", "a": true, "e": "Es un cruce real del debate a 4.", "f": "Noticias de Navarra", "src": "https://www.noticiasdenavarra.com/politica/2026/11/27/frases-reproches-cruzados-debate-cuatro-11801305.html", "ctx": "d4"}], [{"q": "El Frente Amplio propone bajar el IRPF a los sueldos bajos.", "a": true, "e": "Es una de sus seis grandes propuestas.", "f": "Programa Frente Amplio, pág. 8 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio quiere subir el IRPF a los trabajadores.", "a": false, "e": "Al revés: propone bajarlo a los sueldos bajos.", "f": "Programa Frente Amplio, pág. 8 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que las grandes empresas paguen al menos un 20 % en el impuesto de sociedades.", "a": true, "e": "Un tipo mínimo real, pagado de verdad.", "f": "Programa Frente Amplio, pág. 44 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone un impuesto del 3 % anual a quien tenga más de 50 millones.", "a": true, "e": "Es la llamada tasa Zucman a los ultrarricos.", "f": "Programa Frente Amplio, pág. 45 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que ningún heredero pueda recibir más de 10 millones.", "a": true, "e": "Un límite a las herencias de los ultrarricos.", "f": "Programa Frente Amplio, pág. 46 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone bajar el IVA de los productos básicos.", "a": true, "e": "Y también el de la energía.", "f": "Programa Frente Amplio, pág. 8 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone precios máximos para la cesta básica de la compra.", "a": true, "e": "Topes de precio en los alimentos básicos.", "f": "Programa Frente Amplio, pág. 56 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone la jornada de 37,5 horas ya, y de 32 después, sin bajar el sueldo.", "a": true, "e": "Una reducción progresiva de la jornada.", "f": "Programa Frente Amplio, pág. 56 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone fijar por ley el salario mínimo en el 60 % del salario medio.", "a": true, "e": "Como suelo legal del salario mínimo.", "f": "Programa Frente Amplio, pág. 51 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone tres horas de luz gratis al día.", "a": true, "e": "En la franja en que más energía solar se produce.", "f": "Programa Frente Amplio, pág. 64 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone prohibir que se corte la luz a las familias vulnerables.", "a": true, "e": "Blindándolo por ley.", "f": "Programa Frente Amplio, pág. 21 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone blindar las pensiones en la Constitución.", "a": true, "e": "Con subidas según el IPC.", "f": "Programa Frente Amplio, pág. 57 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone volver a la jubilación a los 65 años.", "a": true, "e": "Revirtiendo la reforma de 2011.", "f": "Programa Frente Amplio, pág. 58 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone jubilarse a los 60 en la construcción y la limpieza.", "a": true, "e": "Y también en la pesca, la ayuda a domicilio y las camareras de piso.", "f": "Programa Frente Amplio, pág. 58 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que ninguna pensión mínima esté por debajo del salario mínimo.", "a": true, "e": "Incluido en el blindaje constitucional de las pensiones.", "f": "Programa Frente Amplio, pág. 57 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone 200 € al mes por cada hijo o hija.", "a": true, "e": "Es su Prestación Universal por Crianza.", "f": "Programa Frente Amplio, pág. 21 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone comedores escolares gratis.", "a": true, "e": "Gratuitos para todo el alumnado.", "f": "Programa Frente Amplio, pág. 22 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone educación gratis desde los 0 años hasta la universidad.", "a": true, "e": "Destinando el 7 % del PIB a educación.", "f": "Programa Frente Amplio, pág. 7 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone dentista, gafas y psicólogo en la sanidad pública.", "a": true, "e": "Incluye salud bucodental, visual, auditiva y mental.", "f": "Programa Frente Amplio, pág. 7 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone dedicar al menos el 8 % del PIB a la sanidad pública.", "a": true, "e": "Como suelo mínimo de inversión.", "f": "Programa Frente Amplio, pág. 26 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone un abono de Cercanías de 20 €.", "a": true, "e": "Y de 10 € para menores de 26 años.", "f": "Programa Frente Amplio, pág. 65 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone blindar el derecho al aborto en la Constitución.", "a": true, "e": "Libre y universal en la sanidad pública.", "f": "Programa Frente Amplio, pág. 37 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone dar prioridad en la vivienda pública a las víctimas de violencia machista.", "a": true, "e": "Acceso prioritario a vivienda pública y protegida.", "f": "Programa Frente Amplio, pág. 38 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone crear una Oficina Independiente contra la Corrupción.", "a": true, "e": "Con capacidad para investigar y sancionar.", "f": "Programa Frente Amplio, pág. 142 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone que los corruptos no puedan tener contratos públicos durante 20 años.", "a": true, "e": "Afecta a empresas y personas condenadas.", "f": "Programa Frente Amplio, pág. 142 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone acabar con la rebaja de condena por alargar los juicios de corrupción.", "a": true, "e": "Elimina la atenuante de dilaciones indebidas en estos casos.", "f": "Programa Frente Amplio, pág. 142 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "El Frente Amplio propone incautar bienes a los corruptos sin esperar a la condena.", "a": true, "e": "Mediante el decomiso preventivo.", "f": "Programa Frente Amplio, pág. 142 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}, {"q": "Circula por redes: «Los migrantes regularizados podrán votar el 29N»", "a": false, "e": "Para votar en unas generales hace falta la nacionalidad española.", "f": "Maldita.es", "src": "https://maldita.es/prebunking/20261119/migrantes-elecciones-voto-pucherazo/"}, {"q": "Circula por redes: «Según el CIS, Vox gana las elecciones»", "a": false, "e": "Ese barómetro del CIS no existe.", "f": "Maldita.es", "src": "https://maldita.es/desinfo/20261112/encuestas-falsas-vox-29-noviembre-tiktok/"}, {"q": "El Frente Amplio propone un embargo total de armas a Israel.", "a": true, "e": "Integral y permanente.", "f": "Programa Frente Amplio, pág. 131 del PDF", "src": "https://www.democrata.es/elecciones-generales-espana/frente-amplio-programa-electoral-reforma-fiscal-servicios-publicos-vivienda/"}]];
+
+// ---------- NIVELES ----------
+// Hasta Ada, cada acierto le quita una pieza (img = cómo está mientras aún la lleva). En Ada, cada acierto le suma algo.
+const P=(pre,list)=>list.map(([k,l],i)=>({k,l,img:`${pre}${i+1}_${k}.webp`}));
+const LEVELS=[
+ {name:'Carmenpoloquiteca',latin:'Domina Dominada',col:'#8a6d3b',song:'nodo',tema:'Machismo y silencio',qs:QS[0],solo:'c_solo.webp',
+  props:P('c',[['mantilla','la mantilla'],['permiso','el permiso del marido'],['delantal','el delantal'],['rosario','el rosario']])},
+ {name:'Vóxica',latin:'Domina Pro-Machirulus',col:'#3f8f2b',song:'terror',tema:'Migración y mundo',qs:QS[1],solo:'v_solo.webp',
+  props:P('v',[['insultos','los insultos'],['pancarta','la pancarta de «Repatriación»'],['capa','la capa rojigualda'],['gafas','las gafas de sol']])},
+ {name:'Cayetánica',latin:'Domina PPre-feminística',col:'#1D84CE',song:'cayetana',tema:'Vivienda y economía',qs:QS[2],solo:'y_solo.webp',
+  props:P('y',[['corona','la corona'],['billetes','los billetes de 500'],['abanico','el abanico rojigualda'],['metoo','el #MeToo tachado']])},
+ {name:'Frenteamplística',latin:'Fémina Feminista',col:'#8E44AD',song:'bellaciao',tema:'Propuestas y derechos',qs:QS[3],add:1,solo:'a5_final.webp',
+  props:[['sola','la causa palestina'],['palestino','codo a codo con las Kellys'],['kellys','la lucha por la vivienda'],['vivienda','«¡De calladitas, nada!»'],['calladitas','el pueblo de pie en las calles']].map(([k,l],i)=>({k,l,img:`a${i}_${k}.webp`}))}];
+const QTIME=20;
+const CTX={d4:'Debate a 4 del 26 de noviembre, ante 10,2 millones de personas',cc:'Cara a cara Sánchez-Feijóo del 19 de noviembre'};
+// precarga por niveles: al abrir solo el primero; cada presentación carga el nivel actual y el siguiente
+const PRE=new Set();function preload(i){const L=LEVELS[i];if(!L||PRE.has(i))return;PRE.add(i);L.props.forEach(p=>{new Image().src=ruta(p.img)});new Image().src=ruta(L.solo)}
+preload(0);
+
+// ---------- LEMAS (notificaciones, banda y pancartas que cruzan la pantalla) ----------
+const OK=['¡Alza la voz!','¡De calladita, nada!','¡Ni calladas ni sumisas!','¡Libérate!','¡Así se hace!','¡Juntas somos más!'];
+const KO=['¡Te la han colado!','¡Que no te callen con bulos!','¡Ojo, que era trampa!'];
+const LEMAS=['¡Ni una menos!','¡Ni calladas ni sumisas!','¡Hermana, yo sí te creo!','¡Lo personal es político!','¡Juntas somos más!','¡Solo sí es sí!','¡Orgullo!','¡Amar no es delito!','¡Trans liberación!','¡No a la guerra!','¡Palestina libre!','¡Stop genocidio!','¡Ningún ser humano es ilegal!','¡Vivienda para vivir!','¡Igual trabajo, igual salario!','¡El miedo va a cambiar de bando!','¡Mi cuerpo, mi decisión!','¡De calladitas, nada!'];
+const SLOGANS=[['Se acabó estar calladitas.','Alza la voz el 29N.'],['Ni calladas ni sumisas:','libres.'],['Un bulo menos,','una voz más.'],['Lo personal','es político.'],['Amar no es delito.','Orgullo siempre.'],['No a la guerra.','Sí a la vida.'],['Sin feminismo','no hay democracia.'],['Juntas somos más.','Libérate.']];
+// valoraciones reales de la prensa sobre Colau en el debate a 4 (van rotando)
+const AWARDS=[['Gran ganadora de la noche','Panel de analistas de EL PAÍS'],['La gran sorpresa del debate','El Folio'],['Revoluciona el debate','elDiario.es'],['La gran ganadora del debate','Iván Redondo'],['Colau reanima a Sánchez','Artículo 14'],['No se queda calladita','elDiario.es'],['Sorprendió por su solidez','Infobae'],['Le pone las pilas a Sánchez','elDiario.es · Iñigo Sáenz de Ugarte'],['El alegato feminista de Colau','elDiario.es']];
+
+// ---------- ESCALA ----------
+const stage=$('stage');
+function fit(){const vw=innerWidth,vh=(window.visualViewport&&visualViewport.height)||innerHeight,H=Math.round(Math.max(1280,Math.min(1560,720*vh/vw))),s=Math.min(vw/720,vh/H),
+  pr=getComputedStyle($('probe')),sat=parseFloat(pr.paddingTop)||0,sab=parseFloat(pr.paddingBottom)||0;
+  stage.style.height=H+'px';stage.style.setProperty('--ex',(H-1280)+'px');stage.style.setProperty('--sat',(sat/s)+'px');stage.style.setProperty('--sab',(sab/s)+'px');
+  const cm=$('moscas');if(cm.height!==H)cm.height=H;stage.style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);fit();
+function shrink(el,max){el.style.fontSize='';let f=parseFloat(getComputedStyle(el).fontSize);while(el.scrollWidth>max&&f>30){f-=2;el.style.fontSize=f+'px'}}
+
+// ---------- PORTADA ----------
+$('cards').innerHTML=[['c1_mantilla.webp','calladita',-7,26],['v1_insultos.webp','histérica',4,6],['y1_corona.webp','ricachona',-3,14],['a5_final.webp','¡libre!',6,-8]]
+ .map(([s,c,r,y],i)=>`<figure style="--r:${r}deg;--y:${y}px;--dl:-${i*.6}s;z-index:${i===3?5:i}" data-s="${s}"><figcaption>${c}</figcaption></figure>`).join('');
+$('cards').querySelectorAll('figure').forEach(f=>f.prepend(makeChar(f.dataset.s)));
+makeChar('portada.webp',null,$('homeBg'));
+// en la portada suena «A las barricadas» desde el primer toque (los navegadores no dejan sonar nada antes)
+$('home').addEventListener('pointerdown',e=>{if(e.target.closest('#bStart,#mute'))return;initAudio();if(curSong==='barricadas'&&!musicOn)setSong('barricadas')});
+// si tocas a Feijóo en la portada, manda callar: «¡SHHHTS!»
+{const cv=$('spit'),g=cv.getContext('2d'),M=[560,328],SYM=['#','@','!','¿?','💀','⚡','%','💣'],P=[];let quiet=0,shh=0,last=performance.now();
+ $('home').addEventListener('click',e=>{if(e.target.closest('button,a'))return;const r=$('homeBg').getBoundingClientRect(),x=(e.clientX-r.left)/r.width*720,y=(e.clientY-r.top)/r.height*1280;
+   if(x>470&&y>460&&y<1000){quiet=performance.now()+3800;shh=performance.now();P.length=0;initAudio();sfx('shh')}});
+ (function loop(now){const dt=Math.min(50,now-last)/16.7;last=now;g.clearRect(0,0,720,1280);
+   if($('home').classList.contains('on')){
+     if(false){const s=true;P.push({x:M[0]-10,y:M[1]+(Math.random()-.5)*16,vx:-(2.5+Math.random()*4),vy:-1.5+Math.random()*3,t:s?null:SYM[Math.random()*SYM.length|0],r:4+Math.random()*6,life:0,rot:(Math.random()-.5)*.2})}
+     for(let i=P.length-1;i>=0;i--){const q=P[i];q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=.12*dt;q.life+=dt;if(q.life>70||q.y>900){P.splice(i,1);continue}
+       const a=Math.max(0,1-q.life/70);g.save();g.globalAlpha=a;g.translate(q.x,q.y);
+       if(q.t){g.rotate(q.life*q.rot);g.font='800 44px Archivo,sans-serif';g.textAlign='center';g.lineWidth=7;g.strokeStyle='#fff';g.strokeText(q.t,0,0);g.fillStyle='#1d0f2e';g.fillText(q.t,0,0)}
+       else{g.fillStyle='rgba(200,235,255,.95)';g.strokeStyle='rgba(60,110,160,.8)';g.lineWidth=1.5;g.beginPath();g.ellipse(0,0,q.r,q.r*1.3,Math.atan2(q.vy,q.vx),0,7);g.fill();g.stroke()}
+       g.restore()}
+     if(now<quiet){const k=Math.min(1,(now-shh)/180),wob=Math.sin((now-shh)/90)*3;g.save();g.translate(560,455+wob);g.rotate(.1);g.scale(k*.85,k*.85);
+       g.fillStyle='#fff';g.strokeStyle='#1d0f2e';g.lineWidth=5;g.beginPath();g.roundRect?g.roundRect(-120,-48,240,96,40):g.rect(-120,-48,240,96);g.fill();g.stroke();
+       g.font='400 60px Anton,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle='#9b4dca';g.fillText('¡SHHHTS!',0,4);g.restore()}}
+   requestAnimationFrame(loop)})(last)}
+function laurelSVG(){let g='';const cx=100,cy=58,R=60;
+  for(const sd of[-1,1]){g+=`<path d="M ${cx+sd*Math.sin(.35)*R} ${cy+Math.cos(.35)*R} A ${R} ${R} 0 0 ${sd<0?1:0} ${cx+sd*Math.sin(2.75)*R} ${cy+Math.cos(2.75)*R}" fill="none" stroke="#f3e2b0" stroke-width="2.2"/>`;
+    for(let k=0;k<8;k++){const t=.45+k*.29,x=cx+sd*Math.sin(t)*R,y=cy+Math.cos(t)*R,deg=-sd*(t*180/Math.PI+215);
+      g+=`<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="4.6" ry="11" fill="#f3e2b0" transform="rotate(${deg.toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)}) translate(0 -9)"/>`}}
+  return `<svg viewBox="0 0 200 118" aria-hidden="true">${g}</svg>`}
+$('laurels').innerHTML=[0,1,2].map(()=>`<div class="laurel">${laurelSVG()}<div><b></b><small></small></div></div>`).join('');
+{let ai=0;const L3=[...$('laurels').querySelectorAll('.laurel>div')];
+ const putA=(d,k)=>{const [a,b]=AWARDS[k%AWARDS.length];d.querySelector('b').textContent=`«${a}»`;d.querySelector('small').textContent=b};
+ L3.forEach((d,k)=>putA(d,k));
+ setInterval(()=>{if(!$('home').classList.contains('on'))return;const k=ai%3,d=L3[k];d.classList.remove('flip');void d.offsetWidth;d.classList.add('flip');setTimeout(()=>putA(d,ai+++3),330)},2600)}
+{let si=0;setInterval(()=>{const el=$('slogan');if(!el||!$('home').classList.contains('on'))return;el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');
+  setTimeout(()=>{si=(si+1)%SLOGANS.length;el.innerHTML=`${esc(SLOGANS[si][0])} <b>${esc(SLOGANS[si][1])}</b>`},330)},3600)}
+const fitTitle=()=>shrink($('home').querySelector('h1'),690);
+// el título cae de golpe y hace «¡pum!» (el navegador solo deja sonar si ya ha habido un toque; tocar el título lo repite con ruido)
+function dropTitle(){const w=$('fallw'),h=$('home');w.classList.remove('go');void w.offsetWidth;w.classList.add('go');
+  setTimeout(()=>{thud();h.classList.remove('shake');void h.offsetWidth;h.classList.add('shake')},625)}
+setTimeout(()=>{const h=$('home');h.classList.add('shake')},625);setTimeout(thud,625);
+$('fallw').onclick=()=>{initAudio();dropTitle()};fitTitle();if(document.fonts)document.fonts.ready.then(fitTitle);
+
+// ---------- PERSONAJES VIVOS: pestañean (ojos en píxeles de las imágenes de 720 de ancho: x, y, radio x, radio y) ----------
+const EYES={c:{e:[[235,268,15,7],[325,280,20,8]],f:'#dfb8a8'},v:{e:[[235,275,22,12],[340,272,24,13]],f:'#a88276'},y:{e:[[288,192,16,6],[365,185,16,7]],f:'#e5b494'},
+ a:{e:[[310,305,22,9],[440,295,22,9]],f:'#eea983'},a5:{e:[[325,415,14,5],[395,412,14,5]],f:'#f0a47c'},p:{e:[[314,398,22,9],[411,393,22,9]],f:'#eea983'}};
+const eyesOf=s=>s.startsWith('portada')?EYES.p:s.startsWith('a5')?EYES.a5:s.startsWith('v')?(s==='v_solo.webp'?EYES.v:null):EYES[s[0]]||null; // Vóxica con gafas de sol: no se le ven los ojos
+const LIVE=new Set();
+// ojos verde fosforito de vez en cuando: solo Vóxica (en la portada y en su nivel, también tras las gafas)
+const GLOW=s=>s.startsWith('portada')?[[535,256,13,8],[583,255,13,8]]:/^v(\d|_)/.test(s)?[[235,275,22,12],[340,272,24,13]]:null;
+// Carmen se vuelve en blanco y negro de vez en cuando, como en el NO-DO (en la portada, solo su zona)
+const BWREG=s=>/^c(\d|_)/.test(s)?'all':s.startsWith('portada')?[[0,470],[275,470],[285,610],[215,700],[175,860],[160,1280],[0,1280]]:null;
+function grayOf(img){const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const g=c.getContext('2d');g.drawImage(img,0,0);
+  try{const d=g.getImageData(0,0,c.width,c.height),p=d.data;for(let i=0;i<p.length;i+=4){let v=.3*p[i]+.59*p[i+1]+.11*p[i+2];v=Math.min(255,Math.max(0,(v-128)*1.15+128));p[i]=p[i+1]=p[i+2]=v}g.putImageData(d,0,0)}catch(e){}return c}
+function makeChar(src,alt,el){const cv=el||document.createElement('canvas');cv.setAttribute('role','img');if(alt)cv.setAttribute('aria-label',alt);const img=new Image();
+  img.onload=()=>{cv.width=img.naturalWidth;cv.height=img.naturalHeight;const C={cv,img,F:eyesOf(src),bwR:BWREG(src),bwNext:performance.now()+3000+Math.random()*4000,bw:0,next:performance.now()+800+Math.random()*2500,k:0,glowE:GLOW(src),gNext:performance.now()+2500+Math.random()*4000,g:0};drawChar(C);if(C.F||C.glowE||C.bwR)LIVE.add(C)};img.src=ruta(src);return cv}
+function drawChar(C){const g=C.cv.getContext('2d');g.drawImage(C.img,0,0);
+  if(C.bw>0&&C.bwR){if(!C.gray)C.gray=grayOf(C.img);g.save();g.globalAlpha=C.bw;if(C.bwR!=='all'){g.beginPath();C.bwR.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.clip()}g.drawImage(C.gray,0,0);g.restore()}
+  if(C.glowE&&C.g>.02&&C.k<.5)C.glowE.forEach(([ex,ey,rx,ry])=>{g.save();g.globalCompositeOperation='lighter';const r=g.createRadialGradient(ex,ey,0,ex,ey,rx*1.6);
+    r.addColorStop(0,`rgba(140,255,90,${.95*C.g})`);r.addColorStop(.45,`rgba(60,255,40,${.6*C.g})`);r.addColorStop(1,'rgba(0,255,0,0)');g.fillStyle=r;g.beginPath();g.ellipse(ex,ey,rx*1.6,ry*2.2,0,0,7);g.fill();g.restore()}); // ojos verde fosforito
+  if(!C.F||C.k<.03)return;
+  C.F.e.forEach(([ex,ey,rx,ry])=>{g.save();g.beginPath();g.ellipse(ex,ey,rx*1.2,ry*1.6,0,0,7);g.clip();const top=ey-ry*1.6,h=ry*3.2*C.k;
+    g.fillStyle=C.F.f;g.fillRect(ex-rx*1.3,top,rx*2.6,h);g.strokeStyle='rgba(30,15,10,.8)';g.lineWidth=Math.max(2,ry*.3);g.beginPath();g.moveTo(ex-rx*1.1,top+h-ry*.2);g.quadraticCurveTo(ex,top+h+ry*.35,ex+rx*1.1,top+h-ry*.2);g.stroke();g.restore()})}
+(function blink(now){LIVE.forEach(C=>{if(!C.cv.isConnected){LIVE.delete(C);return}
+  if(C.bwR){const bd=now-C.bwNext;if(bd>=0&&bd<1800){C.bw=Math.min(1,bd/150,(1800-bd)/250)*(bd%300<40?.6:1);drawChar(C)}else if(bd>=1800){C.bw=0;drawChar(C);C.bwNext=now+6000+Math.random()*5000}}
+  if(C.glowE){const gd=now-C.gNext;if(gd>=0&&gd<1100){C.g=Math.sin(gd/1100*Math.PI)*(.75+.25*Math.sin(gd/60));drawChar(C)}else if(gd>=1100){C.g=0;drawChar(C);C.gNext=now+5000+Math.random()*5000}}
+  const d=now-C.next;
+  if(d>=0){const k=d<180?Math.sin(d/180*Math.PI):0;if(k!==C.k||k>0){C.k=k;drawChar(C)}if(d>=180){C.k=0;drawChar(C);C.next=now+2200+Math.random()*2800}}});requestAnimationFrame(blink)})(performance.now());
+
+// ---------- AURA: al liberarte, puedes farmear aura ----------
+const AURA_TXT=['+1000 AURA','AURA FARMING','MAIN CHARACTER','SLAY','ICÓNICA','+500 DE CALLADITA, NADA','W','SIN FILTRO','LIBERADA 100%','QUEEN','NI CALLADA NI SUMISA','+9999 AURA','LA PEOPLE'];
+let AURA=0;
+function farm(w,label){const lv=Math.min(10,(+w.style.getPropertyValue('--a')||1)+1);w.style.setProperty('--a',lv);w.classList.remove('hype');void w.offsetWidth;w.classList.add('hype');
+  const gain=[500,1000,1500,2000][Math.random()*4|0];AURA+=gain;const p=document.createElement('div');p.className='pop';p.textContent=Math.random()<.5?`+${gain} AURA`:pick(AURA_TXT);
+  p.style.setProperty('--dx',((Math.random()-.5)*160|0)+'px');p.style.setProperty('--r',((Math.random()-.5)*20|0)+'deg');w.appendChild(p);setTimeout(()=>p.remove(),1400);
+  if(label)label.innerHTML=`Aura: <b>${AURA.toLocaleString('es-ES')}</b>`;sfx('aura',lv)}
+$('bFarm').onclick=()=>farm($('luW'),$('luA'));
+// en la pantalla final, cada toque acerca la imagen hasta la bandera de «Working Class»; al llegar, vuelve de golpe
+let ZOOM=0,zT=null;
+$('bFarm2').onclick=()=>{farm($('fW'),null);const z=$('fZ');if(!z||ZOOM>=8)return;ZOOM++;z.style.transition='transform .4s cubic-bezier(.3,1.5,.5,1)';const f=ZOOM/8;z.style.transform=`translate(${(-13*f).toFixed(1)}%,${(-23*f).toFixed(1)}%) scale(${1+ZOOM*.28})`;
+  if(ZOOM>=8){clearTimeout(zT);zT=setTimeout(()=>{z.style.transition='transform .22s ease-in';z.style.transform='none';ZOOM=0},1300)}};
+
+// ---------- ESTADO ----------
+const S={lvl:0,ok:0,bad:0,streak:0,best:0,queue:[],pieces:[],removed:0,cur:null,timer:null,answered:false};
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id))}
+// verdades y bulos mezclados, nunca más de dos iguales seguidas mientras queden de los dos tipos
+function mixQs(list){const all=shuffle(list),tr=all.filter(q=>q.a),fa=all.filter(q=>!q.a),out=[];let run=0,last=null;
+  while(tr.length||fa.length){let pt;if(!tr.length)pt=false;else if(!fa.length)pt=true;else if(run>=2)pt=!last;else pt=Math.random()<.5;
+    const q=(pt?tr:fa).shift();if(q.a===last)run++;else{run=1;last=q.a}out.push(q)}return out}
+const curL=()=>LEVELS[S.lvl];
+// presentación a pantalla completa de cada nivel antes de jugarlo
+function showIntro(i){S.lvl=i;preload(i);preload(i+1);const L=LEVELS[i];stage.style.setProperty('--lv',L.col);setSong(L.song);
+  $('inN').textContent=`Nivel ${i+1} de ${LEVELS.length}`;$('inT').textContent=L.name;$('inL').textContent=L.latin;
+  $('inP').innerHTML='';$('inP').appendChild(makeChar(L.props[0].img,L.name));
+  $('inK').textContent=L.add?'Lo que le vas a sumar':'Lo que lleva encima';
+  $('inC').innerHTML=L.props.map(p=>`<span>${esc(p.l)}</span>`).join('');
+  $('inH').innerHTML=L.add?'Ada Colau, <b>la candidata de todas las que no queremos estar calladitas</b>. Aquí no se quita nada: cada bulo que desmientes le suma gente y causas, hasta que no quede nadie callada.'
+    :`Para liberarla tienes que quitárselo todo, pieza a pieza: <b>desmintiendo bulos</b>. Cada acierto le arranca un lastre, hasta dejarla libre.`;
+  $('bGo').textContent=L.add?'¡A sumar!':'¡A liberarla!';show('intro');shrink($('inT'),640)}
+$('bGo').onclick=()=>startLevel(S.lvl);
+function startLevel(i){S.lvl=i;S.lvStart=performance.now();if(!S.times)S.times=[];$('fly').classList.remove('go');const L=curL();stage.style.setProperty('--lv',L.col);S.queue=mixQs(L.qs);S.removed=0;S.pieces=L.props.slice();
+  $('gLv').textContent=`Nivel ${i+1} · ${L.name}`;$('gLatin').textContent=L.latin;
+  $('gLadder').innerHTML=LEVELS.map((_,k)=>`<span class="${k<i?'done':k===i?'cur':''}"></span>`).join('');
+  drawVitrina(false);drawProps();show('game');setSong(L.song);nextQ()}
+const curImg=()=>S.removed<S.pieces.length?S.pieces[S.removed].img:curL().solo;
+function drawVitrina(anim){const v=$('vitrina'),L=curL(),left=S.removed<S.pieces.length,p=S.pieces[S.removed];
+  const txt=L.add?(left?'Le falta: '+esc(p.l):'¡Con toda la gente!'):(left?'Lleva: '+esc(p.l):'Liberada');
+  const old=v.querySelector('canvas'),img=makeChar(curImg(),`${L.name}: ${L.add?(left?'le falta '+p.l:'con toda la gente'):(left?'con '+p.l:'liberada')}`);
+  v.querySelectorAll('.ficha').forEach(n=>n.remove());
+  if(anim&&old){old.classList.add('out');v.insertBefore(img,old);setTimeout(()=>old.remove(),720)}else{v.innerHTML='';v.appendChild(img)}
+    v.insertAdjacentHTML('beforeend',`<div class="ficha"><b>${esc(L.latin)}</b>${txt}</div>`)}
+// florero que se va marchitando a medida que la protagonista suelta lastre (w: 0 = fresco, 1 = mustio)
+function florero(w){const mix=(a,b,k)=>'#'+[0,2,4].map(i=>Math.round(parseInt(a.substr(i,2),16)*(1-k)+parseInt(b.substr(i,2),16)*k).toString(16).padStart(2,'0')).join('');
+  const col=['e8456b','f2b33d','c84fd8'],dead='7a5a3a',leaf=mix('4f9a3a','8a7a3a',w);let st='',fl='',fall='';
+  [-24,0,24].forEach((a,i)=>{const s=i===0?-1:1,r=Math.PI/180,th=(a+s*w*(i===1?95:80))*r,c=[60+Math.sin(a*r)*34,70],e=[c[0]+Math.sin(th)*52,c[1]-Math.cos(th)*52];
+    st+=`<path d="M60 128 Q${c[0].toFixed(1)} ${c[1]} ${e[0].toFixed(1)} ${e[1].toFixed(1)}" stroke="${leaf}" stroke-width="3" fill="none"/>`;
+    st+=`<ellipse cx="${((60+c[0])/2).toFixed(1)}" cy="100" rx="9" ry="3.5" fill="${leaf}" transform="rotate(${(a-30+w*50).toFixed(0)} ${((60+c[0])/2).toFixed(1)} 100)"/>`;
+    const pc=mix(col[i],dead,w*.9),n=Math.max(2,5-Math.round(w*3)),sc=1-w*.35;
+    for(let k=0;k<n;k++)fl+=`<ellipse cx="${e[0].toFixed(1)}" cy="${(e[1]-9*sc).toFixed(1)}" rx="${(5*sc).toFixed(1)}" ry="${(9*sc).toFixed(1)}" fill="${pc}" transform="rotate(${k*72+th/r} ${e[0].toFixed(1)} ${e[1].toFixed(1)})"/>`;
+    fl+=`<circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="${(4.5*sc).toFixed(1)}" fill="${mix('ffd84a',dead,w)}"/>`});
+  for(let k=0;k<Math.round(w*7);k++)fall+=`<ellipse cx="${[18,104,30,96,10,112,24][k]}" cy="${[184,182,186,185,180,186,181][k]}" rx="5" ry="2.6" fill="${mix(col[k%3],dead,.8)}" transform="rotate(${k*37} ${[18,104,30,96,10,112,24][k]} 183)"/>`;
+  return `<svg class="florero" viewBox="0 0 120 190" aria-hidden="true"><g class="fl">${st}${fl}</g>${fall}
+   <path d="M40 124 Q36 150 44 182 L76 182 Q84 150 80 124 Z" fill="rgba(220,235,255,.35)" stroke="rgba(255,255,255,.8)" stroke-width="2"/>
+   <path d="M42 146 Q40 160 45 181 L75 181 Q80 160 78 146 Z" fill="rgba(140,180,${Math.round(200-w*90)},${(.45+w*.2).toFixed(2)})"/></svg>`}
+function drawProps(){speedUp();const add=curL().add;$('gProps').innerHTML=S.pieces.map((p,k)=>`<span class="${k<S.removed?(add?'got':'gone'):k===S.removed?'now':''}">${esc(p.l)}</span>`).join('')}
+
+function nextQ(){S.cur=S.queue.shift();S.answered=false;$('fb').classList.remove('on');const L=curL(),n=S.pieces.length-S.removed;
+  $('qk').textContent=`¿Verdad o bulo? · ${L.tema} · ${L.add?'Faltan':'Quedan'} ${n}`;$('qtext').textContent=S.cur.q;$('qctx').textContent=CTX[S.cur.ctx]||'';
+  ['bTrue','bFake'].forEach(b=>$(b).disabled=false);
+  const bar=$('tbar').firstElementChild;bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition=`transform ${QTIME}s linear`;bar.style.transform='scaleX(0)';
+  clearTimeout(S.timer);S.timer=setTimeout(()=>answer(null),QTIME*1000)}
+
+function answer(v){if(S.answered)return;S.answered=true;clearTimeout(S.timer);['bTrue','bFake'].forEach(b=>$(b).disabled=true);
+  const bar=$('tbar').firstElementChild,f=getComputedStyle(bar).transform;bar.style.transition='none';bar.style.transform=f;
+  const q=S.cur,ok=v===q.a,vit=$('vitrina'),L=curL();vit.classList.remove('ok','bad');void vit.offsetWidth;
+  if(ok){S.ok++;S.streak++;S.best=Math.max(S.best,S.streak);vit.classList.add('ok');sfx('ok');
+    const p=S.pieces[S.removed];S.removed++;const fly=$('fly');fly.textContent=L.add?`¡Suma ${p.l}!`:`¡Fuera ${p.l}!`;fly.classList.toggle('add',!!L.add);fly.classList.remove('go');void fly.offsetWidth;fly.classList.add('go');
+    drawVitrina(true);drawProps()}
+  else{S.bad++;S.streak=0;vit.classList.add('bad');sfx('bad');S.queue.push(q)} // la fallada vuelve a salir
+  $('fbV').textContent=v===null?'¡Tiempo!':ok?pick(OK):pick(KO);$('fbV').style.color=ok?'#22c55e':'#ef4444';
+  $('fbA').textContent=q.a?'✔ Es verdad':'✖ Es bulo';$('fbA').style.background=q.a?'#22c55e':'#ef4444';
+  $('fbE').textContent=`${q.e} Fuente: ${q.f}.`+(ok?'':' Volverá a salir más tarde.');
+  const s=$('fbS');if(q.src){s.href=q.src;s.style.display=''}else s.style.display='none';
+  $('bNext').textContent=S.removed>=S.pieces.length?'¡Libérate!':'Seguir';
+  setTimeout(()=>$('fb').classList.add('on'),ok?650:350)}
+$('bTrue').onclick=()=>answer(true);$('bFake').onclick=()=>answer(false);
+$('bNext').onclick=()=>{$('fb').classList.remove('on');if(S.removed>=S.pieces.length)return levelUp();if(!S.queue.length)S.queue=mixQs(curL().qs);nextQ()};
+addEventListener('keydown',e=>{if(!$('game').classList.contains('on'))return;if(!S.answered){if(e.key==='ArrowLeft'||e.key==='v')answer(true);if(e.key==='ArrowRight'||e.key==='b')answer(false)}else if(e.key==='Enter'||e.key===' '){e.preventDefault();$('bNext').click()}});
+
+const letters=(t,o)=>{let n=o;return t.split(' ').map(w=>`<span class="w">${[...w].map(ch=>`<span class="lt" style="--i:${n++}">${esc(ch)}</span>`).join('')}</span>`).join(' ')};
+function levelUp(){const L=curL();S.times[S.lvl]=performance.now()-S.lvStart;if(S.lvl===LEVELS.length-1)return finish();const N=LEVELS[S.lvl+1];sfx('up');
+  $('luT').innerHTML=`${letters(L.name,0)}<br><b>${letters('liberada',L.name.length+2)}</b>`;
+  $('luP').innerHTML='';$('luP').appendChild(makeChar(L.solo,L.name+' liberada'));$('luC').textContent=CHRON[S.lvl];
+  AURA+=1000;$('luW').style.setProperty('--a',1);$('luA').innerHTML=`Aura: <b>${AURA.toLocaleString('es-ES')}</b>`;
+  $('luN').innerHTML=`Siguiente nivel<b>${esc(N.name)}</b><i>${esc(N.latin)}</i>`;show('lvup');shrink($('luT'),600)}
+$('bEvo').onclick=()=>showIntro(S.lvl+1);
+
+// lemas del Frente Amplio que van rotando en la pantalla final
+const LEMAS_FA=['Un voto como una casa','Tax the rich','Vivienda para vivir, no para especular','37,5 horas ya','Ni un desahucio sin alternativa','Sanidad y educación públicas','Embargo de armas a Israel','Pensiones blindadas','¡Nunca más calladitas!'];
+{let fi=0;setInterval(()=>{if(!$('final').classList.contains('on'))return;const el=$('fLema');el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');setTimeout(()=>{fi=(fi+1)%LEMAS_FA.length;el.textContent=LEMAS_FA[fi]},330)},2400)}
+function finish(){S.times[S.lvl]=performance.now()-S.lvStart;setSong('finalpower');sfx('up');AURA+=3000;ZOOM=0;$('fP').innerHTML='<div class="zoom" id="fZ"></div>';$('fZ').appendChild(makeChar('a5_final.webp','Ada rodeada de toda la gente'));$('fW').style.setProperty('--a',1);
+  $('fT').innerHTML=`${letters('De calladitas,',0)}<br><b>${letters('¡nada!',16)}</b>`;
+  $('fC').textContent=CHRON_END;
+  $('fStats').innerHTML=`<div><b>${S.ok}</b><span>aciertos</span></div><div><b>${S.bad}</b><span>fallos</span></div><div><b>${(AURA/1000).toLocaleString('es-ES',{maximumFractionDigits:1})}k</b><span>de aura</span></div>`;show('final');shrink($('fT'),640)}
+$('bAgain').onclick=()=>{S.ok=S.bad=S.streak=S.best=0;AURA=0;S.times=[];showIntro(0)};
+// mensaje para compartir: estadísticas de la partida, de qué se liberó cada una y cuánto tardaste
+const mmss=ms=>{const s=Math.round((ms||0)/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
+const yList=a=>a.length>1?a.slice(0,-1).join(', ')+' y '+a[a.length-1]:a[0];
+function shareText(){const T=S.times||[],tot=T.reduce((x,y)=>x+(y||0),0);
+  const lines=LEVELS.map((L,i)=>`${L.add?'➕':'✂️'} ${L.add?'Ada':L.name}: ${L.add?'con':'sin'} ${yList(L.props.map(p=>p.l))}, en ${mmss(T[i])}`);
+  return `🟣 CALLADITAS · Mi partida\n⏱️ Me he liberado en ${mmss(tot)}\n✅ ${S.ok} aciertos · ❌ ${S.bad} fallos · ✨ ${AURA.toLocaleString('es-ES')} de aura\n\n${lines.join('\n')}\n\n🗳️ El 29N, un voto como una casa: vota Frente Amplio. ¡Nunca más calladitas!\nPásalo a tus amigos del PSOE :-)\n\n🎮 Un juego de Muchachadarcade.es\n👉 https://muchachadarcade.es/calladitas`}
+$('bShare').onclick=async()=>{const t=shareText();
+  try{await navigator.clipboard.writeText(t);$('bShare').textContent='¡Copiado!'}catch(e){$('bShare').textContent='No se pudo copiar'}setTimeout(()=>$('bShare').textContent='Copiar mensaje',2200)};
+// #nivel1 … #nivel4 en la dirección empieza directamente en ese nivel (para probar)
+$('bStart').onclick=()=>{initAudio();S.ok=S.bad=S.streak=S.best=0;AURA=0;S.times=[];const m=location.hash.match(/^#nivel([1-4])$/);if(m)return showIntro(m[1]-1);setSong('cumbia');story(()=>showIntro(0))};
+
+// ---------- CRÓNICA ----------
+const CRONICA=[
+ 'Durante cuarenta años nos quisieron <b class="negro">calladitas</b>: con mantilla, con rosario, con delantal y con el permiso del marido para abrir una cuenta en el banco.',
+ 'Luego llegaron otras, <b class="verde">histéricas</b>, que gritaban mucho, pero siempre contra las de abajo: contra las migrantes, contra las feministas, contra las que aman a quien quieren.',
+ 'Y otras, <b class="azul">ricachonas</b>, con corona y abanico, que decían que el feminismo ya no hacía falta mientras los alquileres se comían el sueldo.',
+ 'Hasta que dijimos basta. Cada bulo que desmontas le quita a alguien un lastre de encima. Y cuando ya no queda lastre, empieza lo bueno: <b>liberarse y ganar estas elecciones</b>.',
+ 'El 29 de noviembre no te calles. Desmonta bulos, suelta lastre y <b>libérate</b>. Porque <b>jugar a ganar no es ilegal</b>.'];
+const CHRON=[
+ 'Y Carmenpoloquiteca soltó la mantilla, rompió el permiso del marido y colgó el delantal. Por primera vez, sonrió por algo suyo.',
+ 'Y Vóxica dejó de gritar insultos, tiró la pancarta y se quitó las gafas: resultó que se veía mejor sin odio.',
+ 'Y Cayetánica se quitó la corona, devolvió los billetes y cerró el abanico. El #MeToo ya no estaba tachado.'];
+const CHRON_END='Y Ada no se quedó sola: llegaron las Kellys, la gente que pelea por su casa, los riders, las maestras, las sanitarias, el Orgullo y los que dicen no a la guerra. Ninguna calladita. Todas juntas.';
+const ROW=['c1_mantilla.webp','v1_insultos.webp','y1_corona.webp','a5_final.webp'];
+let stI=0,stGo=null;
+function story(go){stGo=go;stI=0;$('stP').innerHTML=CRONICA.map(t=>`<p>${t}</p>`).join('');$('stD').innerHTML=CRONICA.map(()=>'<i></i>').join('');show('story');stStep()}
+function stStep(){$('stP').querySelectorAll('p').forEach((p,k)=>p.classList.toggle('on',k===stI));$('stD').querySelectorAll('i').forEach((d,k)=>d.classList.toggle('on',k<=stI));
+  const RP=[[0],[1],[2],[3],[0,1,2,3]][stI];$('cards').querySelectorAll('figure').forEach((f,k)=>f.classList.toggle('on',RP.includes(k)));
+  $('stNext').textContent=stI>=CRONICA.length-1?'Libérate':'Seguir leyendo'}
+$('stNext').onclick=()=>{if(stI>=CRONICA.length-1)return stGo();stI++;stStep()};
+$('stSkip').onclick=()=>stGo();
+
+// ---------- PANTALLA VIVA: pancartas con lemas que cruzan ----------
+{const cvm=$('moscas'),g=cvm.getContext('2d');
+ const B=[];let li=Math.random()*LEMAS.length|0;
+ const rr=(x,y,w,h)=>{g.beginPath();g.roundRect?g.roundRect(x,y,w,h,8):g.rect(x,y,w,h)};
+ function drawLema(q,now){g.save();g.translate(q.x,q.y+Math.sin(now*.002+q.ph)*10);g.rotate(Math.sin(now*.0013+q.ph)*.07-.04);g.font='400 28px "Permanent Marker",cursive';
+   const w=g.measureText(q.t).width+44,h=58;g.fillStyle='rgba(0,0,0,.3)';rr(-w/2+4,-h/2+6,w,h);g.fill();g.fillStyle=['#DDF542','#9b4dca','#EB4521','#fff8ee'][q.c];rr(-w/2,-h/2,w,h);g.fill();
+   g.fillStyle=q.c===1||q.c===2?'#fff':'#1d0f2e';g.textAlign='center';g.textBaseline='middle';g.fillText(q.t,0,3);g.restore()}
+ let last=performance.now();
+ (function loop(now){const dt=Math.min(50,now-last)/16.7;last=now;g.clearRect(0,0,720,cvm.height);
+   if($('game').classList.contains('on')){
+     const ada=S.lvl===3,maxB=ada?2:1,rate=ada?.004:.0015; // pocas, y solo por la franja de la vitrina: nunca sobre la pregunta
+     if(Math.random()<rate*dt&&B.length<maxB){const dir=Math.random()<.5?1:-1;B.push({t:LEMAS[(li++)%LEMAS.length],x:dir>0?-300:1020,y:150+Math.random()*360,vx:dir*(1.1+Math.random()*.5),ph:Math.random()*9,c:li%4})}
+     for(let i=B.length-1;i>=0;i--){const q=B[i];q.x+=q.vx*dt;if(q.x<-360||q.x>1080){B.splice(i,1);continue}drawLema(q,now)}
+}
+   else B.length=0;
+   requestAnimationFrame(loop)})(last)}
+
+// ---------- MÚSICA (sintetizada, estilo MIDI) ----------
+// terror (Bach) y bellaciao: sintetizadas; nodo, cayetana y el final: audios originales del juego
+let AC=null,master=null,musicOn=false,muted=false,nextT=0,step=0,noiseBuf=null,schedId=null,curSong='barricadas';
+function initAudio(){if(AC){AC.resume&&AC.resume();return}try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
+  master=AC.createGain();master.gain.value=.5;master.connect(AC.destination);
+  noiseBuf=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+const mf=m=>440*2**((m-69)/12),NM={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const nm=s=>{const m=s.match(/^([A-G])(#?)(\d)$/);return 12*(+m[3]+1)+NM[m[1]]+(m[2]?1:0)};
+function parseMel(str){const st=[];str.split('|').forEach(bar=>bar.split(',').forEach(ev=>{const [n,l]=ev.trim().split(' '),len=Math.round(+l*2);st.push(n==='r'?null:{m:nm(n),len});for(let i=1;i<len;i++)st.push(undefined)}));return st}
+const SONGS={
+ // «A las barricadas» (versión española de La Varsoviana, 1883, dominio público): himno republicano para la portada
+ barricadas:{bpm:116,mel:'A4 2,A4 1,G4 1,F4 2,F4 1,E4 1|D4 2,D4 1,C4 1,D4 1,F4 1,E4 2|A4 2,A4 1,A4 1,G4 1,F4 1,E4 1,D4 1|E4 1,F4 1,G4 2,A4 4|A4 1,A4 1,D5 2,A4 1,G4 1,F4 1,F4 1|E4 1,D4 1,F4 2,E4 4|A4 2,A4 1,G4 1,F4 1,E4 1,D4 1,F4 1|E4 1,D4 1,C4 2,D4 4|F4 2,F4 1,F4 1,C4 1,F4 1,G4 2|G4 2,G4 1,C4 1,G4 4|G4 2,G4 1,C#5 1,A#4 1,A4 1,G4 1,A4 1|A4 8|A4 1,A4 1,D5 2,A4 1,G4 1,F4 1,F4 1|E4 1,D4 1,F4 2,E4 4|A4 2,A4 1,G4 1,F4 1,E4 1,D4 1,F4 1|E4 1,D4 1,C#4 2,D4 4',
+  roots:['D3','D3','A2','D3','D3','A2','A2','D3','F2','C3','G2','A2','D3','A2','A2','D3'],qual:'mmMmmMMmMMmMmMMm'},
+ // cumbia original (compuesta para el juego), rápida y con acordeón, para la historia del principio
+ cumbia:{bpm:116,mel:'D5 1,B4 1,G4 1,B4 1,D5 2,E5 1,D5 1|C5 1,A4 1,F#4 1,A4 1,C5 4|B4 1,G4 1,D4 1,G4 1,B4 2,C5 1,B4 1|A4 1,F#4 1,D4 1,F#4 1,A4 4|D5 1,E5 1,F#5 1,G5 1,F#5 1,E5 1,D5 1,B4 1|C5 1,D5 1,E5 1,C5 1,A4 4|B4 1,D5 1,G5 1,D5 1,C5 1,A4 1,F#4 1,A4 1|G4 6,r 2',roots:['G2','D2','G2','D2','G2','C3','D2','G2'],qual:'MMMMMMMM'},
+ // reggaetón original (compuesto para el juego): ritmo dembow para la historia del principio
+ reggaeton:{bpm:96,mel:'A4 1,C5 1,E5 1,C5 1,D5 2,C5 1,A4 1|G4 1,A4 1,C5 2,A4 4|F4 1,A4 1,C5 1,F5 1,E5 2,D5 1,C5 1|D5 1,C5 1,B4 2,G4 4|A4 1,A4 1,C5 1,E5 1,G5 2,E5 1,C5 1|D5 1,E5 1,C5 2,A4 4|F5 1,E5 1,D5 1,C5 1,D5 2,E5 1,G5 1|E5 6,r 2',roots:['A2','F2','C3','G2','A2','F2','C3','G2'],qual:'mMMMmMMM'},
+ // «Tocata y fuga en re menor» (J. S. Bach, dominio público): el clásico de terror, con órgano
+ terror:{bpm:118,mel:'A4 0.5,G4 0.5,A4 5,r 2|G4 0.5,F4 0.5,E4 0.5,D4 0.5,C#4 4,D4 2|A3 0.5,G3 0.5,A3 5,r 2|E3 1,F3 1,C#3 2,D3 4|A2 0.5,G2 0.5,A2 5,r 2|G2 0.5,F2 0.5,E2 0.5,D2 0.5,C#2 4,D2 2|C#3 0.5,E3 0.5,G3 0.5,A#3 0.5,C#4 0.5,E4 0.5,G4 0.5,A#4 0.5,C#5 0.5,A#4 0.5,G4 0.5,E4 0.5,C#4 0.5,A#3 0.5,G3 0.5,E3 0.5|D3 8',roots:['D3','A2','D3','A2','D2','A2','C#3','D2'],qual:'mMmMmMmm'},
+ nodo:{bpm:135,mel:'r 0.5,E4 2.5,F4 1,E4 1,r 2,F4 3.5,E4 1,F4 1,E4 1,E4 1,E4 2,r 5.5,F4 1,C4 1,E4 1.5,E4 2,E4 1,C4 1,F4 4.5,C4 2,r 3.5,C4 2,C4 1,r 8,E4 1,F#4 6,F4 1.5,F4 2.5,F4 2,F4 1.5,E4 1,F4 1,E4 1,F4 1.5,r 8.5,E4 2,E4 3,C4 1,F4 1,C4 2,C4 2,C4 1.5,F4 2,r 4,C4 1,r 3.5,C4 1,r 7,C4 5.5,F4 6,F4 2,C4 3.5,C4 6.5,r 3.5',roots:["A#2", "E2", "E2", "E2", "E2", "G2", "B2", "E2", "A#2", "E2", "E2", "E2", "G#2", "E2", "A#2", "A#2", "A#2"],qual:'mmmmmmmmmmmmmmmmm'},
+ cayetana:{bpm:135,mel:'E5 0.5,r 1,C#5 1,C5 1.5,F5 1,r 1.5,C5 1,E5 1,D5 1,C5 1,F5 1,A#4 1,r 2,C5 1.5',roots:["A2", "A2"],qual:'mm'},
+ finalpower:{bpm:129,mel:'A4 2,A4 1,F#4 1,A4 1,A4 1,A4 1.5,A4 1.5,A4 2,D4 1,G4 1,G4 1,G4 2,A4 1,F#4 1,A4 2,A4 1,A4 1,A4 1,F#4 1.5,E4 1,E4 2,E4 2,A4 1.5,E4 1',roots:["D2", "G2", "D2", "A2"],qual:'MMMM'},
+ // «Marcha Real» (Espinosa de los Monteros, 1761, dominio público): solo la melodía
+ marchareal:{bpm:112,mel:'A#4 2,F4 2,D5 2,A#4 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,A#4 1,A4 1,G4 1,F4 1|A#4 2,C5 2,D5 2,r 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,F5 2,r 2|A#4 2,F4 2,D5 2,A#4 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,A#4 1,A4 1,G4 1,F4 1|A#4 2,C5 2,D5 2,r 1,F5 1|D#5 1,D5 1,C5 1,A#4 1,F5 4|F5 2,D5 1.5,F5 0.5,D#5 2,C5 1.5,D#5 0.5|D5 2,A#4 1.5,D5 0.5,C5 1,F4 1,G4 1,A4 1|A#4 2,C5 2,D5 1.5,D#5 0.5,F5 1,D#5 1|D5 2,C5 2,A#4 2,r 2|F5 2,D5 1.5,F5 0.5,D#5 2,C5 1.5,D#5 0.5|D5 2,A#4 1.5,D5 0.5,C5 1,F4 1,G4 1,A4 1|A#4 2,C5 2,D5 1.5,D#5 0.5,F5 1,D#5 1|D5 2,C5 2,A#4 2,r 2',roots:['A#2','F2','A#2','F2','A#2','F2','A#2','F2','A#2','F2','D#2','A#2','A#2','F2','D#2','A#2'],qual:'MMMMMMMMMMMMMMMM'},
+ bellaciao:{bpm:120,mel:'r 5,D4 1,G4 1,A4 1|A#4 1,G4 4,D4 1,G4 1,A4 1|A#4 1,G4 4,D4 1,G4 1,A4 1|A#4 2,A4 1,G4 1,A#4 2,A4 1,G4 1|D5 2,D5 2,D5 1,D5 1,C5 1,D5 1|D#5 1,D#5 4,D#5 1,D5 1,C5 1|D#5 1,D5 4,D5 1,C5 1,A#4 1|A4 2,D5 2,A#4 2,A4 2|G4 8',roots:['G2','G2','G2','G2','D3','C3','G2','D3','G2'],qual:'mmmmMmmMm'}};
+for(const k in SONGS){const s=SONGS[k];s.steps=parseMel(s.mel);s.R=s.roots.map(nm);s.N=s.steps.length}
+function env(g,t,a,peak,dec){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+dec)}
+function tone(type,f,t,dur,vol,f2){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);env(g,t,.005,vol,dur);o.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05)}
+function noise(t,dur,vol,ft,fq){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noiseBuf;f.type=ft;f.frequency.value=fq;env(g,t,.002,vol,dur);s.connect(f);f.connect(g);g.connect(master);s.start(t);s.stop(t+dur+.05)}
+function bass(m,t,dur){const o=AC.createOscillator(),f=AC.createBiquadFilter(),g=AC.createGain();o.type='sawtooth';o.frequency.value=mf(m);f.type='lowpass';f.frequency.setValueAtTime(1400,t);f.frequency.exponentialRampToValueAtTime(220,t+dur);env(g,t,.004,.3,dur);o.connect(f);f.connect(g);g.connect(master);o.start(t);o.stop(t+dur+.05)}
+const prog=()=>S.pieces.length&&$('game').classList.contains('on')?S.removed/S.pieces.length:0;
+const bpm=()=>(SONGS[curSong].bpm||118)*(1+.4*prog()) // se acelera hasta un 40 % a medida que superas momentos del nivel;
+function schedule(){if(!musicOn||!AC)return;while(nextT<AC.currentTime+.12){const SG=SONGS[curSong],sd=60/bpm()/4,s=step%SG.N,bar=s/16|0,b=s%16,root=SG.R[bar%SG.R.length],ch=[root,root+(SG.qual[bar%SG.qual.length]==='m'?3:4),root+7];
+  if(curSong==='barricadas'){const n=SG.steps[s];       // marcha: caja con redoble, bombo, bajo y metales
+    if(b%4===0)tone('sine',100,nextT,.25,.9,45);
+    if(b===4||b===12)noise(nextT,.12,.25,'bandpass',1900);
+    if(b>=13)noise(nextT,.05,.16,'bandpass',2300);
+    if(b===0||b===8)bass(root,nextT,sd*3);if(b===4||b===12)bass(root+7,nextT,sd*2);
+    if(b%4===2)ch.forEach(m=>tone('square',mf(m+12),nextT,sd*.6,.02));
+    if(n){[-5,5].forEach(dt=>tone('sawtooth',mf(n.m+12)*2**(dt/1200),nextT,sd*n.len*.9,.032));tone('triangle',mf(n.m),nextT,sd*n.len*.9,.07)}
+    nextT+=sd;step++;continue}
+  if(curSong==='cumbia'){const n=SG.steps[s];          // guacharaca, campana, bombo y bajo de cumbia
+    noise(nextT,.035,b%4>=2?.17:.07,'highpass',b%4>=2?7000:9000);
+    if(b%8===0)tone('sine',110,nextT,.25,.95,45);
+    if(b%4===2)tone('square',820,nextT,.07,.05,800);
+    if(b===4||b===12)noise(nextT,.1,.2,'bandpass',1500);
+    if(b===0||b===8)bass(root,nextT,sd*2.5);if(b===6||b===14)bass(root+7,nextT,sd*1.6);
+    if(b%4===2)ch.forEach(m=>tone('triangle',mf(m+12),nextT,sd*.9,.03));
+    if(n){[-6,6].forEach(dt=>tone('sawtooth',mf(n.m+12)*2**(dt/1200),nextT,sd*n.len*.85,.03));tone('square',mf(n.m),nextT,sd*n.len*.85,.03)}
+    nextT+=sd;step++;continue}
+  if(curSong==='reggaeton'){const n=SG.steps[s];          // dembow: bombo en negras, caja en 3-6-11-14
+    if(b%4===0)tone('sine',120,nextT,.28,1,42);
+    if(b===3||b===6||b===11||b===14){noise(nextT,.09,.3,'bandpass',2000);tone('triangle',230,nextT,.06,.12,180)}
+    if(b%2===0)noise(nextT,.025,.06,'highpass',9000);
+    if(b===0||b===6||b===8||b===14)tone('sine',mf(root-12),nextT,sd*2.2,.5);   // sub-bajo
+    if(b===2||b===10)ch.forEach(m=>tone('square',mf(m+12),nextT,sd*1.2,.022));
+    if(n){tone('square',mf(n.m+12),nextT,sd*n.len*.8,.04);tone('triangle',mf(n.m),nextT,sd*n.len*.85,.06)}
+    nextT+=sd;step++;continue}
+  if(curSong==='terror'){const n=SG.steps[s]; // órgano chirriante, tritono de fondo, latido y chillidos
+    if(b===0||b===3)tone('sine',62,nextT,.22,.9,38);                                   // latido
+    if(b===0){tone('sawtooth',mf(root-12),nextT,sd*16,.03);tone('sawtooth',mf(root-6),nextT,sd*16,.022)} // dron en tritono
+    if(b%2===1)noise(nextT,.03,.05,'highpass',9000);
+    if(b===8&&bar%2)tone('square',mf(root+36),nextT,sd*3,.03,mf(root+30));              // chillido que cae
+    if(n){[0,12].forEach(o=>{tone('sawtooth',mf(n.m+o),nextT,sd*n.len*.95,.04);tone('sawtooth',mf(n.m+o)*1.012,nextT,sd*n.len*.95,.035)});
+      tone('square',mf(n.m+24),nextT,sd*n.len*.9,.022);tone('square',mf(n.m+25),nextT,sd*n.len*.9,.012);tone('triangle',mf(n.m-12),nextT,sd*n.len*.95,.08)}
+    nextT+=sd;step++;continue}
+  noise(nextT,b%2?.03:.05,b%4===2?.16:.08,'highpass',b%2?8000:6000);
+  if(b%4===0)tone('sine',130,nextT,.24,.9,45);
+  if(b===4||b===12)noise(nextT,.14,.26,'bandpass',1800);
+  if(curSong==='nodo'&&b>=12)noise(nextT,.05,.2,'bandpass',2300);            // redoble de noticiario
+  if(curSong==='marchareal'&&b%2===1)noise(nextT,.04,.15,'bandpass',2100);        // caja marcial
+  if(curSong==='finalpower'&&b%2===0)bass(root-12,nextT,sd*.9);              // bajo galopante
+  if(curSong==='bellaciao'&&b%4===2)ch.forEach(n=>tone('triangle',mf(n+12),nextT,sd*.8,.03)); // acordeón de rasgueo
+  if(b===0||b===8)bass(root,nextT,sd*3);if(b===6||b===14)bass(root-5,nextT,sd*1.8);
+  if(b%4===2)ch.forEach(n=>tone('square',mf(n+12),nextT,sd*.7,.022));
+  const n=SG.steps[s];if(n){tone('square',mf(n.m+12),nextT,sd*n.len*.9,.045);tone('triangle',mf(n.m),nextT,sd*n.len*.9,.07)}
+  nextT+=sd;step++}}
+function startMusic(){if(!AC||musicOn||muted)return;musicOn=true;step=0;nextT=AC.currentTime+.05;schedId=setInterval(schedule,25)}
+function stopMusic(){musicOn=false;clearInterval(schedId)}
+// NO-DO (bajito), Cayetana y el final suenan con sus audios originales; Bach y Bella ciao, en MIDI sintetizado
+const AUD=k=>document.getElementById('a_'+k);
+function pauseAud(){['nodo','cayetana','finalpower'].forEach(k=>AUD(k).pause())}
+['cayetana','finalpower'].forEach(k=>{AUD(k).volume=.35});AUD('nodo').volume=.12; // que no tapen los efectos
+function setSong(k){const a=AUD(k);if(k!==curSong){pauseAud();if(a)a.currentTime=0;step=0}curSong=k;
+  if(a){stopMusic();a.playbackRate=1;if(!muted)a.play().catch(()=>{});return}
+  if(!muted&&AC&&!musicOn)startMusic()}
+function speedUp(){const a=AUD(curSong);if(a)a.playbackRate=1+.4*prog()} // los audios también se aceleran al avanzar
+function thud(){try{initAudio()}catch(e){}if(!AC||muted||AC.state!=='running')return;const t=AC.currentTime;
+  tone('sine',170,t,.9,1,30);tone('triangle',95,t,.35,.45,45);noise(t,.3,.55,'lowpass',380);noise(t,.07,.28,'highpass',2800)}
+function sfx(k,lv=1){if(!AC||muted)return;const t=AC.currentTime;
+  if(k==='ok')[72,76,79,84].forEach((m,i)=>tone('square',mf(m),t+i*.07,.14,.26));
+  if(k==='bad'){tone('sawtooth',220,t,.45,.32,70);tone('square',110,t+.05,.4,.2,55)}
+  if(k==='up')[60,64,67,72,76,79,84].forEach((m,i)=>tone('triangle',mf(m),t+i*.08,.3,.28));
+  if(k==='shh'){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),gg=AC.createGain();s.buffer=noiseBuf;s.loop=true;f.type='bandpass';f.frequency.value=4200;f.Q.value=.8;gg.gain.setValueAtTime(.0001,t);gg.gain.exponentialRampToValueAtTime(.5,t+.08);gg.gain.setValueAtTime(.5,t+.5);gg.gain.exponentialRampToValueAtTime(.0001,t+.9);s.connect(f);f.connect(gg);gg.connect(master);s.start(t);s.stop(t+.95)}
+  if(k==='aura'){const b=60+lv*2;[0,4,7,12,16].forEach((d,i)=>tone('sine',mf(b+d+12),t+i*.04,.35,.09));tone('sawtooth',mf(b),t,.4,.05,mf(b+24))}}
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'🔇':'🔊';$('mute').setAttribute('aria-label',muted?'Activar música':'Silenciar música');if(muted){stopMusic();pauseAud()}else{initAudio();const a=AUD(curSong);if(a)a.play().catch(()=>{});else startMusic()}};
+document.addEventListener('visibilitychange',()=>{const a=AUD(curSong);if(document.hidden){pauseAud();if(AC)AC.suspend()}else{if(AC)AC.resume();if(a&&!muted)a.play().catch(()=>{})}});
+}
+</script>
+</body>
+</html>

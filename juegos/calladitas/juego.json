@@ -1,0 +1,32 @@
+{
+  "nombre": "Calladitas",
+  "tipo": "estatico",
+  "publicar": true,
+  "assets": [
+    "a0_sola.webp",
+    "a1_palestino.webp",
+    "a2_kellys.webp",
+    "a3_vivienda.webp",
+    "a4_calladitas.webp",
+    "a5_final.webp",
+    "c1_mantilla.webp",
+    "c2_permiso.webp",
+    "c3_delantal.webp",
+    "c4_rosario.webp",
+    "c_solo.webp",
+    "portada.webp",
+    "v1_insultos.webp",
+    "v2_pancarta.webp",
+    "v3_capa.webp",
+    "v4_gafas.webp",
+    "v_solo.webp",
+    "y1_corona.webp",
+    "y2_billetes.webp",
+    "y3_abanico.webp",
+    "y4_metoo.webp",
+    "y_solo.webp",
+    "cayetana.mp3",
+    "final.mp3",
+    "nodo.mp3"
+  ]
+}
