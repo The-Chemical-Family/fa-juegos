@@ -14,6 +14,7 @@ const SNIPPET = [
 	snippetAnalitica()
 ].join('');
 const NO_SE_SIRVEN = new Set(['juego.json', 'README.md', 'dist', 'node_modules']);
+const EXTENSIONES_IMAGEN = ['.png', '.jpg', '.jpeg', '.webp'];
 
 const raiz = process.cwd();
 const contenedor = join(raiz, 'apps', 'contenedor');
@@ -101,8 +102,6 @@ function limpiarPublicados() {
 // `designs/historias`) porque `static/` se genera en cada ensamblado. Se sirven
 // en la raíz del dominio: `/og/<slug>.png` (o `.jpg`) para `og:image` y
 // `/historias/<slug>.png` para compartir en Instagram.
-const EXTENSIONES_IMAGEN = ['.png', '.jpg', '.jpeg', '.webp'];
-
 function copiarImagen(carpeta) {
 	const origen = join(raiz, 'designs', carpeta);
 	if (!existsSync(origen)) return;
