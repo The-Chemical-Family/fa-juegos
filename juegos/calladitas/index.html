@@ -212,7 +212,12 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
 .lemaFA{margin:12px 0 0;padding:8px 22px;border-radius:999px;background:var(--or);font:400 30px/1.1 Anton,sans-serif;letter-spacing:1px;text-transform:uppercase;box-shadow:0 6px 0 #9c2a10}
 #fLema{display:inline-block}#fLema.flip{animation:sFlip .7s ease}
 .zoom{width:100%;height:100%;transform-origin:94% 73%}
-#final .port canvas{object-position:50% 85%}#final .nota{font-size:20px;padding:12px 18px;margin-top:20px}#final .big{font-size:70px}
+#final{isolation:isolate}
+.finBg{position:absolute;inset:0;z-index:-2;overflow:hidden}
+.finBg .zoom{position:absolute;inset:0;transform-origin:94% 78%}
+.finBg canvas{width:100%;height:100%;object-fit:cover;object-position:96% 50%;display:block}
+#final::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to bottom,rgba(30,12,52,.9) 0,rgba(30,12,52,.55) 15%,rgba(30,12,52,0) 26%,rgba(30,12,52,0) 46%,rgba(22,9,38,.75) 56%,rgba(22,9,38,.93) 66%,rgba(22,9,38,.97) 100%)}
+#final .pw{flex:1;margin:0;width:100%}#final .big,#final .lemaFA{text-shadow:0 3px 10px rgba(0,0,0,.7)}#final .nota{font-size:20px;padding:12px 18px;margin-top:20px}#final .big{font-size:70px}
 
 /* ---------- CRÓNICA: el fanzine que cuenta la historia ---------- */
 #story{padding:calc(110px + var(--sat,0px)) 40px calc(50px + var(--sab,0px));align-items:center;text-align:center;background:radial-gradient(ellipse at 50% 30%,#6a2f9e 0,#341552 55%,#170a27 100%)}
@@ -301,9 +306,10 @@ button:focus-visible,a:focus-visible{outline:5px solid #fff;outline-offset:3px}
  </section>
 
  <section id="final" class="scr">
+  <div class="finBg" aria-hidden="true"><div class="zoom" id="fZ"></div></div>
   <div class="big" id="fT"></div>
   <div class="lemaFA"><span id="fLema">Un voto como una casa</span></div>
-  <div class="pw" id="fW"><div class="aura"></div><div class="port" id="fP"></div></div>
+  <div class="pw" id="fW"></div>
   <div class="nota" id="fC"></div>
   <div class="stats" id="fStats"></div>
   <div class="grid">
@@ -442,7 +448,7 @@ function farm(w,label){const lv=Math.min(10,(+w.style.getPropertyValue('--a')||1
 $('bFarm').onclick=()=>farm($('luW'),$('luA'));
 // en la pantalla final, cada toque acerca la imagen hasta la bandera de «Working Class»; al llegar, vuelve de golpe
 let ZOOM=0,zT=null;
-$('bFarm2').onclick=()=>{farm($('fW'),null);const z=$('fZ');if(!z||ZOOM>=8)return;ZOOM++;z.style.transition='transform .4s cubic-bezier(.3,1.5,.5,1)';const f=ZOOM/8;z.style.transform=`translate(${(-13*f).toFixed(1)}%,${(-23*f).toFixed(1)}%) scale(${1+ZOOM*.28})`;
+$('bFarm2').onclick=()=>{farm($('fW'),null);const z=$('fZ');if(!z||ZOOM>=8)return;ZOOM++;z.style.transition='transform .4s cubic-bezier(.3,1.5,.5,1)';const f=ZOOM/8;z.style.transform=`translate(${(-11*f).toFixed(1)}%,${(-44*f).toFixed(1)}%) scale(${1+ZOOM*.24})`;
   if(ZOOM>=8){clearTimeout(zT);zT=setTimeout(()=>{z.style.transition='transform .22s ease-in';z.style.transform='none';ZOOM=0},1300)}};
 
 // ---------- ESTADO ----------
@@ -523,7 +529,7 @@ $('bEvo').onclick=()=>showIntro(S.lvl+1);
 // lemas del Frente Amplio que van rotando en la pantalla final
 const LEMAS_FA=['Un voto como una casa','Tax the rich','Vivienda para vivir, no para especular','37,5 horas ya','Ni un desahucio sin alternativa','Sanidad y educación públicas','Embargo de armas a Israel','Pensiones blindadas','¡Nunca más calladitas!'];
 {let fi=0;setInterval(()=>{if(!$('final').classList.contains('on'))return;const el=$('fLema');el.classList.remove('flip');void el.offsetWidth;el.classList.add('flip');setTimeout(()=>{fi=(fi+1)%LEMAS_FA.length;el.textContent=LEMAS_FA[fi]},330)},2400)}
-function finish(){S.times[S.lvl]=performance.now()-S.lvStart;setSong('finalpower');sfx('up');AURA+=3000;ZOOM=0;$('fP').innerHTML='<div class="zoom" id="fZ"></div>';$('fZ').appendChild(makeChar('a5_final.webp','Ada rodeada de toda la gente'));$('fW').style.setProperty('--a',1);
+function finish(){S.times[S.lvl]=performance.now()-S.lvStart;setSong('finalpower');sfx('up');AURA+=3000;ZOOM=0;$('fZ').style.transform='none';$('fZ').innerHTML='';$('fZ').appendChild(makeChar('a5_final.webp','Ada rodeada de toda la gente'));$('fW').style.setProperty('--a',1);
   $('fT').innerHTML=`${letters('De calladitas,',0)}<br><b>${letters('¡nada!',16)}</b>`;
   $('fC').textContent=CHRON_END;
   $('fStats').innerHTML=`<div><b>${S.ok}</b><span>aciertos</span></div><div><b>${S.bad}</b><span>fallos</span></div><div><b>${(AURA/1000).toLocaleString('es-ES',{maximumFractionDigits:1})}k</b><span>de aura</span></div>`;show('final');shrink($('fT'),640)}
