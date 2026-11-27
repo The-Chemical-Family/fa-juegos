@@ -140,7 +140,7 @@ npm run nuevo-juego -- --tipo estatico --slug <slug> --nombre "<Nombre>" --orige
 
 Si el juego carga un recurso desde JavaScript, créalo en `static/` con `publicDir: 'static'` en `vite.config.ts` y declara la ruta en `assets`.
 
-Añadir la captura `designs/og/<slug>.png` (1200 × 630) antes de publicarlo: es la imagen que declaran `og:image` y `twitter:image` y el ensamblado no arranca sin ella.
+Añadir la captura `designs/og/<slug>.png` (1200 × 630) antes de publicarlo: es la imagen que declaran `og:image` y `twitter:image` y el ensamblado no arranca sin ella. Si el PNG pasa de 300 KB, guarda además una copia JPEG (`designs/og/<slug>.jpg`) y apunta `og:image` a ella, porque WhatsApp descarta las imágenes grandes y deja la vista previa sin foto.
 
 ## Añadir un juego estático ya construido
 
@@ -152,7 +152,7 @@ Añadir la captura `designs/og/<slug>.png` (1200 × 630) antes de publicarlo: es
 
 La plantilla mínima está en `tools/plantillas/estatico/`. La carpeta del juego es el artefacto: lo que hay en ella es lo que se sirve, salvo `juego.json`, `README.md` y los archivos ocultos.
 
-Cada juego publica su propia imagen para `og:image` y `twitter:image`: `https://muchachadarcade.es/og/<slug>.png`. La captura vive en `designs/og/<slug>.png` (1200 × 630) y el ensamblado la copia a `apps/contenedor/static/og/`, que se sirve desde `/og/`. Si falta la captura de un juego publicado, `npm run build` falla con un mensaje que nombra el fichero. Para generarla, abre el juego a 1200 × 630, captura su pantalla inicial y guarda el resultado con ese nombre; las plantillas ya apuntan a esa ruta. La portada y el 404 siguen usando `apps/contenedor/static/splash.png` (1414 × 750), declarada en `apps/contenedor/src/routes/+page.svelte`.
+Cada juego publica su propia imagen para `og:image` y `twitter:image`: `https://muchachadarcade.es/og/<slug>.png`, o `.jpg` si la versión PNG supera los 300 KB (límite práctico de WhatsApp). La captura vive en `designs/og/<slug>.png` (1200 × 630) y el ensamblado copia a `apps/contenedor/static/og/` los PNG, JPEG y WebP que encuentre, que se sirven desde `/og/`. Si falta la captura de un juego publicado, `npm run build` falla con un mensaje que nombra el fichero. Para generarla, abre el juego a 1200 × 630, captura su pantalla inicial y guarda el resultado con ese nombre; las plantillas ya apuntan a esa ruta. La portada y el 404 siguen usando `apps/contenedor/static/splash.png` (1414 × 750), declarada en `apps/contenedor/src/routes/+page.svelte`.
 
 ## Volver a la portada
 

@@ -99,8 +99,10 @@ function limpiarPublicados() {
 
 // Las imágenes compartibles viven en el repositorio (`designs/og` y
 // `designs/historias`) porque `static/` se genera en cada ensamblado. Se sirven
-// en la raíz del dominio: `/og/<slug>.png` para `og:image` y
+// en la raíz del dominio: `/og/<slug>.png` (o `.jpg`) para `og:image` y
 // `/historias/<slug>.png` para compartir en Instagram.
+const EXTENSIONES_IMAGEN = ['.png', '.jpg', '.jpeg', '.webp'];
+
 function copiarImagen(carpeta) {
 	const origen = join(raiz, 'designs', carpeta);
 	if (!existsSync(origen)) return;
@@ -109,15 +111,19 @@ function copiarImagen(carpeta) {
 	mkdirSync(destino, { recursive: true });
 
 	for (const entrada of readdirSync(origen, { withFileTypes: true })) {
-		if (entrada.isFile() && entrada.name.endsWith('.png')) {
+		if (entrada.isFile() && EXTENSIONES_IMAGEN.some((ext) => entrada.name.endsWith(ext))) {
 			cpSync(join(origen, entrada.name), join(destino, entrada.name));
 		}
 	}
 }
 
 function comprobarImagen(juego, carpeta) {
-	const ruta = join('designs', carpeta, `${juego.slug}.png`);
-	return existsSync(join(raiz, ruta)) ? [] : [`${juego.slug}: falta ${ruta}`];
+	const existe = EXTENSIONES_IMAGEN.some((ext) =>
+		existsSync(join(raiz, 'designs', carpeta, `${juego.slug}${ext}`))
+	);
+	return existe
+		? []
+		: [`${juego.slug}: falta designs/${carpeta}/${juego.slug}.png (o .jpg)`];
 }
 
 function inyectarCompartir(ruta, nombre, historia) {
